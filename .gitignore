@@ -1,0 +1,7 @@
+# Material do curso (protegido por direitos autorais) — não publicar
+*.pdf
+
+# Arquivos locais/temporários
+*.log
+skills-lock.json
+.agents/

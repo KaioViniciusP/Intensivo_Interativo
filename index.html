@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intensivo Interativo — Vetores &amp; Teoria dos Grafos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ========== TOKENS ========== */
+:root{
+  color-scheme:only light;
+  --ink:#111b4b; --ink2:#4a517e; --paper:#f5f6fb; --grid:#e4e8f5;
+  --yellow:#ffd60a; --yellow-soft:#fff2ac;
+  --blue:#2450c4; --blue-deep:#182f7a;
+  --green:#0e8a4e; --red:#cf3f3f;
+  --card:#fff; --line:#d9dff0;
+  --display:'Bricolage Grotesque','Segoe UI',sans-serif;
+  --body:'Archivo','Segoe UI',system-ui,sans-serif;
+  --mono:'JetBrains Mono','Consolas',monospace;
+  --r:14px;
+  --shadow:0 2px 10px rgba(17,27,75,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--body);color:var(--ink);line-height:1.65;font-size:16px;
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:26px 26px;
+}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:4px}
+::selection{background:var(--yellow);color:var(--ink)}
+
+/* ========== TOPO ========== */
+header.topo{position:sticky;top:0;z-index:60;background:rgba(255,255,255,.94);backdrop-filter:blur(8px);border-bottom:2px solid var(--ink)}
+.topo-in{max-width:1080px;margin:0 auto;padding:.55rem 1rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.12rem;letter-spacing:-.02em;display:flex;align-items:center;gap:.55rem;color:var(--ink);text-decoration:none}
+.brand svg{flex-shrink:0}
+.chip{margin-left:auto;font:700 .82rem var(--mono);border:2px solid var(--ink);border-radius:999px;padding:.28rem .8rem;background:var(--card);white-space:nowrap}
+nav.aba-nav{border-top:1px solid var(--line)}
+.aba-nav ul{max-width:1080px;margin:0 auto;list-style:none;display:flex;overflow-x:auto;padding:0 .5rem;scrollbar-width:none}
+.aba-nav li{flex-shrink:0}
+.aba-nav button{
+  all:unset;cursor:pointer;display:block;padding:.6rem 1rem;font:600 .92rem var(--body);color:var(--ink2);
+  border-bottom:3px solid transparent;white-space:nowrap;transition:color .15s
+}
+.aba-nav button:hover{color:var(--ink)}
+.aba-nav button.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -3px 0 var(--yellow)}
+
+/* ========== ESTRUTURA ========== */
+.wrap{max-width:1080px;margin:0 auto;padding:0 1rem 4rem}
+main section.tab{display:none;padding-top:1.75rem}
+main section.tab.on{display:block;animation:surge .35s ease}
+@keyframes surge{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Divisor de capítulo (número vazado + título) */
+.divisor{display:flex;align-items:baseline;gap:.9rem;margin:1.5rem 0 1.1rem;border-bottom:3px solid var(--ink);padding-bottom:.5rem;flex-wrap:wrap}
+.divisor .num{font:800 2.5rem/1 var(--display);color:transparent;-webkit-text-stroke:1.6px var(--ink)}
+.divisor h2{font:700 1.65rem/1.15 var(--display);letter-spacing:-.02em}
+.divisor .fim{margin-left:auto;font:600 .85rem var(--body);color:var(--ink2)}
+.aula{margin:2.1rem 0 0}
+.aula>h3{font:700 1.18rem var(--display);display:flex;align-items:center;gap:.6rem;margin-bottom:.7rem}
+.aula>h3 .aula-tag{font:700 .72rem var(--body);color:#111b4b;background:var(--yellow);border-radius:6px;padding:.18rem .5rem;transform:rotate(-2deg)}
+
+/* ========== BLOCOS DE CONTEÚDO ========== */
+.nota{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--blue);border-radius:10px;padding:.95rem 1.15rem;margin:.9rem 0;box-shadow:var(--shadow);max-width:75ch}
+.nota.atencao{border-left-color:var(--red)}
+.nota.destaque{border-left-color:var(--yellow)}
+.def-lista{margin:.9rem 0;display:grid;gap:.55rem;max-width:75ch}
+.def-lista>div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.7rem 1rem;box-shadow:var(--shadow)}
+.def-lista dt{font:700 1rem var(--display);display:inline}
+.def-lista dt::after{content:" — ";color:var(--ink2)}
+.def-lista dd{display:inline;font-size:.95rem;color:#2c3260}
+.formula{font:600 .92rem/1.5 var(--mono);background:#edf1fe;border:1px solid var(--line);border-radius:8px;padding:.45rem .7rem;display:inline-block;margin:.25rem .4rem .25rem 0}
+.formula b{color:var(--blue-deep)}
+.exemplo{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:1rem 0;box-shadow:var(--shadow);max-width:820px}
+.exemplo .ex-t{background:var(--ink);color:var(--yellow);font:700 .8rem var(--body);padding:.55rem 1rem;display:flex;align-items:center;gap:.5rem}
+.exemplo .ex-b{padding:1rem 1.2rem}
+.passo{display:flex;gap:.7rem;padding:.32rem 0;align-items:baseline}
+.passo .pn{font:700 .78rem var(--mono);color:#111b4b;background:var(--yellow);border-radius:6px;padding:.1rem .45rem;flex-shrink:0;transform:rotate(-2deg)}
+.passo p{font-size:.95rem}
+ul.topicos{margin:.6rem 0 .6rem 1.25rem;max-width:75ch}
+ul.topicos li{margin:.3rem 0;font-size:.95rem}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1rem;align-items:start}
+
+/* Figuras */
+figure.fig{background:#fbfcff;border:1px solid var(--line);border-radius:12px;padding:.9rem .9rem .5rem;margin:.9rem 0;text-align:center}
+figure.fig svg{max-width:100%;height:auto}
+figure.fig figcaption{font-size:.8rem;color:var(--ink2);margin-top:.3rem}
+.fig .nd{fill:#fff;stroke:var(--ink);stroke-width:2.2}
+.fig .nd-b{fill:var(--blue)}
+.fig .nd-y{fill:var(--yellow);stroke:var(--ink);stroke-width:2}
+.fig .lbl{font:600 12.5px var(--mono);fill:var(--ink)}
+.fig .lbl2{font:500 11px var(--mono);fill:var(--ink2)}
+.fig .lbl-w{font:700 12.5px var(--mono);fill:#fff}
+.fig .e{stroke:#9aa5c4;stroke-width:2;fill:none}
+.fig .e-b{stroke:var(--blue);stroke-width:2.6;fill:none}
+.fig .e-r{stroke:var(--red);stroke-width:2.6;fill:none}
+.fig .e-g{stroke:var(--green);stroke-width:3.2;fill:none}
+.fig .traco{stroke-dasharray:5 4;stroke:#9aa5c4;stroke-width:1.6;fill:none}
+
+/* Tabelas */
+.tabela-scroll{overflow-x:auto;margin:.9rem 0}
+table.tab{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--card);box-shadow:var(--shadow);border-radius:10px;overflow:hidden}
+.tab th{font:700 .86rem var(--body);text-align:left;padding:.5rem .75rem;background:var(--ink);color:#fff}
+.tab td{padding:.42rem .75rem;border-bottom:1px solid var(--line)}
+.tab tr:nth-child(even) td{background:#f7f9ff}
+.tab .sim{color:var(--green);font-weight:700}
+.tab .nao{color:var(--red);font-weight:700}
+.tab td.mono,.tab th.mono{font-family:var(--mono);font-size:.82rem}
+
+/* Marca-texto */
+.hl{background:linear-gradient(100deg,transparent 1%,var(--yellow) 3%,var(--yellow) 97%,transparent 99%);padding:.02em .16em;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hl-soft{background:linear-gradient(100deg,transparent 1%,var(--yellow-soft) 3%,var(--yellow-soft) 97%,transparent 99%);padding:.02em .16em;border-radius:3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+
+/* ========== HERO ========== */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:1.6rem;align-items:center;background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:2.2rem 2rem;box-shadow:8px 8px 0 rgba(17,27,75,.9);margin-top:1.5rem}
+.hero h1{font:800 clamp(1.7rem,4vw,2.5rem)/1.15 var(--display);letter-spacing:-.03em}
+.hero .sub{margin:.9rem 0 1.3rem;color:var(--ink2);max-width:46ch}
+.hero-acoes{display:flex;gap:.7rem;flex-wrap:wrap}
+.hero-svg{width:100%;height:auto}
+.hero-svg .st{fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:320;stroke-dashoffset:320;animation:desenha 1.3s ease forwards}
+.hero-svg .d1{animation-delay:.25s}.hero-svg .d2{animation-delay:.85s}
+@keyframes desenha{to{stroke-dashoffset:0}}
+.hero-svg .pt{opacity:0;animation:ponto .45s ease 1.7s forwards}
+@keyframes ponto{to{opacity:1}}
+
+/* Passos do início */
+.como{margin:1.6rem 0 0;max-width:820px}
+.como ol{list-style:none;display:grid;gap:.55rem;counter-reset:passo}
+.como li{counter-increment:passo;display:flex;gap:.8rem;align-items:baseline;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.75rem 1rem;box-shadow:var(--shadow);font-size:.95rem}
+.como li::before{content:counter(passo);font:700 .85rem var(--mono);background:var(--yellow);border-radius:6px;padding:.05rem .5rem;transform:rotate(-2deg)}
+.trilha{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1rem;margin-top:1.4rem}
+.trilha a{display:block;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--blue);border-radius:12px;padding:1rem 1.1rem;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);transition:transform .15s}
+.trilha a:hover{transform:translateY(-3px)}
+.trilha a.vg{border-left-color:var(--red)}
+.trilha h3{font:700 1.05rem var(--display);margin-bottom:.25rem}
+.trilha p{font-size:.88rem;color:var(--ink2)}
+
+/* Botões */
+.btn{all:unset;box-sizing:border-box;cursor:pointer;font:700 .95rem var(--body);border-radius:10px;padding:.68rem 1.3rem;border:2px solid var(--ink);background:var(--card);color:var(--ink);transition:transform .1s}
+.btn:active{transform:scale(.97)}
+.btn-tinta{background:var(--ink);color:var(--yellow)}
+.btn-marca{background:var(--yellow);color:var(--ink)}
+.btn-fino{border-width:1.5px;font-weight:600;padding:.45rem .95rem;font-size:.86rem}
+.btn-perigo{border-color:var(--red);color:var(--red);background:#fff}
+.btn-ok{border-color:var(--green);background:var(--green);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+/* ========== FERRAMENTAS ========== */
+.ferr-abas{display:flex;gap:.5rem;margin:.5rem 0 1.1rem}
+.ferr-abas button{all:unset;cursor:pointer;font:700 .92rem var(--body);padding:.5rem 1.1rem;border:2px solid var(--ink);border-radius:999px;color:var(--ink2)}
+.ferr-abas button.on{background:var(--ink);color:var(--yellow)}
+.canvas-box{position:relative;width:100%;height:430px;background:#fff;border:2px solid var(--ink);border-radius:var(--r);overflow:hidden;cursor:crosshair;touch-action:none;box-shadow:6px 6px 0 rgba(17,27,75,.85)}
+.canvas-box svg{width:100%;height:100%;display:block}
+.controles{display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;margin:.8rem 0}
+.info-linha{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.6rem .9rem;font:500 .88rem var(--mono);color:var(--ink2)}
+.info-linha b{color:var(--ink)}
+.vvertice{cursor:move;fill:#fff;stroke:var(--ink);stroke-width:2.2}
+.vvertice:hover{fill:var(--yellow-soft);stroke:var(--blue)}
+.vvertice.sel{fill:var(--yellow);stroke:var(--blue)}
+.varesta{stroke:#a9b3d4;stroke-width:2.2}
+.varesta.ativa{stroke:var(--green);stroke-width:3.4}
+.vlbl{font:700 12px var(--mono);fill:var(--ink);pointer-events:none}
+.vpeso{font:700 10.5px var(--mono);fill:var(--blue-deep);pointer-events:none}
+.vetor-linha{stroke-width:3;fill:none}
+.vetor-seta{stroke:none}
+.vetor-lbl{font:700 12px var(--mono)}
+
+/* ========== QUESTÕES ========== */
+.hud-simulado{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin:.4rem 0 1.2rem}
+.barra{flex:1;min-width:180px;height:14px;background:#fff;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
+.barra>div{height:100%;width:0;background:repeating-linear-gradient(-45deg,var(--yellow) 0 10px,#f7ca00 10px 20px);transition:width .4s}
+.questao{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:1.1rem 1.2rem;margin-bottom:1.05rem;box-shadow:var(--shadow);border-left:6px solid var(--blue)}
+.questao.feita-ok{border-left-color:var(--green)}
+.questao.feita-no{border-left-color:var(--red)}
+.questao h3{font:600 1rem/1.5 var(--body);display:flex;gap:.7rem;margin-bottom:.75rem}
+.questao h3 .n{font:700 .82rem var(--mono);background:var(--ink);color:var(--yellow);min-width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;transform:rotate(-3deg)}
+.alts{display:grid;gap:.5rem}
+.alt{display:flex;gap:.7rem;align-items:baseline;padding:.6rem .85rem;border:2px solid var(--line);border-radius:10px;cursor:pointer;font-size:.94rem;transition:border-color .15s,background .15s;user-select:none}
+.alt:hover{border-color:var(--blue);background:#f7f9ff}
+.alt .l{font:700 .82rem var(--mono);color:var(--blue-deep)}
+.alt.certa{border-color:var(--green);background:#eefaf3}
+.alt.errada{border-color:var(--red);background:#fdf0f0}
+.questao.travada .alts{pointer-events:none}
+.resp-linha{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-top:.7rem}
+.resp-entrada{font:600 .95rem var(--mono);padding:.55rem .8rem;border:2px solid var(--line);border-radius:10px;width:170px}
+.resp-entrada:focus{outline:none;border-color:var(--blue)}
+.fb{margin-top:.7rem;font-weight:700;font-size:.92rem;display:none}
+.fb.mostra{display:block}
+.fb.ok{color:var(--green)}.fb.no{color:var(--red)}.fb.info{color:#a06b00}
+.expl{display:none;margin-top:.6rem;background:#f2f5ff;border-left:4px solid var(--blue);border-radius:8px;padding:.7rem .9rem;font-size:.9rem;color:#2c3260;max-width:75ch}
+.expl.mostra{display:block}
+.graf-box{margin:.6rem 0;max-width:560px}
+.graf-box svg{width:100%;height:auto;display:block}
+.graf-box .gnd{cursor:pointer}
+.graf-box .gnd circle{fill:var(--blue);stroke:#fff;stroke-width:2.5;transition:.15s}
+.graf-box .gnd:hover circle{stroke:var(--yellow)}
+.graf-box .gnd.certo circle{fill:var(--green)!important}
+.graf-box .gnd.errado circle{fill:var(--red)!important}
+.graf-box text{fill:#fff;font:700 13px var(--mono);text-anchor:middle;pointer-events:none}
+.graf-box line{stroke:#aab4d6;stroke-width:2.5}
+.graf-box line.ativa{stroke:#f59e0b;stroke-width:4.5}
+.graf-box .peso-lbl{font:700 12px var(--mono);fill:var(--blue-deep);paint-order:stroke;stroke:#fff;stroke-width:5px;text-anchor:middle;pointer-events:none}
+.graf-box .nome-lbl{font:600 11px var(--body);fill:var(--ink2);paint-order:stroke;stroke:#fff;stroke-width:5px;text-anchor:middle;pointer-events:none}
+.graf-box path.g{stroke:#cf5a5a;stroke-width:3;fill:none}
+.caminho-display{margin:.6rem 0;font:700 .92rem var(--mono);color:var(--blue-deep);background:#f2f5ff;border:2px dashed #b6c2e8;border-radius:10px;padding:.7rem .9rem;min-height:44px}
+.bip-linha{display:flex;gap:1rem;flex-wrap:wrap;margin:.6rem 0}
+.bip-item{flex:1;min-width:170px;text-align:center;border:2px solid var(--line);border-radius:12px;padding:.7rem;cursor:pointer;background:#fff;user-select:none;transition:border-color .15s}
+.bip-item:hover{border-color:var(--yellow)}
+.bip-item.certo{border-color:var(--green);background:#eefaf3}
+.bip-item.errado{border-color:var(--red);background:#fdf0f0}
+.bip-item h4{font:600 .85rem var(--body);color:var(--ink2)}
+.bip-item svg{max-width:150px;height:auto}
+.bip-item .gnd circle{fill:var(--blue)}
+.bip-item line{stroke:#aab4d6;stroke-width:2.5}
+.resumo-final{display:none;text-align:center;background:var(--ink);color:#fff;border-radius:16px;padding:2rem 1.5rem;margin:1.4rem 0;box-shadow:8px 8px 0 var(--yellow)}
+.resumo-final.mostra{display:block}
+.resumo-final .pct{font:800 3rem var(--display);color:var(--yellow)}
+
+/* ========== INTENSIVO ========== */
+.hud-int{display:flex;gap:.8rem;flex-wrap:wrap;margin:.4rem 0 1.2rem}
+.hud-int .stat{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:.6rem 1.1rem;min-width:110px;text-align:center;box-shadow:4px 4px 0 rgba(17,27,75,.85)}
+.hud-int .valor{font:800 1.45rem var(--display)}
+.hud-int .rotulo{font:600 .68rem var(--body);color:var(--ink2);letter-spacing:.02em}
+.hud-int .tempo{font:700 1.45rem var(--mono);color:var(--red)}
+.painel-q{background:var(--card);border:2px solid var(--ink);border-radius:var(--r);padding:1.4rem;min-height:280px;display:flex;flex-direction:column;gap:1rem;box-shadow:6px 6px 0 rgba(17,27,75,.85)}
+.painel-q .conta{font:600 .82rem var(--mono);color:var(--ink2)}
+.painel-q .enun{font:700 1.15rem/1.5 var(--display)}
+.opcoes-int{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.opcao-int{padding:.85rem 1rem;border:2px solid var(--line);border-radius:12px;cursor:pointer;font-size:.93rem;text-align:left;background:#fff;transition:border-color .15s}
+.opcao-int:hover{border-color:var(--blue);background:#f7f9ff}
+.opcao-int.certa{border-color:var(--green);background:#eefaf3}
+.opcao-int.errada{border-color:var(--red);background:#fdf0f0}
+.resultado-int{display:none;text-align:center;background:var(--card);border:2px solid var(--ink);border-radius:var(--r);padding:2.2rem 1.5rem;box-shadow:8px 8px 0 rgba(17,27,75,.85)}
+.resultado-int.mostra{display:block}
+.resultado-int .placar{font:800 4rem/1 var(--display)}
+.resultado-int .placar small{font:500 1.1rem var(--body);color:var(--ink2)}
+
+/* Toast / rodapé */
+#toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--ink);color:#fff;padding:.85rem 1.2rem;border-radius:12px;box-shadow:0 6px 20px rgba(17,27,75,.4);transform:translateY(130px);opacity:0;transition:all .3s;z-index:100;font-size:.9rem}
+#toast.ver{transform:none;opacity:1}
+footer{border-top:2px solid var(--ink);padding:1.3rem 1rem 2.2rem;text-align:center;font-size:.85rem;color:var(--ink2);background:var(--paper)}
+
+@media(max-width:760px){
+  .hero{grid-template-columns:1fr;padding:1.6rem 1.2rem}
+  .opcoes-int{grid-template-columns:1fr}
+  .canvas-box{height:360px}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition:none!important}
+  .hero-svg .st{stroke-dashoffset:0}
+  .hero-svg .pt{opacity:1}
+}
+/* Ajustes das questões interativas */
+.bip-item .gnd text{fill:#fff;font:700 13px var(--mono);text-anchor:middle;pointer-events:none}
+.bip-item .gnd circle{fill:var(--blue);stroke:#fff;stroke-width:2.5}
+.graf-box .gnd circle{cursor:pointer}
+
+/* Seta de vetor (o glifo U+20D7 não existe nas fontes — desenhamos com CSS) */
+.vet{position:relative;display:inline-block;font-style:italic;font-weight:700;line-height:1;white-space:nowrap}
+.vet::after{content:"\2192";position:absolute;left:50%;bottom:1.5em;transform:translateX(-50%) scaleX(.75);font-size:.55em;font-style:normal;font-weight:700;line-height:1}
+
+/* Gabarito do simulado */
+.gabarito{display:none;margin:1.2rem 0;text-align:left}
+.gabarito.mostra{display:block}
+.gab-item{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--green);border-radius:10px;padding:.8rem 1rem;margin-bottom:.6rem;box-shadow:var(--shadow);font-size:.92rem}
+.gab-item.err{border-left-color:var(--red)}
+.gab-item .gq{font-weight:700;font-family:var(--display);margin-bottom:.25rem}
+.sua{color:var(--red);font-weight:700}
+.sua.ok{color:var(--green)}
+.certa-r{color:var(--green);font-weight:700}
+
+/* ========== CHECKLIST DE AULAS ========== */
+.rev-btn{all:unset;cursor:pointer;font:600 .74rem var(--body);color:var(--ink2);border:1.5px solid var(--line);border-radius:999px;padding:.16rem .62rem;margin-left:.45rem;transition:.15s;vertical-align:middle;white-space:nowrap}
+.rev-btn:hover{border-color:var(--green);color:var(--green)}
+.rev-btn.ok{background:var(--green);border-color:var(--green);color:#fff}
+.aula.feita>h3{color:var(--ink2)}
+.aula.feita>h3 .aula-tag{background:var(--green);color:#fff;transform:rotate(0)}
+
+/* ========== FLASHCARDS ========== */
+.fc-palco{max-width:580px;margin:1.2rem auto;perspective:1200px}
+.fc-carta{position:relative;width:100%;height:280px;cursor:pointer;transform-style:preserve-3d;transition:transform .5s}
+.fc-carta.virada{transform:rotateY(180deg)}
+.fc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);color:var(--ink);border:2px solid var(--ink);border-radius:16px;box-shadow:6px 6px 0 rgba(17,27,75,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.9rem;padding:1.5rem;text-align:center}
+.fc-frente p{font:700 1.15rem/1.5 var(--display);max-width:44ch}
+.fc-dica{font-size:.75rem;color:var(--ink2)}
+.fc-tag{font:700 .72rem var(--body);color:#111b4b;background:var(--yellow);border-radius:6px;padding:.18rem .55rem;transform:rotate(-2deg)}
+.fc-verso{transform:rotateY(180deg);background:#0b0d1c;color:#e9ebfa;border-color:var(--yellow)}
+.fc-verso p{font-size:1rem;line-height:1.6;max-width:46ch}
+
+/* ========== MODO NOTURNO ========== */
+body.noturno{
+  --ink:#e9ebfa; --ink2:#a6adcf; --paper:#121426; --grid:#22264a;
+  --card:#1b1e37; --line:#353a63;
+  --yellow:#ffd60a; --yellow-soft:#5a4b0c;
+  --blue:#7d9bff; --blue-deep:#adc2ff;
+  --green:#41cf88; --red:#ff8080;
+  --shadow:0 2px 10px rgba(0,0,0,.4);
+}
+body.noturno header.topo{background:rgba(18,20,38,.94)}
+body.noturno figure.fig{background:#181b30}
+body.noturno .fig .nd{fill:#232747}
+body.noturno .canvas-box{background:#15172b;box-shadow:6px 6px 0 rgba(0,0,0,.55)}
+body.noturno .opcao-int,body.noturno .bip-item,body.noturno .resp-entrada,body.noturno .btn{background:var(--card);color:var(--ink)}
+body.noturno .btn-tinta{background:#0b0d1c;color:var(--yellow)}
+body.noturno .btn-marca{background:var(--yellow);color:#15172b}
+body.noturno .btn-perigo{background:var(--card)}
+body.noturno .alt:hover,body.noturno .opcao-int:hover{background:#232849}
+body.noturno .alt.certa,body.noturno .opcao-int.certa{background:#12331f;border-color:var(--green)}
+body.noturno .alt.errada,body.noturno .opcao-int.errada{background:#3a1616;border-color:var(--red)}
+body.noturno .tab tr:nth-child(even) td{background:#20233f}
+body.noturno .expl,body.noturno .caminho-display{background:#20233f;color:#c7cdf0}
+body.noturno .def-lista dd{color:#c7cdf0}
+body.noturno .tab th,body.noturno .questao h3 .n,body.noturno .exemplo .ex-t,body.noturno #toast{background:#0b0d1c}
+body.noturno .resumo-final{background:#0b0d1c;box-shadow:8px 8px 0 var(--yellow)}
+body.noturno .hero{box-shadow:8px 8px 0 rgba(0,0,0,.6)}
+body.noturno .graf-box .peso-lbl{stroke:var(--card)}
+body.noturno .fc-face{color:var(--ink)}
+body.noturno .fc-dica{color:var(--ink2)}
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <a class="brand" href="#inicio" data-aba="inicio">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="7" cy="21" r="4.5" fill="#2450c4"/><circle cx="23" cy="7" r="4.5" fill="#111b4b"/><line x1="10" y1="18" x2="20" y2="10" stroke="#ffd60a" stroke-width="3" stroke-linecap="round"/></svg>
+      Intensivo <span class="hl">Interativo</span>
+    </a>
+    <div class="chip" id="chipPlacar">Simulado: 0/32</div>
+    <button id="btnTema" class="btn btn-fino" title="Alternar tema claro/escuro">🌙</button>
+  </div>
+  <nav class="aba-nav" aria-label="Seções do site">
+    <ul>
+      <li><button class="on" data-aba="inicio">Início</button></li>
+      <li><button data-aba="vetores">Vetores</button></li>
+      <li><button data-aba="grafos">Teoria dos Grafos</button></li>
+      <li><button data-aba="flashcards">Flashcards</button></li>
+      <li><button data-aba="ferramentas">Ferramentas</button></li>
+      <li><button data-aba="simulado">Simulado</button></li>
+      <li><button data-aba="intensivo">Modo Intensivo</button></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="wrap">
+<main>
+<!-- ============ INÍCIO ============ -->
+<section id="inicio" class="tab on">
+  <div class="hero">
+    <div>
+      <h1>Vetores e Grafos, <span class="hl">do jeito que cai na prova</span>.</h1>
+      <p class="sub">Todo o conteúdo dos seus slides virou um caderno vivo: teoria organizada aula por aula, ferramentas para desenhar e calcular, e um simulado que corrige na hora.</p>
+      <div class="hero-acoes">
+        <button class="btn btn-tinta" data-aba="vetores">Começar por Vetores</button>
+        <button class="btn btn-marca" data-aba="simulado">Ir direto ao simulado</button>
+      </div>
+    </div>
+    <svg class="hero-svg" viewBox="0 0 340 250" aria-hidden="true">
+      <!-- soma vetorial -->
+      <line class="st d1" x1="28" y1="205" x2="128" y2="205" stroke="#2450c4"/>
+      <line class="st d1" x1="128" y1="205" x2="185" y2="122" stroke="#0e8a4e"/>
+      <line class="st d1" x1="28" y1="205" x2="185" y2="122" stroke="#cf3f3f" stroke-dasharray="7 5"/>
+      <polygon class="pt" points="128,205 116,198 118,212" fill="#2450c4"/>
+      <polygon class="pt" points="185,122 172,126 181,136" fill="#0e8a4e"/>
+      <polygon class="pt" points="185,122 173,116 170,130" fill="#cf3f3f"/>
+      <text class="pt" x="66" y="224" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#2450c4">a</text>
+      <text class="pt" x="162" y="150" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#0e8a4e">b</text>
+      <text class="pt" x="76" y="150" font-family="JetBrains Mono,monospace" font-size="13" font-weight="700" fill="#cf3f3f">R</text>
+      <!-- grafo -->
+      <line class="st d2" x1="232" y1="70" x2="295" y2="48" stroke="#9aa5c4" stroke-width="2.5"/>
+      <line class="st d2" x1="295" y1="48" x2="316" y2="112" stroke="#9aa5c4" stroke-width="2.5"/>
+      <line class="st d2" x1="232" y1="70" x2="270" y2="132" stroke="#9aa5c4" stroke-width="2.5"/>
+      <line class="st d2" x1="270" y1="132" x2="316" y2="112" stroke="#9aa5c4" stroke-width="2.5"/>
+      <line class="st d2" x1="232" y1="70" x2="205" y2="140" stroke="#9aa5c4" stroke-width="2.5"/>
+      <line class="st d2" x1="205" y1="140" x2="270" y2="132" stroke="#9aa5c4" stroke-width="2.5"/>
+      <g class="pt"><circle cx="232" cy="70" r="12" fill="#2450c4"/><text x="232" y="74" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">A</text></g>
+      <g class="pt"><circle cx="295" cy="48" r="12" fill="#111b4b"/><text x="295" y="52" text-anchor="middle" fill="#ffd60a" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">B</text></g>
+      <g class="pt"><circle cx="316" cy="112" r="12" fill="#111b4b"/><text x="316" y="116" text-anchor="middle" fill="#ffd60a" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">C</text></g>
+      <g class="pt"><circle cx="270" cy="132" r="12" fill="#111b4b"/><text x="270" y="136" text-anchor="middle" fill="#ffd60a" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">D</text></g>
+      <g class="pt"><circle cx="205" cy="140" r="12" fill="#2450c4"/><text x="205" y="144" text-anchor="middle" fill="#fff" font-family="JetBrains Mono,monospace" font-size="11" font-weight="700">E</text></g>
+    </svg>
+  </div>
+
+  <div class="como">
+    <ol>
+      <li><strong>Leia as aulas</strong> — cada bloco vem direto dos seus PDFs, com as figuras e exemplos resolvidos.</li>
+      <li><strong>Use as ferramentas</strong> — desenhe grafos (com Dijkstra e Kruskal) e monte vetores no plano.</li>
+      <li><strong>Treine</strong> — vire os <strong>flashcards</strong>, faça o simulado (corrige na hora) e enfrente o Modo Intensivo contra o relógio.</li>
+    </ol>
+  </div>
+
+  <div class="trilha">
+    <a href="#vetores" data-aba="vetores">
+      <h3>➡️ Vetores <span class="hl-soft" style="font-size:.78rem">12 aulas</span></h3>
+      <p>Módulo, direção e sentido · soma e subtração · Pitágoras e Lei dos Cossenos · decomposição · notação cartesiana · produto escalar e ângulo entre vetores · ângulos notáveis.</p>
+    </a>
+    <a class="vg" href="#grafos" data-aba="grafos">
+      <h3>🔗 Teoria dos Grafos <span class="hl-soft" style="font-size:.78rem">15 aulas</span></h3>
+      <p>Königsberg e Euler · vértices, arestas e graus · caminhos e ciclos · menor caminho · bipartidos · grafos especiais · árvores e florestas · conexidade e paridade.</p>
+    </a>
+  </div>
+</section>
+<!-- ============ VETORES ============ -->
+<section id="vetores" class="tab">
+  <div class="divisor"><span class="num">01</span><h2>Vetores</h2><span class="fim" id="fimVet">VETORES.pdf + extras · 12 aulas</span></div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 1</span> O que é um vetor</h3>
+    <div class="nota">Um <span class="hl">vetor</span> é a representação que determina o <strong>módulo</strong>, a <strong>direção</strong> e o <strong>sentido</strong> de uma grandeza vetorial. Os vetores são segmentos de reta orientados por uma seta em uma extremidade — nomeamos cada vetor com uma letra e uma pequena seta.</div>
+    <figure class="fig">
+      <svg viewBox="0 0 460 120" width="460">
+        <defs><marker id="set" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="context-stroke"/></marker></defs>
+        <line x1="30" y1="60" x2="150" y2="60" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <text class="lbl" x="80" y="90">a</text>
+        <line x1="180" y1="95" x2="280" y2="40" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <text class="lbl" x="215" y="95">b</text>
+        <line x1="340" y1="100" x2="340" y2="25" stroke="#0e8a4e" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <text class="lbl" x="355" y="70">c</text>
+      </svg>
+      <figcaption>Três vetores com direções e sentidos diferentes.</figcaption>
+    </figure>
+    <dl class="def-lista">
+      <div><dt>Módulo</dt><dd>o valor numérico do vetor (sua intensidade), seguido da unidade de medida. Indicamos o módulo entre barras — <span class="formula">|<span class="vet">a</span>| = a</span> — ou apenas pela letra, sem barras e sem seta.</dd></div>
+      <div><dt>Direção</dt><dd>a inclinação da reta suporte em que o vetor está determinado. Só existe uma direção para cada vetor.</dd></div>
+      <div><dt>Sentido</dt><dd>é mostrado pela seta. Uma mesma direção pode conter dois sentidos: para cima ou para baixo, para a direita ou para a esquerda.</dd></div>
+    </dl>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 2</span> Grandezas vetoriais</h3>
+    <div class="nota">Os vetores caracterizam as <span class="hl">grandezas vetoriais</span>, que são as grandezas que precisam de orientação — ou seja, direção e sentido. <strong>Não basta o valor numérico</strong>: é preciso descrever para onde atuam.</div>
+    <div class="grid2">
+      <div class="nota destaque" style="margin:0"><strong>São vetoriais:</strong> força, velocidade, aceleração, deslocamento.</div>
+      <div class="nota" style="margin:0;border-left-color:#9aa5c4"><strong>São escalares</strong> (só valor numérico): massa, tempo, temperatura, distância, volume.</div>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 3</span> Vetor resultante</h3>
+    <div class="nota">O <span class="hl">vetor resultante</span> é o resultado de operações vetoriais e equivale a um conjunto de vetores. É conveniente conhecê-lo porque um corpo pode estar sujeito a várias forças ao mesmo tempo — e o resultado pode ser representado por <strong>apenas um vetor</strong>.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo dos slides — análise do exemplo</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Os vetores <span class="vet">b</span> e <span class="vet">a</span> possuem <strong>mesma direção</strong> (vertical), mesmo módulo e <strong>sentidos opostos</strong> — portanto, <strong>se anulam</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Os vetores <span class="vet">c</span> e <span class="vet">d</span> possuem mesma direção (horizontal) e sentidos opostos. Como o vetor <span class="vet">c</span> é maior que <span class="vet">d</span>, ele "sobra": essa parte da força fica para a direita.</p></div>
+        <div class="passo"><span class="pn">3</span><p>O <strong>vetor resultante</strong> <span class="vet">R</span> é de direção horizontal e para a direita — o resultado das somas e subtrações dos vetores <span class="vet">a</span>, <span class="vet">b</span>, <span class="vet">c</span> e <span class="vet">d</span>.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 4</span> Soma e subtração na mesma direção</h3>
+    <div class="grid2">
+      <div>
+        <div class="nota" style="margin-top:0"><strong>1. Sentidos iguais:</strong> somamos os módulos e mantemos a direção e o sentido.</div>
+        <figure class="fig">
+          <svg viewBox="0 0 300 110" width="300">
+            <line x1="30" y1="45" x2="180" y2="45" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+            <text class="lbl" x="95" y="32">b = 6 N</text>
+            <line x1="190" y1="45" x2="260" y2="45" stroke="#0e8a4e" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+            <text class="lbl" x="205" y="32">a = 3 N</text>
+            <line x1="30" y1="85" x2="260" y2="85" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+            <text class="lbl" x="105" y="105">R = a + b = 9 N</text>
+          </svg>
+        </figure>
+        <p class="expl mostra" style="display:block">No gráfico, colocamos os vetores em sequência, sem alterar seus módulos: o início de um deve coincidir com o final do outro. Vale a propriedade comutativa da adição.</p>
+      </div>
+      <div>
+        <div class="nota" style="margin-top:0"><strong>2. Sentidos opostos:</strong> subtraímos os módulos e o sentido do resultante é o do vetor de <strong>maior módulo</strong>.</div>
+        <figure class="fig">
+          <svg viewBox="0 0 300 110" width="300">
+            <line x1="150" y1="45" x2="30" y2="45" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+            <text class="lbl" x="55" y="32">b = 6 N</text>
+            <line x1="160" y1="45" x2="250" y2="45" stroke="#0e8a4e" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+            <text class="lbl" x="175" y="32">a = 3 N</text>
+            <line x1="150" y1="85" x2="30" y2="85" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+            <text class="lbl" x="45" y="105">R = 3 N (mesmo sentido de b)</text>
+          </svg>
+        </figure>
+        <p class="expl mostra" style="display:block">O vetor <span class="vet">R</span> é a parte que sobra de <span class="vet">b</span> após retirar <span class="vet">a</span>. Subtrair um vetor equivale a somar com o seu oposto: <span class="formula"><span class="vet">a</span> − <span class="vet">b</span> = <span class="vet">a</span> + (−<span class="vet">b</span>)</span>.</p>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>Observação importante dos slides:</strong> a soma e a subtração de vetores de mesma direção resultam em um vetor que mantém a <strong>mesma direção</strong>.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 5</span> Soma de vetores perpendiculares</h3>
+    <div class="nota">Para somar dois vetores com <span class="hl">direções perpendiculares</span>, movimentamos os vetores sem alterar seus módulos, de modo que o início de um coincida com o final do outro. O vetor resultante liga o início do primeiro ao final do segundo — e o módulo vem do <strong>Teorema de Pitágoras</strong>:</div>
+    <p><span class="formula">R = √(a² + b²)</span> <span class="formula">R = módulo do resultante</span></p>
+    <div class="grid2">
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Exemplo 1 — a = 3 u, b = 4 u</div>
+        <div class="ex-b">
+          <div class="passo"><span class="pn">1</span><p><span class="formula">R = √(3² + 4²)</span></p></div>
+          <div class="passo"><span class="pn">2</span><p><span class="formula">R = √(9 + 16) = √25</span></p></div>
+          <div class="passo"><span class="pn">3</span><p><strong>R = 5 u</strong></p></div>
+        </div>
+      </div>
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Exemplo 2 — a = 6 N, b = 8 N</div>
+        <div class="ex-b">
+          <div class="passo"><span class="pn">1</span><p><span class="formula">R = √(6² + 8²)</span></p></div>
+          <div class="passo"><span class="pn">2</span><p><span class="formula">R = √(36 + 64) = √100</span></p></div>
+          <div class="passo"><span class="pn">3</span><p><strong>R = 10 N</strong></p></div>
+        </div>
+      </div>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 300 170" width="300">
+        <line x1="40" y1="130" x2="200" y2="130" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <line x1="200" y1="130" x2="200" y2="40" stroke="#0e8a4e" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <line x1="40" y1="130" x2="199" y2="41" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <rect x="182" y="112" width="16" height="16" fill="none" stroke="#9aa5c4" stroke-width="1.5"/>
+        <text class="lbl" x="110" y="150">a = 4 u</text>
+        <text class="lbl" x="212" y="90">b = 3 u</text>
+        <text class="lbl" x="85" y="70" fill="#cf3f3f">R</text>
+      </svg>
+      <figcaption>Os vetores <span class="vet">a</span> e <span class="vet">b</span> (ângulo de 90°) formam a hipotenusa do triângulo retângulo: o vetor resultante <span class="vet">R</span>.</figcaption>
+    </figure>
+  </div>
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 6</span> Soma de vetores oblíquos</h3>
+    <div class="nota">Dois vetores são <span class="hl">oblíquos</span> quando formam entre si um ângulo diferente de 0°, 90° e 180°. Para somar ou subtrair vetores oblíquos, usamos os métodos do <strong>paralelogramo</strong> e da <strong>linha poligonal</strong>.</div>
+    <div class="def-lista">
+      <div><dt>Método do paralelogramo</dt><dd>1) posicionamos as origens dos vetores no mesmo ponto; 2) traçamos paralelas aos vetores, formando um paralelogramo; 3) o vetor resultante <span class="vet">R</span> é a diagonal que liga a origem comum ao encontro das paralelas.</dd></div>
+    </div>
+    <p><span class="formula">R = √(a² + b² + 2ab·cos θ)</span> <span class="formula">Lei dos Cossenos</span></p>
+    <div class="grid2">
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Exemplo resolvido — a = 5 u, b = 8 u, θ = 60°</div>
+        <div class="ex-b">
+          <div class="passo"><span class="pn">1</span><p>Aplicando a Lei dos Cossenos: <span class="formula">R = √(5² + 8² + 2·5·8·cos 60°)</span></p></div>
+          <div class="passo"><span class="pn">2</span><p>Substituindo os valores: <span class="formula">R = √(25 + 64 + 80·0,5)</span></p></div>
+          <div class="passo"><span class="pn">3</span><p>Calculando: <span class="formula">R = √129 ≈ 11,36 u</span></p></div>
+        </div>
+      </div>
+      <figure class="fig" style="margin:0">
+        <svg viewBox="0 0 300 180" width="300">
+          <line x1="40" y1="140" x2="220" y2="140" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+          <line x1="40" y1="140" x2="118" y2="34" stroke="#0e8a4e" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+          <line class="traco" x1="118" y1="34" x2="296" y2="34"/>
+          <line class="traco" x1="220" y1="140" x2="296" y2="34"/>
+          <line x1="40" y1="140" x2="295" y2="35" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+          <path d="M 78 140 A 38 38 0 0 0 63 111" fill="none" stroke="#111b4b" stroke-width="1.6"/>
+          <text class="lbl2" x="88" y="126">60°</text>
+          <text class="lbl" x="120" y="162">a (5 u)</text>
+          <text class="lbl" x="55" y="55">b (8 u)</text>
+          <text class="lbl" x="230" y="66" fill="#cf3f3f">R</text>
+        </svg>
+        <figcaption>Método do paralelogramo: <span class="vet">R</span> é a diagonal.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 7</span> Decomposição vetorial</h3>
+    <div class="nota">O <span class="hl">conceito de decomposição vetorial</span> consiste em representar um vetor <span class="vet">A</span> por suas componentes horizontal (eixo x) e vertical (eixo y), que são <strong>perpendiculares entre si</strong>. Qualquer vetor <span class="vet">A</span> pode ser decomposto em duas componentes.</div>
+    <p>
+      <span class="formula">A<sub>x</sub> = A·cos θ</span>
+      <span class="formula">A<sub>y</sub> = A·sen θ</span>
+      <span class="formula">A = √(A<sub>x</sub>² + A<sub>y</sub>²)</span>
+      <span class="formula">tan θ = A<sub>y</sub> / A<sub>x</sub></span>
+    </p>
+    <div class="grid2">
+      <figure class="fig" style="margin:0">
+        <svg viewBox="0 0 300 200" width="300">
+          <line x1="40" y1="160" x2="280" y2="160" stroke="#9aa5c4" stroke-width="1.8" marker-end="url(#set)"/>
+          <line x1="40" y1="160" x2="40" y2="20" stroke="#9aa5c4" stroke-width="1.8" marker-end="url(#set)"/>
+          <text class="lbl2" x="272" y="178">x</text><text class="lbl2" x="26" y="30">y</text>
+          <line x1="40" y1="160" x2="210" y2="50" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+          <line class="traco" x1="210" y1="50" x2="210" y2="160"/>
+          <line class="traco" x1="210" y1="50" x2="40" y2="50"/>
+          <line x1="40" y1="160" x2="209" y2="160" stroke="#0e8a4e" stroke-width="3.4" stroke-linecap="round"/>
+          <line x1="40" y1="160" x2="40" y2="52" stroke="#2450c4" stroke-width="3.4" stroke-linecap="round"/>
+          <path d="M 95 160 A 55 55 0 0 0 82 128" fill="none" stroke="#111b4b" stroke-width="1.6"/>
+          <text class="lbl2" x="102" y="142">θ</text>
+          <text class="lbl" x="120" y="45" fill="#cf3f3f">A</text>
+          <text class="lbl" x="115" y="182" fill="#0e8a4e">Ax</text>
+          <text class="lbl" x="52" y="110" fill="#2450c4">Ay</text>
+        </svg>
+        <figcaption>Componentes horizontal (Ax) e vertical (Ay) do vetor <span class="vet">A</span>.</figcaption>
+      </figure>
+      <div>
+        <div class="exemplo" style="margin:0 0 1rem">
+          <div class="ex-t">Exemplo 1 — A = 10 u, θ = 30°</div>
+          <div class="ex-b">
+            <div class="passo"><span class="pn">•</span><p><span class="formula">Ax = 10·cos 30° = 10·(√3/2) = 5√3 ≈ 8,66 u</span></p></div>
+            <div class="passo"><span class="pn">•</span><p><span class="formula">Ay = 10·sen 30° = 10·(1/2) = 5 u</span></p></div>
+          </div>
+        </div>
+        <div class="exemplo" style="margin:0">
+          <div class="ex-t">Exemplo 2 — A = 20 u, θ = 60°</div>
+          <div class="ex-b">
+            <div class="passo"><span class="pn">•</span><p><span class="formula">Ax = 20·cos 60° = 20·(1/2) = 10 u</span></p></div>
+            <div class="passo"><span class="pn">•</span><p><span class="formula">Ay = 20·sen 60° = 20·(√3/2) = 10√3 ≈ 17,32 u</span></p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>Observações importantes:</strong> a soma das componentes <strong>não</strong> é igual ao módulo do vetor — o módulo vem do Teorema de Pitágoras; os sinais das componentes dependem do quadrante em que o vetor se encontra.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 8</span> Multiplicação de um número real por um vetor</h3>
+    <div class="nota">A multiplicação de um vetor <span class="vet">a</span> por um <span class="hl">número real k</span> resulta em um novo vetor <span class="formula"><span class="vet">b</span> = k·<span class="vet">a</span></span>, cujas características dependem do valor de k.</div>
+    <div class="def-lista">
+      <div><dt>Se k &gt; 0</dt><dd>o módulo é multiplicado por |k| e a <strong>direção e o sentido são mantidos</strong>.</dd></div>
+      <div><dt>Se k &lt; 0</dt><dd>o módulo é multiplicado por |k|, a <strong>direção é mantida</strong> mas o <strong>sentido é invertido</strong>.</dd></div>
+      <div><dt>Se k = 1</dt><dd>o vetor resultante é <strong>igual</strong> ao vetor original.</dd></div>
+      <div><dt>Se k = 0</dt><dd>o vetor resultante é o <strong>vetor nulo</strong> (módulo zero).</dd></div>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 620 120" width="620">
+        <line x1="20" y1="60" x2="600" y2="60" stroke="#9aa5c4" stroke-width="1.8"/>
+        <g><line x1="40" y1="60" x2="120" y2="60" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/><text class="lbl2" x="42" y="40">k = 2 · (|a| = 4, mesmo sentido)</text></g>
+        <g><line x1="190" y1="60" x2="230" y2="60" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/><text class="lbl2" x="182" y="40">k = ½ · (|a| = 1, mesmo sentido)</text></g>
+        <g><line x1="400" y1="60" x2="360" y2="60" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/><text class="lbl2" x="332" y="40">k = −½ · (|a| = 1, sentido oposto)</text></g>
+        <g><circle cx="530" cy="60" r="5" fill="#111b4b"/><text class="lbl2" x="512" y="40">k = 0 · (vetor nulo)</text></g>
+      </svg>
+      <figcaption>Com |<span class="vet">a</span>| = 2 u: o efeito de k sobre o vetor <span class="vet">a</span>.</figcaption>
+    </figure>
+    <div class="grid2">
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Exemplo 1 — |<span class="vet">a</span>| = 3 u, <span class="vet">b</span> = 4<span class="vet">a</span></div>
+        <div class="ex-b"><p>Módulo: <span class="formula">|<span class="vet">b</span>| = 4 · 3 = 12 u</span> &nbsp; Direção: horizontal (mantida) · Sentido: o mesmo de <span class="vet">a</span> (k positivo).</p></div>
+      </div>
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Exemplo 2 — |<span class="vet">a</span>| = 5 u, <span class="vet">b</span> = −3<span class="vet">a</span></div>
+        <div class="ex-b"><p>Módulo: <span class="formula">|<span class="vet">b</span>| = 3 · 5 = 15 u</span> &nbsp; Direção: horizontal (mantida) · Sentido: <strong>oposto</strong> ao de <span class="vet">a</span> (k negativo).</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 9</span> Ângulos e valores dos arcos trigonométricos</h3>
+    <div class="nota">Para resolver os exercícios com oblíquos e decomposição, você vai usar seno, cosseno e tangente dos ângulos notáveis. Guarde a relação entre graus e radianos: <span class="formula">180° = π rad</span> <span class="formula">1° = π/180 rad</span> <span class="formula">1 rad ≈ 57,31°</span></div>
+    <div class="tabela-scroll">
+      <table class="tab">
+        <thead><tr><th>Ângulo θ</th><th>Rad (arc)</th><th class="mono">sen θ</th><th class="mono">cos θ</th><th class="mono">tg θ</th></tr></thead>
+        <tbody>
+          <tr><td>0°</td><td class="mono">0</td><td class="mono">0</td><td class="mono">1</td><td class="mono">0</td></tr>
+          <tr><td>30°</td><td class="mono">π/6</td><td class="mono">1/2</td><td class="mono">√3/2</td><td class="mono">√3/3</td></tr>
+          <tr><td>45°</td><td class="mono">π/4</td><td class="mono">√2/2</td><td class="mono">√2/2</td><td class="mono">1</td></tr>
+          <tr><td>60°</td><td class="mono">π/3</td><td class="mono">√3/2</td><td class="mono">1/2</td><td class="mono">√3</td></tr>
+          <tr><td>90°</td><td class="mono">π/2</td><td class="mono">1</td><td class="mono">0</td><td class="mono">não definida</td></tr>
+          <tr><td>120°</td><td class="mono">2π/3</td><td class="mono">√3/2</td><td class="mono">−1/2</td><td class="mono">−√3</td></tr>
+          <tr><td>135°</td><td class="mono">3π/4</td><td class="mono">√2/2</td><td class="mono">−√2/2</td><td class="mono">−1</td></tr>
+          <tr><td>150°</td><td class="mono">5π/6</td><td class="mono">1/2</td><td class="mono">−√3/2</td><td class="mono">−√3/3</td></tr>
+          <tr><td>180°</td><td class="mono">π</td><td class="mono">0</td><td class="mono">−1</td><td class="mono">0</td></tr>
+          <tr><td>270°</td><td class="mono">3π/2</td><td class="mono">−1</td><td class="mono">0</td><td class="mono">não definida</td></tr>
+          <tr><td>360°</td><td class="mono">2π</td><td class="mono">0</td><td class="mono">1</td><td class="mono">0</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="nota" style="margin:0"><strong>Sinais por quadrante:</strong> 1º quadrante (0°–90°): sen +, cos +, tg + · 2º (90°–180°): sen +, cos −, tg − · 3º (180°–270°): sen −, cos −, tg + · 4º (270°–360°): sen −, cos +, tg −.</div>
+      <div class="nota" style="margin:0"><strong>Ângulos complementares e suplementares:</strong> se α + β = 90°, então sen α = cos β e cos α = sen β. Se α + β = 180°, então sen α = sen β e cos α = −cos β.</div>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 10</span> Notação cartesiana: operando por componentes</h3>
+    <div class="nota">Até aqui o vetor foi tratado como seta (módulo, direção e sentido). Na <span class="hl">notação cartesiana</span> ele vira um <strong>par ordenado (x, y)</strong>: as coordenadas da ponta da seta quando a cauda está na origem. A vantagem é poder operar <strong>sem desenhar</strong>, componente a componente:<br><span class="formula">a + b = (a₁ + b₁ , a₂ + b₂)</span> <span class="formula">a − b = (a₁ − b₁ , a₂ − b₂)</span> <span class="formula">k·a = (k·a₁ , k·a₂)</span></div>
+    <figure class="fig"><svg viewBox="0 0 800 300" role="img" aria-label="Soma de vetores pelo paralelogramo em coordenadas">
+      <defs>
+        <marker id="mzAR" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#cf3f3f"/></marker>
+        <marker id="mzAB" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#2450c4"/></marker>
+        <marker id="mzAG" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#0e8a4e"/></marker>
+      </defs>
+      <line x1="40" y1="240" x2="760" y2="240" style="stroke:var(--ink2)" stroke-width="1.6"/>
+      <line x1="140" y1="270" x2="140" y2="30" style="stroke:var(--ink2)" stroke-width="1.6"/>
+      <line x1="230" y1="195" x2="275" y2="60" stroke="#9aa5c4" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <line x1="185" y1="105" x2="275" y2="60" stroke="#9aa5c4" stroke-width="1.6" stroke-dasharray="5 4"/>
+      <line x1="140" y1="240" x2="230" y2="195" stroke="#cf3f3f" stroke-width="3" marker-end="url(#mzAR)"/>
+      <line x1="140" y1="240" x2="185" y2="105" stroke="#2450c4" stroke-width="3" marker-end="url(#mzAB)"/>
+      <line x1="140" y1="240" x2="275" y2="60" stroke="#0e8a4e" stroke-width="3.5" marker-end="url(#mzAG)"/>
+      <text x="238" y="214" fill="#cf3f3f" font-family="JetBrains Mono,monospace" font-size="14" font-weight="700">u = (2, 1)</text>
+      <text x="40" y="128" fill="#2450c4" font-family="JetBrains Mono,monospace" font-size="14" font-weight="700">v = (1, 3)</text>
+      <text x="285" y="70" fill="#0e8a4e" font-family="JetBrains Mono,monospace" font-size="14" font-weight="700">u + v = (3, 4)</text>
+      <text x="744" y="230" style="fill:var(--ink2)" font-family="JetBrains Mono,monospace" font-size="12">x</text>
+      <text x="150" y="46" style="fill:var(--ink2)" font-family="JetBrains Mono,monospace" font-size="12">y</text>
+    </svg><figcaption>Regra do paralelogramo na notação cartesiana: some componente a componente.</figcaption></figure>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — dados a = (5, 3) e b = (−2, 7):</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p><strong>Soma:</strong> (5 + (−2), 3 + 7) = <strong>(3, 10)</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p><strong>Diferença:</strong> (5 − (−2), 3 − 7) = <strong>(7, −4)</strong> — cuidado com o sinal duplo!</p></div>
+        <div class="passo"><span class="pn">3</span><p><strong>Escalar:</strong> 2·a = <strong>(10, 6)</strong> e −1·b = <strong>(2, −7)</strong> (multiplicar por −1 inverte o sentido).</p></div>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>Não confunda!</strong> O par (x, y) não é "módulo e ângulo" — são as duas componentes do vetor. Para recuperar o módulo a partir do par, veja a Aula 11; para o ângulo, use a decomposição da Aula 7.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 11</span> Módulo de um vetor por coordenadas</h3>
+    <div class="nota">Dado <span class="vet">v</span> = (x, y), o <span class="hl">módulo</span> é a hipotenusa do triângulo de catetos x e y — é o Teorema de Pitágoras da Aula 5 disfarçado de fórmula:<br><span class="formula">|<span class="vet">v</span>| = √(x² + y²)</span></div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — módulo de <span class="vet">v</span> = (5, 12)</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>|<span class="vet">v</span>| = √(5² + 12²) = √(25 + 144) = √169.</p></div>
+        <div class="passo"><span class="pn">2</span><p><strong>|<span class="vet">v</span>| = 13</strong>. (O trio 5–12–13 é um "amigo de prova", assim como o 3–4–5.)</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — quando a raiz não é exata</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p><span class="vet">w</span> = (2, 6): |<span class="vet">w</span>| = √(4 + 36) = √40.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Simplifique a raiz: √40 = √(4·10) = <strong>2√10 ≈ 6,32</strong>.</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 3 — o caminho inverso: achando a componente</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Sabendo que |<span class="vet">v</span>| = 26 e que a componente x vale 10: 26² = 10² + y² → 676 = 100 + y².</p></div>
+        <div class="passo"><span class="pn">2</span><p>y² = 576 → <strong>y = 24</strong> (tomando o sentido positivo).</p></div>
+      </div>
+    </div>
+    <div class="nota"><strong>Bônus — distância entre dois pontos:</strong> a distância entre A(x₁, y₁) e B(x₂, y₂) é o módulo do vetor <span class="vet">AB</span>: <span class="formula">d = √((x₂−x₁)² + (y₂−y₁)²)</span>. Exemplo: A(1, 2) e B(4, 6): d = √(3² + 4²) = <strong>5</strong>.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 12</span> Produto escalar e ângulo entre vetores</h3>
+    <div class="nota">O <span class="hl">produto escalar</span> (ou interno) recebe dois vetores e devolve um <strong>número</strong> — um escalar! Por componentes:<br><span class="formula">a · b = a₁·b₁ + a₂·b₂</span><br>E ele tem leitura geométrica: <span class="formula">a · b = |<span class="vet">a</span>|·|<span class="vet">b</span>|·cos θ</span>, com θ o ângulo entre os vetores.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — calculando o produto escalar</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p><span class="vet">a</span> = (6, 2) e <span class="vet">b</span> = (1, 4): a · b = 6·1 + 2·4.</p></div>
+        <div class="passo"><span class="pn">2</span><p>a · b = 6 + 8 = <strong>14</strong>.</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — teste de perpendicularidade</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p><span class="vet">a</span> = (3, 6) e <span class="vet">b</span> = (4, −2): a · b = 12 − 12 = <strong>0</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Como a · b = |a||b|·cos θ, produto zero ⇒ cos θ = 0 ⇒ <strong>θ = 90°</strong>. Vetores perpendiculares (ortogonais)!</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 3 — o ângulo entre <span class="vet">a</span> = (4, 0) e <span class="vet">b</span> = (1, √3)</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Módulos: |<span class="vet">a</span>| = 4 e |<span class="vet">b</span>| = √(1 + 3) = 2. Produto escalar: 4·1 + 0·√3 = 4.</p></div>
+        <div class="passo"><span class="pn">2</span><p>cos θ = (a · b)/(|a|·|b|) = 4/8 = <strong>1/2</strong> → θ = <strong>60°</strong>.</p></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="nota" style="margin:0"><strong>Sinais que resumem tudo:</strong> a · b &gt; 0 → ângulo agudo · a · b = 0 → perpendiculares · a · b &lt; 0 → ângulo obtuso.</div>
+      <div class="nota" style="margin:0"><strong>Projeção escalar:</strong> "quanto de <span class="vet">a</span> cai na direção de <span class="vet">b</span>" = <span class="formula">(a · b)/|b|</span>. Ex.: a = (3, 3), b = (2, 0): 6/2 = <strong>3</strong>.</div>
+    </div>
+  </div>
+</section>
+<!-- ============ GRAFOS ============ -->
+<section id="grafos" class="tab">
+  <div class="divisor"><span class="num">02</span><h2>Teoria dos Grafos</h2><span class="fim" id="fimGraf">Slides + Portal OBMEP · 15 aulas</span></div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 1</span> O enigma que inventou uma ciência</h3>
+    <div class="nota"><strong>Königsberg, 1736.</strong> A próspera cidade de Königsberg (então Prússia, atual Kaliningrado) era cortada pelo rio Pregel e famosa por suas <span class="hl">sete pontes</span>. O rio formava duas ilhas e dividia a cidade em <strong>4 regiões de terra</strong> conectadas por essa rede de pontes.</div>
+    <div class="nota destaque"><strong>O passeio de domingo.</strong> O desafio que intrigava os moradores: fazer um percurso pela cidade cruzando <em>todas</em> as pontes, sem repetir nenhuma. As regras: <strong>1.</strong> atravessar cada uma das 7 pontes; <strong>2.</strong> passar exatamente <strong>uma única vez</strong> por cada ponte; <strong>3.</strong> retornar (ou não) ao ponto de partida.</div>
+    <div class="nota atencao"><strong>O labirinto inevitável.</strong> O problema parecia simples na teoria, mas a execução prática sempre resultava em um beco sem saída — ninguém conseguia encontrar o percurso.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 2</span> A perspectiva de Euler</h3>
+    <div class="nota">Em 1736, o matemático suíço <strong>Leonhard Euler</strong> analisou o enigma. Sua maior genialidade não foi fazer cálculos complexos, mas <span class="hl">saber o que ignorar</span>: <em>os detalhes geográficos não importam</em>.</div>
+    <div class="tabela-scroll"><table class="tab">
+      <thead><tr><th>Pensamento cartográfico</th><th>Pensamento topológico</th></tr></thead>
+      <tbody>
+        <tr><td>Porção de terra — <em>importa o tamanho</em></td><td><strong>Vértice</strong> — apenas um ponto de conexão</td></tr>
+        <tr><td>Ponte — <em>importam comprimento e largura</em></td><td><strong>Aresta</strong> — apenas uma linha de ligação</td></tr>
+        <tr><td>Distância exata entre as regiões</td><td>Completamente irrelevante</td></tr>
+      </tbody>
+    </table></div>
+    <div class="nota">Ao remover as distrações do mundo real, a estrutura verdadeira do problema é revelada: <strong>mapa → simplificação → geometria → o grafo puro</strong>.</div>
+    <figure class="fig">
+      <svg viewBox="0 0 360 215" width="360">
+        <path d="M 70 30 Q 50 60 70 105 Q 50 150 70 180" fill="none" stroke="#9aa5c4" stroke-width="3"/>
+        <path d="M 290 30 Q 310 60 290 105 Q 310 150 290 180" fill="none" stroke="#9aa5c4" stroke-width="3"/>
+        <line x1="125" y1="35" x2="72" y2="90" class="e-r"/>
+        <line x1="130" y1="45" x2="80" y2="112" class="e-r"/>
+        <line x1="122" y1="160" x2="74" y2="120" class="e-r"/>
+        <line x1="127" y1="170" x2="80" y2="127" class="e-r"/>
+        <line x1="235" y1="35" x2="288" y2="90" class="e-r"/>
+        <line x1="230" y1="45" x2="280" y2="112" class="e-r"/>
+        <line x1="238" y1="160" x2="286" y2="120" class="e-r"/>
+        <line x1="142" y1="102" x2="218" y2="102" class="e-r"/>
+        <circle cx="125" cy="30" r="18" class="nd-b"/><text class="lbl-w" x="125" y="35">MN</text>
+        <circle cx="125" cy="175" r="18" class="nd-b"/><text class="lbl-w" x="125" y="180">MS</text>
+        <circle cx="68" cy="105" r="18" class="nd-y"/><text class="lbl" x="68" y="110">IK</text>
+        <circle cx="292" cy="105" r="18" class="nd-y"/><text class="lbl" x="292" y="110">IL</text>
+        <text class="lbl2" x="60" y="208">Margem Norte · Ilha Kneiphof · Ilha Lomse · Margem Sul</text>
+      </svg>
+      <figcaption>O grafo puro de Königsberg: 4 vértices e 7 arestas (pontes).</figcaption>
+    </figure>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 3</span> Anatomia do grafo e a regra do grau</h3>
+    <div class="nota">O mapa desaparece e nasce um diagrama abstrato regido por <span class="hl">dois elementos</span>: o <strong>vértice</strong> (representa cada região de terra) e a <strong>aresta</strong> (representa cada ponte).</div>
+    <div class="grid2">
+      <div class="nota destaque" style="margin:0"><strong>Grau par (equilíbrio):</strong> você entra na região e sempre tem uma aresta livre para sair.</div>
+      <div class="nota atencao" style="margin:0"><strong>Grau ímpar (desequilíbrio):</strong> entra, sai e, ao entrar de novo, fica <strong>preso sem saída</strong>. Essa região obrigatoriamente tem de ser o início ou o fim da jornada.</div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 O diagnóstico de Königsberg</div>
+      <div class="ex-b">
+        <p>Contando as pontes que chegam em cada região: <strong>Margem Norte: grau 3 (ímpar)</strong> · <strong>Ilha Kneiphof: grau 5 (ímpar)</strong> · <strong>Ilha Lomse: grau 3 (ímpar)</strong> · <strong>Margem Sul: grau 3 (ímpar)</strong>.</p>
+        <p style="margin-top:.5rem">Para um percurso cruzar todas as pontes sem repetir, <strong>quase todos</strong> os vértices precisam ter grau par (no máximo dois podem ter grau ímpar: o início e o fim).</p>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>A prova da impossibilidade:</strong> como as <strong>quatro</strong> regiões de Königsberg têm grau ímpar, qualquer tentativa falha. O passeio nunca foi difícil — era <strong>matematicamente impossível</strong>.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 4</span> Definição formal: G = (V, E)</h3>
+    <div class="nota">Um <span class="hl">grafo</span> é representado por <span class="formula">G = (V, E)</span>, onde <strong>G</strong> é o grafo, <strong>V</strong> é o conjunto de vértices (os elementos) e <strong>E</strong> é o conjunto de arestas (as ligações).</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo dos slides</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Considere o grafo em linha A—B—C:</p></div>
+        <div class="passo"><span class="pn">2</span><p><span class="formula">V = {A, B, C}</span> — o grafo possui <strong>3 vértices</strong>.</p></div>
+        <div class="passo"><span class="pn">3</span><p><span class="formula">E = {{A,B}, {B,C}}</span> — o grafo possui <strong>2 arestas</strong> (ligações A–B e B–C).</p></div>
+        <div class="passo"><span class="pn">✓</span><p><strong>Conclusão:</strong> é um grafo com 3 vértices e 2 arestas.</p></div>
+      </div>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 300 80" width="300">
+        <line x1="60" y1="40" x2="150" y2="40" class="e-b"/><line x1="150" y1="40" x2="240" y2="40" class="e-b"/>
+        <circle cx="60" cy="40" r="19" class="nd-b"/><text class="lbl-w" x="60" y="45">A</text>
+        <circle cx="150" cy="40" r="19" class="nd-b"/><text class="lbl-w" x="150" y="45">B</text>
+        <circle cx="240" cy="40" r="19" class="nd-b"/><text class="lbl-w" x="240" y="45">C</text>
+      </svg>
+    </figure>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 5</span> Tipos de grafos</h3>
+    <div class="grid2">
+      <div class="def-lista" style="margin:0">
+        <div><dt>Grafo não direcionado</dt><dd>as conexões <strong>não possuem sentido</strong>. Exemplo: duas cidades ligadas por uma estrada de <strong>mão dupla</strong> — viaja-se de A para B e de B para A. Linha sem setas. <span class="formula">V = {A, B}</span> <span class="formula">E = {{A, B}}</span></dd></div>
+        <div><dt>Grafo direcionado (dígrafo)</dt><dd>as arestas têm <strong>direção</strong>. Exemplo: uma <strong>rua de mão única</strong> — passa-se de A para B, mas não de B para A. A aresta (arco) é (A, B). <span class="formula">V = {A, B}</span> <span class="formula">E = {(A, B)}</span></dd></div>
+        <div><dt>Grafo ponderado</dt><dd>cada aresta carrega um <strong>peso</strong>: distância, tempo, custo ou capacidade. Exemplo: estradas de 120 km, 90 km e 150 km. <span class="formula">E = {(A,B,120), (B,C,90), (A,C,150)}</span></dd></div>
+      </div>
+      <figure class="fig" style="margin:0">
+        <svg viewBox="0 0 470 115" width="470">
+          <line x1="35" y1="55" x2="100" y2="55" class="e"/><circle class="nd" cx="35" cy="55" r="17"/><text class="lbl" x="35" y="60">A</text><circle class="nd" cx="100" cy="55" r="17"/><text class="lbl" x="100" y="60">B</text>
+          <text class="lbl2" x="35" y="95">não direcionado</text>
+          <line x1="180" y1="55" x2="245" y2="55" class="e"/><path d="M 236 48 L 247 55 L 236 62 z" fill="#9aa5c4"/><circle class="nd" cx="180" cy="55" r="17"/><text class="lbl" x="180" y="60">A</text><circle class="nd" cx="255" cy="55" r="17"/><text class="lbl" x="255" y="60">B</text>
+          <text class="lbl2" x="184" y="95">dígrafo (mão única)</text>
+          <line x1="325" y1="55" x2="390" y2="55" class="e"/><line x1="325" y1="55" x2="358" y2="16" class="e"/>
+          <text class="peso-lbl" x="360" y="50" fill="#4a517e">5 km</text><text class="peso-lbl" x="310" y="30" fill="#4a517e">3 km</text>
+          <circle class="nd" cx="325" cy="55" r="17"/><text class="lbl" x="325" y="60">A</text><circle class="nd" cx="390" cy="55" r="17"/><text class="lbl" x="390" y="60">B</text><circle class="nd" cx="358" cy="16" r="17"/><text class="lbl" x="358" y="21">C</text>
+          <text class="lbl2" x="330" y="95">ponderado</text>
+        </svg>
+      </figure>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 6</span> Grau de um vértice</h3>
+    <div class="nota">O <span class="hl">grau de um vértice</span> é a quantidade de <strong>arestas conectadas a ele</strong>. Notação: <span class="formula">grau(v)</span> ou <span class="formula">d(v)</span>.</div>
+    <div class="grid2">
+      <figure class="fig" style="margin:0">
+        <svg viewBox="0 0 260 215" width="260">
+          <line x1="70" y1="55" x2="130" y2="100" class="e"/><line x1="190" y1="55" x2="130" y2="100" class="e"/><line x1="130" y1="100" x2="130" y2="170" class="e"/>
+          <circle class="nd" cx="70" cy="55" r="20"/><text class="lbl" x="70" y="60">A</text>
+          <circle class="nd" cx="190" cy="55" r="20"/><text class="lbl" x="190" y="60">B</text>
+          <circle cx="130" cy="100" r="20" class="nd-y"/><text class="lbl" x="130" y="105">C</text>
+          <circle class="nd" cx="130" cy="170" r="20"/><text class="lbl" x="130" y="175">D</text>
+        </svg>
+        <figcaption>Nesse grafo: 4 vértices e 3 arestas.</figcaption>
+      </figure>
+      <div>
+        <div class="tabela-scroll"><table class="tab" style="max-width:240px">
+          <thead><tr><th>Vértice</th><th>Grau</th></tr></thead>
+          <tbody><tr><td class="mono">A</td><td class="mono">1</td></tr><tr><td class="mono">B</td><td class="mono">1</td></tr><tr><td class="mono" style="background:var(--yellow-soft)">C</td><td class="mono" style="background:var(--yellow-soft)">3</td></tr><tr><td class="mono">D</td><td class="mono">1</td></tr></tbody>
+        </table></div>
+        <p style="font-size:.93rem;max-width:75ch">O vértice <strong>C tem o maior grau</strong> (3 arestas). Soma dos graus: 1 + 1 + 3 + 1 = 6. Dobro do número de arestas: 2 × 3 = 6 ✓</p>
+      </div>
+    </div>
+    <div class="nota destaque"><strong>Regra importante (Lema do Aperto de Mãos):</strong> em um grafo não direcionado, a soma dos graus de todos os vértices é igual ao <strong>dobro do número de arestas</strong>: <span class="formula">Σ deg(v) = 2|E|</span>.</div>
+  </div>
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 7</span> Caminho e ciclo</h3>
+    <div class="def-lista">
+      <div><dt>Caminho</dt><dd>sequência de vértices em que cada par consecutivo é ligado por uma aresta. O <strong>comprimento</strong> é o número de arestas percorridas. Exemplo: A → B → D → C tem comprimento 3.</dd></div>
+      <div><dt>Ciclo</dt><dd>caminho que <strong>começa e termina no mesmo vértice</strong>, sem repetir arestas. Exemplo: A → B → C → A.</dd></div>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 340 170" width="340">
+        <line x1="60" y1="50" x2="170" y2="30" class="e"/><line x1="170" y1="30" x2="280" y2="55" class="e"/><line x1="60" y1="50" x2="115" y2="130" class="e"/><line x1="115" y1="130" x2="230" y2="140" class="e"/><line x1="230" y1="140" x2="280" y2="55" class="e"/><line x1="170" y1="30" x2="115" y2="130" class="e"/>
+        <path d="M 280 55 A 95 95 0 0 1 230 140" fill="none" stroke="#cf3f3f" stroke-width="3" stroke-dasharray="7 5"/>
+        <circle class="nd" cx="60" cy="50" r="18"/><text class="lbl" x="60" y="55">A</text>
+        <circle class="nd" cx="170" cy="30" r="18"/><text class="lbl" x="170" y="35">B</text>
+        <circle class="nd" cx="280" cy="55" r="18"/><text class="lbl" x="280" y="60">C</text>
+        <circle class="nd" cx="115" cy="130" r="18"/><text class="lbl" x="115" y="135">D</text>
+        <circle class="nd" cx="230" cy="140" r="18"/><text class="lbl" x="230" y="145">E</text>
+        <text class="lbl2" x="292" y="105" fill="#cf3f3f">ciclo C–B–D–E–C</text>
+      </svg>
+      <figcaption>Um grafo com um ciclo destacado (tracejado).</figcaption>
+    </figure>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 8</span> Aplicações em Análise de Sistemas (ADS)</h3>
+    <ul class="topicos">
+      <li><strong>Redes de computadores:</strong> roteadores são vértices; cabos/conexões são arestas com pesos (latência, custo).</li>
+      <li><strong>Redes sociais:</strong> pessoas são vértices; amizades/seguimentos são arestas (o famoso "grau de separação").</li>
+      <li><strong>Mapas e GPS:</strong> cruzamentos são vértices; ruas são arestas com distância ou tempo.</li>
+      <li><strong>Sistemas operacionais:</strong> alocação de recursos modelada como grafo para detectar <em>deadlocks</em> (ciclos!).</li>
+      <li><strong>Bancos de dados e dependências:</strong> módulos de software e dependências de compilação.</li>
+    </ul>
+    <div class="nota destaque">Grafos são a estrutura por trás do <strong>menor caminho</strong> (GPS), da <strong>árvore geradora mínima</strong> (redes de custo mínimo) e da <strong>ordenação topológica</strong> (tarefas com dependências).</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 9</span> Menor caminho (visão introdutória)</h3>
+    <div class="nota">Em grafos ponderados, o <span class="hl">menor caminho</span> entre dois vértices é a sequência de arestas cuja <strong>soma dos pesos é mínima</strong>. O algoritmo clássico é o de <strong>Dijkstra</strong> — você pode testá-lo na aba <strong>Ferramentas</strong> deste site!</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo dos slides</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>De A até D há dois percursos: A→B→D (2+5 = 7) e A→C→D (4+1 = 5).</p></div>
+        <div class="passo"><span class="pn">2</span><p>O menor caminho é <strong>A→C→D, com custo 5</strong> — mesmo tendo a mesma quantidade de arestas que o outro.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Conclusão: <strong>menor caminho não é o caminho com menos arestas</strong>, e sim o de <strong>menor soma de pesos</strong>.</p></div>
+      </div>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 360 150" width="360">
+        <line x1="60" y1="40" x2="180" y2="40" class="e"/><line x1="180" y1="40" x2="300" y2="40" class="e"/><line x1="60" y1="40" x2="180" y2="110" class="e"/><line x1="180" y1="110" x2="300" y2="40" class="e"/>
+        <text class="peso-lbl" x="120" y="30">2</text><text class="peso-lbl" x="243" y="30">5</text><text class="peso-lbl" x="105" y="85">4</text><text class="peso-lbl" x="245" y="88">1</text>
+        <circle class="nd" cx="60" cy="40" r="19"/><text class="lbl" x="60" y="45">A</text>
+        <circle class="nd" cx="180" cy="40" r="19"/><text class="lbl" x="180" y="45">B</text>
+        <circle class="nd" cx="180" cy="110" r="19"/><text class="lbl" x="180" y="115">C</text>
+        <circle class="nd" cx="300" cy="40" r="19"/><text class="lbl" x="300" y="45">D</text>
+      </svg>
+      <figcaption>A→C→D custa 5; A→B→D custa 7. O menor caminho é A→C→D.</figcaption>
+    </figure>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 10</span> Grafos de interseção</h3>
+    <div class="nota">Em um <span class="hl">grafo de interseção</span>, dois vértices são ligados quando <strong>compartilham algo em comum</strong> (uma característica, um interesse, um elemento do conjunto). Exemplo clássico: ligar duas pessoas se <strong>A ∩ B ≠ ∅</strong> — se elas têm um amigo ou uma disciplina em comum.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo dos slides</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Conjuntos: A = {1, 2, 3}, B = {3, 4}, C = {5}, D = {1, 5}.</p></div>
+        <div class="passo"><span class="pn">2</span><p>A ∩ B = {3} ≠ ∅ → há aresta A–B · A ∩ D = {1} ≠ ∅ → aresta A–D · B ∩ D = ∅ → <strong>sem</strong> aresta.</p></div>
+        <div class="passo"><span class="pn">3</span><p>C ∩ D = {5} ≠ ∅ → aresta C–D · C não intersecta A nem B → C fica isolado de A e B.</p></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <figure class="fig" style="margin:0">
+        <svg viewBox="0 0 300 140" width="300">
+          <circle cx="110" cy="60" r="46" fill="rgba(36,80,196,.14)" stroke="#2450c4" stroke-width="1.8"/>
+          <circle cx="180" cy="60" r="46" fill="rgba(255,214,10,.28)" stroke="#a07d00" stroke-width="1.8"/>
+          <text class="lbl2" x="70" y="30">A</text><text class="lbl2" x="205" y="30">B</text>
+          <text class="lbl" x="130" y="64" fill="#182f7a">A∩B</text>
+        </svg>
+        <figcaption>Interseção não vazia ⇒ existe aresta.</figcaption>
+      </figure>
+      <figure class="fig" style="margin:0">
+        <svg viewBox="0 0 260 140" width="260">
+          <line x1="70" y1="40" x2="190" y2="40" class="e-b"/><line x1="70" y1="40" x2="70" y2="110" class="e-b" stroke-dasharray="0"/><line x1="70" y1="110" x2="190" y2="110" class="e"/>
+          <circle class="nd" cx="70" cy="40" r="18"/><text class="lbl" x="70" y="45">A</text>
+          <circle class="nd" cx="190" cy="40" r="18"/><text class="lbl" x="190" y="45">B</text>
+          <circle class="nd" cx="70" cy="110" r="18"/><text class="lbl" x="70" y="115">D</text>
+          <circle class="nd" cx="190" cy="110" r="18"/><text class="lbl" x="190" y="115">C</text>
+        </svg>
+        <figcaption>Grafo resultante: A–B, A–D e C–D ligadas; B–C isoladas entre si.</figcaption>
+      </figure>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 11</span> Grafos bipartidos</h3>
+    <div class="nota">Um grafo é <span class="hl">bipartido</span> quando seus vértices podem ser divididos em <strong>dois conjuntos independentes</strong>, de modo que <strong>toda aresta liga um vértice de um conjunto a um vértice do outro</strong> — nunca dois do mesmo conjunto. Exemplo dos slides: <strong>operários × máquinas</strong> (cada aresta indica quem sabe operar o quê).</div>
+    <div class="bip-linha">
+      <div class="bip-item">
+        <h4>Operários</h4>
+        <svg viewBox="0 0 150 130" width="150">
+          <circle class="nd" cx="40" cy="35" r="16"/><text class="lbl" x="40" y="40">O1</text>
+          <circle class="nd" cx="40" cy="95" r="16"/><text class="lbl" x="40" y="100">O2</text>
+          <circle class="nd" cx="110" cy="35" r="16"/><text class="lbl" x="110" y="40">M1</text>
+          <circle class="nd" cx="110" cy="95" r="16"/><text class="lbl" x="110" y="100">M2</text>
+          <line x1="56" y1="35" x2="94" y2="35" class="e"/><line x1="56" y1="35" x2="94" y2="95" class="e"/><line x1="56" y1="95" x2="94" y2="95" class="e"/>
+        </svg>
+      </div>
+      <div class="bip-item">
+        <h4>É bipartido? ✓</h4>
+        <p style="font-size:.9rem;text-align:left">Partições: {O1, O2} e {M1, M2}. Todas as arestas (O1–M1, O1–M2, O2–M2) ligam <strong>conjuntos diferentes</strong>. Nenhuma aresta liga operário a operário, ou máquina a máquina.</p>
+      </div>
+    </div>
+    <div class="nota destaque"><strong>Como identificar:</strong> tente "colorir" o grafo com 2 cores. Se conseguir colorir sem que vizinhos tenham a mesma cor, ele é bipartido. Se aparecer um ciclo de comprimento <strong>ímpar</strong>, o grafo <strong>não é</strong> bipartido.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 12</span> Construção de grafos (a partir das condições)</h3>
+    <div class="nota">Questões de prova pedem para <strong>construir</strong> um grafo que satisfaça condições de vértices, arestas e graus. Roteiro: 1) desenhe os vértices; 2) some os graus pedidos; 3) a soma deve dar <span class="formula">2 × nº de arestas</span>; 4) ligue os vértices respeitando cada grau.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — existe grafo com graus (5, 2, 2, 2, 2, 1)?</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Soma dos graus: 5 + 2 + 2 + 2 + 2 + 1 = <strong>14</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Como Σ graus = 2|E| → 2|E| = 14 → <strong>|E| = 7 arestas</strong>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>A soma é <strong>par</strong> (necessário!) e nenhum grau excede 6 vértices possíveis → <strong>o grafo existe, com 7 arestas</strong>.</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — existe grafo com graus (3, 3, 3, 3, 5)?</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Soma: 3 + 3 + 3 + 3 + 5 = <strong>17</strong> — número <strong>ímpar</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Σ graus sempre é o dobro de |E| (par!). 17 ≠ 2|E| para todo |E| inteiro.</p></div>
+        <div class="passo"><span class="pn">✗</span><p><strong>Esse grafo não existe</strong> (viola o Lema do Aperto de Mãos).</p></div>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>Cheque final de Königsberg:</strong> um "passeio euleriano" completo (todas as arestas, sem repetir) só existe se <strong>0 ou 2 vértices tiverem grau ímpar</strong>. Com 4 vértices ímpares, como em Königsberg, é impossível — exatamente o que Euler provou em 1736.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 13</span> Grafos especiais e a contagem dupla</h3>
+    <div class="nota">Alguns grafos aparecem tanto em prova que ganharam nome — e fórmula própria. Vale memorizar:</div>
+    <div class="grid2">
+      <div class="nota" style="margin:0"><strong>Completo (K<sub>n</sub>):</strong> todo vértice liga a todos os outros. Arestas = <span class="formula">n(n−1)/2</span> — cada um dos n vértices "aperta a mão" de n−1 vizinhos, e a contagem dupla manda dividir por 2. Ex.: K₆ → 15 arestas; K₃ é o triângulo.</div>
+      <div class="nota" style="margin:0"><strong>Complementar:</strong> mesmos vértices de G, mas só com as arestas que <em>não</em> estavam em G. O complementar do completo é o <strong>grafo vazio</strong> (nenhuma aresta).</div>
+      <div class="nota" style="margin:0"><strong>k-regular:</strong> todos os vértices têm o mesmo grau k. O ciclo é 2-regular e o K₄ é 3-regular.</div>
+      <div class="nota" style="margin:0"><strong>Ciclo e caminho:</strong> o ciclo C<sub>n</sub> é uma "roda" fechada com n vértices (todos de grau 2); o caminho é a fila aberta, de ponta a ponta.</div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — contagem dupla com estradas</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Num país, cada uma das 30 cidades tem estrada direta para exatamente 3 outras. Contando cidade a cidade: 30 × 3 = 90.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Mas cada estrada foi contada 2 vezes (uma por extremidade!) → estradas = 90/2 = <strong>45</strong>. É o Lema da Aula 6: Σ graus = 2|E|.</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — quantas diagonais tem um polígono?</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Modele o polígono como grafo: os n vértices formam um K<sub>n</sub>, mas n arestas "são" os lados. Diagonais = n(n−1)/2 − n = <span class="formula">n(n−3)/2</span>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Dodecágono (n = 12): 12·9/2 = <strong>54 diagonais</strong>. No inverso: um polígono com 20 diagonais → n(n−3) = 40 → <strong>n = 8</strong> (octógono).</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 14</span> Árvores e florestas</h3>
+    <div class="nota"><span class="hl">Árvore</span> é um grafo <strong>conexo e sem ciclos</strong> — a versão mais enxuta de uma rede. Três propriedades que a prova adora:<br>1) uma árvore com n vértices tem <span class="formula">n − 1 arestas</span> (o mínimo para ser conexa);<br>2) toda árvore tem pelo menos uma <strong>folha</strong> (vértice de grau 1);<br>3) remover <em>qualquer</em> aresta desconecta — cada ligação é crítica.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — a rede dos computadores</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>10 computadores ligados em rede, conexa e sem ciclos (topologia em árvore). Cabos = vértices − 1 = <strong>9 cabos</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Se qualquer cabo queimar, a rede se parte em dois pedaços — por isso redes reais guardam cabos extras (que criam ciclos de reserva!).</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — torneio eliminatório</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Numa copa eliminatória, cada partida elimina exatamente 1 time. Para sobrar campeão entre 64, precisam ser eliminados 63 → <strong>63 partidas</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>É a árvore em ação: n vértices (times) → n − 1 arestas (partidas).</p></div>
+      </div>
+    </div>
+    <div class="nota"><strong>Floresta:</strong> grafo em que cada componente conexa é uma árvore. Com n vértices e k componentes: <span class="formula">arestas = n − k</span>. Ex.: 20 vértices em 4 pedaços → 20 − 4 = <strong>16 arestas</strong>. Conferindo pelo Lema: Σ graus = 2·16 = 32.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 15</span> Conexidade, componentes e o teorema da paridade</h3>
+    <div class="nota">Um grafo é <span class="hl">conexo</span> quando dá para ir de qualquer vértice a qualquer outro andando pelas arestas — ele tem "um pedaço só". Quando não é conexo, ele se parte em <strong>componentes conexas</strong> (cada pedaço, por si só, é conexo).</div>
+    <div class="nota destaque"><strong>Teorema da paridade:</strong> em qualquer grafo, o <strong>número de vértices de grau ímpar é sempre par</strong>. Demonstração relâmpago: os vértices de grau par já somam um valor par; como Σ graus = 2|E| é par, os de grau ímpar também precisam somar um valor par — e ímpares só somam par em <strong>quantidade par</strong>. ∎</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — amizades no grupo</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Num grupo de mensagens, é possível que exatamente 7 pessoas tenham um número ímpar de amigos dentro do grupo?</p></div>
+        <div class="passo"><span class="pn">✗</span><p><strong>Impossível!</strong> Modele como grafo (pessoas = vértices, amizade = aresta): o nº de vértices de grau ímpar teria de ser par, mas 7 é ímpar.</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — cruzando segmentos</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>É possível desenhar 7 segmentos de reta de modo que cada um cruze exatamente 5 outros?</p></div>
+        <div class="passo"><span class="pn">2</span><p>Faça o grafo dos cruzamentos (cada segmento é um vértice; cruzamento vira aresta): cada vértice teria grau 5 → Σ graus = 7 × 5 = 35, <strong>ímpar</strong>. Mas Σ graus = 2|E| é sempre par → <strong>impossível</strong>.</p></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="nota" style="margin:0"><strong>Aresta de reserva:</strong> ao remover <em>uma</em> aresta de um grafo conexo, ou ele continua conexo, ou quebra em <strong>exatamente 2 componentes</strong> — nunca mais que isso.</div>
+      <div class="nota" style="margin:0"><strong>Intuição de conexidade:</strong> se cada uma das n cidades tem estrada direta para pelo menos n/2 outras, o grafo é conexo — dois "pedaços" isolados um do outro não conseguiriam ter todos os graus tão altos.</div>
+    </div>
+  </div>
+</section>
+<!-- ============ FLASHCARDS ============ -->
+<section id="flashcards" class="tab">
+  <div class="divisor"><span class="num">★</span><h2>Flashcards</h2><span class="fim">revisão rápida na véspera</span></div>
+  <div class="controles" style="justify-content:center">
+    <button class="btn btn-fino btn-tinta" id="fcTudo">Tudo</button>
+    <button class="btn btn-fino" id="fcVet">➡️ Vetores</button>
+    <button class="btn btn-fino" id="fcGraf">🔗 Grafos</button>
+    <button class="btn btn-fino btn-perigo" id="fcLimpaDif">Limpar marcações de "difíceis"</button>
+  </div>
+  <div class="fc-palco">
+    <div class="fc-carta" id="fcCarta" role="button" tabindex="0" title="Clique para virar a carta">
+      <div class="fc-face fc-frente">
+        <span class="fc-tag" id="fcTag">—</span>
+        <p id="fcFrente">—</p>
+        <span class="fc-dica">👆 clique na carta para ver a resposta</span>
+      </div>
+      <div class="fc-face fc-verso"><p id="fcVerso">—</p></div>
+    </div>
+  </div>
+  <div class="resp-linha" style="justify-content:center;max-width:580px;margin:0 auto">
+    <button class="btn btn-perigo" id="fcNao">✗ Não sabei (volta pro fim)</button>
+    <button class="btn btn-ok" id="fcSim">✓ Sabei</button>
+    <button class="btn btn-fino" id="fcProx">Pular →</button>
+  </div>
+  <div class="info-linha" id="fcStatus" style="max-width:580px;margin:1rem auto 0;text-align:center">—</div>
+</section>
+
+<!-- ============ FERRAMENTAS ============ -->
+<section id="ferramentas" class="tab">
+  <div class="divisor"><span class="num">03</span><h2>Ferramentas</h2><span class="fim">pratique enquanto estuda</span></div>
+
+  <div class="ferr-abas">
+    <button class="on" id="abaGrafo">🔗 Construtor de grafos</button>
+    <button id="abaVetor">➡️ Visualizador de vetores</button>
+    <button id="abaDecomp">📐 Lab de decomposição</button>
+    <button id="abaBip">🎨 Pintar bipartido</button>
+  </div>
+
+  <div id="painelGrafo">
+    <div class="nota"><strong>Como usar:</strong> no modo <em>criar</em>, clique no quadro para adicionar vértices (A, B, C…). No modo <em>ligar</em>, clique em dois vértices para criar uma aresta com o peso digitado. Arraste os vértices para organizar. Depois rode <strong>Dijkstra</strong> (menor caminho do 1º ao último vértice) ou <strong>Kruskal</strong> (árvore geradora mínima).</div>
+    <div class="controles">
+      <label style="font:600 .85rem var(--body)">peso <input id="inpPeso" class="resp-entrada" style="width:90px" type="number" min="1" value="1"></label>
+      <button class="btn btn-fino" id="btnModoCriar">✎ Criar vértice</button>
+      <button class="btn btn-fino" id="btnModoAresta">— Ligar vértices</button>
+      <button class="btn btn-fino" id="btnDijkstra">Menor caminho (Dijkstra)</button>
+      <button class="btn btn-fino" id="btnKruskal">Árvore mínima (Kruskal)</button>
+      <button class="btn btn-fino btn-perigo" id="btnLimparG">Limpar tudo</button>
+    </div>
+    <div class="canvas-box"><svg id="svgGrafo" viewBox="0 0 800 430" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="info-linha" id="outGrafo" style="margin-top:.7rem">Vértices: 0 · Arestas: 0 — crie o primeiro vértice!</div>
+  </div>
+
+  <div id="painelVetor" hidden>
+    <div class="nota">Digite as componentes dos vetores <strong><span class="vet">a</span></strong> e <strong><span class="vet">b</span></strong> (origem no centro). O desenho mostra os dois vetores, a <strong>soma</strong> (tracejada) e calcula módulos, <strong>produto escalar</strong> e o <strong>ângulo</strong> entre eles.</div>
+    <div class="controles">
+      <label style="font:600 .9rem var(--mono)"><span class="vet">a</span> = ( <input id="vetAX" class="resp-entrada" style="width:74px" type="number" value="3"> , <input id="vetAY" class="resp-entrada" style="width:74px" type="number" value="2"> )</label>
+      <label style="font:600 .9rem var(--mono)"><span class="vet">b</span> = ( <input id="vetBX" class="resp-entrada" style="width:74px" type="number" value="-1"> , <input id="vetBY" class="resp-entrada" style="width:74px" type="number" value="4"> )</label>
+      <button class="btn btn-fino btn-marca" id="btnVetCalc">Calcular e desenhar</button>
+    </div>
+    <div class="canvas-box"><svg id="svgVet" viewBox="0 0 800 430" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="info-linha" id="outVet" style="margin-top:.7rem">—</div>
+  </div>
+
+  <div id="painelDecomp" hidden>
+    <div class="nota">Arraste os controles e veja o vetor <span class="vet">A</span> ser decomposto em tempo real: <strong>Ax = A·cos θ</strong> (horizontal) e <strong>Ay = A·sen θ</strong> (vertical). Repare no <strong>sinal</strong> das componentes mudando conforme o quadrante!</div>
+    <div class="controles">
+      <label style="font:600 .88rem var(--body)">módulo A = <b id="deAv">10</b> u <input id="deA" type="range" min="2" max="20" value="10" step="1"></label>
+      <label style="font:600 .88rem var(--body)">ângulo θ = <b id="deTv">40</b>° <input id="deT" type="range" min="0" max="360" value="40" step="1"></label>
+    </div>
+    <div class="canvas-box" style="height:390px"><svg id="svgDec" viewBox="0 0 800 390" preserveAspectRatio="xMidYMid meet"></svg></div>
+    <div class="info-linha" id="deOut" style="margin-top:.7rem">—</div>
+  </div>
+
+  <div id="painelBip" hidden>
+    <div class="nota">Pinte os vértices com uma das duas tintas de modo que <strong>nenhuma aresta ligue duas cores iguais</strong>. Se conseguir, o grafo é <strong>bipartido</strong>! (Lembre: ciclo ímpar ⇒ impossível.)</div>
+    <div class="controles">
+      <button class="btn btn-fino btn-tinta" id="pintAzul">🔵 Tinta azul</button>
+      <button class="btn btn-fino" id="pintAmarela">🟡 Tinta amarela</button>
+      <button class="btn btn-fino" id="pintBorracha">🧽 Borracha</button>
+      <button class="btn btn-fino btn-ok" id="btnVerificarBip">Verificar</button>
+      <button class="btn btn-fino" id="btnSolucaoBip">Mostrar solução</button>
+      <button class="btn btn-fino btn-perigo" id="btnOutroBip">Gerar outro grafo</button>
+    </div>
+    <div class="canvas-box" style="height:390px"><svg id="svgBip" viewBox="0 0 800 390"></svg></div>
+    <div class="info-linha" id="outBip" style="margin-top:.7rem">Pinte os vértices e clique em Verificar!</div>
+  </div>
+</section>
+<!-- ============ SIMULADO ============ -->
+<section id="simulado" class="tab">
+  <div class="divisor"><span class="num">04</span><h2>Simulado</h2><span class="fim">32 questões em ordem aleatória · correção na hora</span></div>
+  <div class="hud-simulado">
+    <span class="chip" style="margin:0">Acertos: <b id="simAcertos">0</b>/24</span>
+    <div class="barra"><div id="simBarra"></div></div>
+    <button class="btn btn-fino" id="btnResetSim">↺ Resetar simulado</button>
+  </div>
+  <div id="simQuestoes"></div>
+  <div class="resumo-final" id="simResumo">
+    <p style="font-weight:700">Simulado concluído!</p>
+    <div class="pct" id="simPct">0%</div>
+    <p id="simMsg" style="margin-top:.4rem"></p>
+    <button class="btn btn-marca" style="margin-top:1rem" id="btnEnviar">📨 Enviar respostas</button>
+    <button class="btn btn-fino" style="margin-top:1rem" id="btnResetSim2">↺ Resetar simulado</button>
+  </div>
+  <div id="simGabarito" class="gabarito"></div>
+</section>
+
+<!-- ============ MODO INTENSIVO ============ -->
+<section id="intensivo" class="tab">
+  <div class="divisor"><span class="num">05</span><h2>Modo Intensivo</h2><span class="fim">10 questões · 30 s cada</span></div>
+  <div class="hud-int">
+    <div class="stat"><div class="valor" id="intPontos">0</div><div class="rotulo">PONTOS</div></div>
+    <div class="stat"><div class="valor" id="intRodada">–</div><div class="rotulo">QUESTÃO</div></div>
+    <div class="stat"><div class="tempo" id="intTempo">30</div><div class="rotulo">SEGUNDOS</div></div>
+    <button class="btn btn-marca" id="btnIntIniciar">▶ Iniciar rodada</button>
+  </div>
+  <div class="painel-q" id="painelQ">
+    <p class="conta" id="intConta"></p>
+    <p class="enun" id="intEnun">Clique em <strong>Iniciar rodada</strong> para começar. São 10 questões sorteadas de um banco maior, 30 segundos por questão — acertos valem +10 pontos e o tempo vira bônus.</p>
+    <div class="opcoes-int" id="intOpcoes"></div>
+  </div>
+  <div class="resultado-int" id="resultadoInt">
+    <p style="font-weight:700">Fim de jogo!</p>
+    <div class="placar"><span id="intFinal">0</span> <small>pontos</small></div>
+    <p id="intMsgFinal" style="margin:.6rem 0 1.1rem"></p>
+    <button class="btn btn-tinta" id="btnIntNovamente">▶ Jogar de novo</button>
+  </div>
+</section>
+</main>
+</div>
+
+<footer>Intensivo Interativo · montado a partir do VETORES.pdf, dos slides de Teoria dos Grafos (Aulas 1–8) e de temas extras inspirados no Portal OBMEP/IMPA · boa prova!</footer>
+<div id="toast" role="status"></div>
+
+<script>
+'use strict';
+/* ---------- navegação ---------- */
+function irPara(aba){
+  document.querySelectorAll('main section.tab').forEach(s=>s.classList.toggle('on',s.id===aba));
+  document.querySelectorAll('.aba-nav button').forEach(b=>b.classList.toggle('on',b.dataset.aba===aba));
+  try{localStorage.setItem('abaSite',aba);}catch(e){}
+  if(aba==='ferramentas')setTimeout(ajustaViewBox,0);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-aba]');
+  if(t){e.preventDefault();irPara(t.dataset.aba);}
+});
+/* restaura a última aba visitada ao recarregar (F5) */
+try{
+  const salva=localStorage.getItem('abaSite');
+  if(salva&&document.getElementById(salva))irPara(salva);
+}catch(e){}
+/* ---------- tema claro/noturno ---------- */
+const btnTema=document.getElementById('btnTema');
+function aplicaTema(t){
+  document.body.classList.toggle('noturno',t==='noite');
+  btnTema.textContent=t==='noite'?'☀️':'🌙';
+}
+btnTema.addEventListener('click',()=>{
+  const novo=document.body.classList.contains('noturno')?'dia':'noite';
+  try{localStorage.setItem('temaSite',novo);}catch(e){}
+  aplicaTema(novo);
+});
+try{aplicaTema(localStorage.getItem('temaSite')||'dia');}catch(e){aplicaTema('dia');}
+/* ---------- checklist de aulas ---------- */
+function leVistas(){try{return JSON.parse(localStorage.getItem('aulasVistas')||'[]');}catch(e){return[];}}
+function atualizaProgresso(){
+  const salvo=leVistas();
+  [['vetores','fimVet','VETORES.pdf + extras'],['grafos','fimGraf','Slides + Portal OBMEP']].forEach(p=>{
+    const aulas=document.querySelectorAll('#'+p[0]+' .aula');
+    let n=0;aulas.forEach((a,i)=>{if(salvo.includes(p[0]+'-'+i))n++;});
+    const fim=document.getElementById(p[1]);
+    if(fim)fim.textContent=p[2]+' · '+aulas.length+' aulas · '+n+' revisadas';
+  });
+}
+function montaChecklist(){
+  const salvo=leVistas();
+  document.querySelectorAll('main section.tab').forEach(sec=>{
+    sec.querySelectorAll('.aula').forEach((a,i)=>{
+      const chave=sec.id+'-'+i,marca=salvo.includes(chave);
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.className='rev-btn'+(marca?' ok':'');
+      btn.textContent=(marca?'✓':'○')+' Revisei';
+      btn.style.marginLeft='auto';
+      btn.title='Marcar esta aula como revisada';
+      btn.addEventListener('click',()=>{
+        const arr=leVistas(),j=arr.indexOf(chave),fez=j===-1;
+        if(fez)arr.push(chave);else arr.splice(j,1);
+        try{localStorage.setItem('aulasVistas',JSON.stringify(arr));}catch(e){}
+        btn.classList.toggle('ok',fez);
+        btn.textContent=(fez?'✓':'○')+' Revisei';
+        a.classList.toggle('feita',fez);
+        atualizaProgresso();
+      });
+      a.classList.toggle('feita',marca);
+      a.querySelector('h3').appendChild(btn);
+    });
+  });
+  atualizaProgresso();
+}
+montaChecklist();
+let toastTimer;
+function toast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('ver');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('ver'),2600);
+}
+const normalizeNum=s=>String(s).trim().replace(',','.');
+function numEq(valor,esperado,tol){tol=tol||0.01;const v=parseFloat(normalizeNum(valor));return isFinite(v)&&Math.abs(v-esperado)<=tol;}
+/* ---------- abas das ferramentas ---------- */
+const abaG=document.getElementById('abaGrafo'),abaV=document.getElementById('abaVetor'),abaD=document.getElementById('abaDecomp'),abaB=document.getElementById('abaBip');
+function mostraFerr(qual){
+  ['painelGrafo','painelVetor','painelDecomp','painelBip'].forEach(id=>{document.getElementById(id).hidden=id!==qual;});
+  [abaG,abaV,abaD,abaB].forEach(b=>b.classList.remove('on'));
+  ({painelGrafo:abaG,painelVetor:abaV,painelDecomp:abaD,painelBip:abaB})[qual].classList.add('on');
+  if(qual==='painelGrafo')ajustaViewBox();
+  if(qual==='painelVetor')desenharVetores();
+  if(qual==='painelDecomp')desenharDecomp();
+  if(qual==='painelBip')renderBipFerr();
+}
+abaG.addEventListener('click',()=>mostraFerr('painelGrafo'));
+abaV.addEventListener('click',()=>mostraFerr('painelVetor'));
+abaD.addEventListener('click',()=>mostraFerr('painelDecomp'));
+abaB.addEventListener('click',()=>mostraFerr('painelBip'));
+
+/* ---------- construtor de grafos ---------- */
+const NS='http://www.w3.org/2000/svg';
+const svgG=document.getElementById('svgGrafo'),outG=document.getElementById('outGrafo'),inpPeso=document.getElementById('inpPeso');
+let gVerts=[],gArest=[],modoG='criar',selG=null,contG=0;
+function el(tag,attrs){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);return e;}
+function coordG(ev){const r=svgG.getBoundingClientRect();return{x:ev.clientX-r.left,y:ev.clientY-r.top};}
+function ajustaViewBox(){
+  const r=svgG.getBoundingClientRect();
+  if(r.width<10||r.height<10)return;
+  const p=svgG.getAttribute('viewBox').split(' ');
+  const ow=+p[2]||800,oh=+p[3]||430;
+  if(Math.abs(ow-r.width)>.5||Math.abs(oh-r.height)>.5){
+    gVerts.forEach(v=>{v.x=v.x*r.width/ow;v.y=v.y*r.height/oh;});
+    svgG.setAttribute('viewBox','0 0 '+r.width+' '+r.height);
+    renderG();
+  }
+}
+window.addEventListener('resize',ajustaViewBox);
+function renderG(){
+  svgG.innerHTML='';
+  gArest.forEach(a=>{
+    const v1=gVerts[a.a],v2=gVerts[a.b];
+    svgG.appendChild(el('line',{x1:v1.x,y1:v1.y,x2:v2.x,y2:v2.y,class:'varesta'+(a.ativa?' ativa':'')}));
+    const t=el('text',{x:(v1.x+v2.x)/2,y:(v1.y+v2.y)/2-7,class:'vpeso','text-anchor':'middle'});
+    t.textContent=a.p;svgG.appendChild(t);
+  });
+  gVerts.forEach((v,i)=>{
+    const c=el('circle',{cx:v.x,cy:v.y,r:21,class:'vvertice'+(selG===i?' sel':'')});
+    c.addEventListener('pointerdown',ev=>pontaG(ev,i));
+    svgG.appendChild(c);
+    const t=el('text',{x:v.x,y:v.y+5,class:'vlbl','text-anchor':'middle','pointer-events':'none'});
+    t.textContent=v.nome;svgG.appendChild(t);
+  });
+  outG.innerHTML='Vértices: <b>'+gVerts.length+'</b> · Arestas: <b>'+gArest.length+'</b>'+(selG!==null?' · selecionado: <b>'+gVerts[selG].nome+'</b> (clique em outro para ligar)':'');
+}
+svgG.addEventListener('pointerdown',ev=>{
+  if(ev.target.closest('.vvertice'))return;
+  const p=coordG(ev);
+  if(modoG==='criar'){gVerts.push({nome:String.fromCharCode(65+contG++),x:p.x,y:p.y});renderG();}
+  else{selG=null;renderG();}
+});
+function pontaG(ev,i){
+  ev.stopPropagation();
+  if(modoG==='ligar'){
+    if(selG===null)selG=i;
+    else if(selG!==i){gArest.push({a:selG,b:i,p:Math.max(1,Math.round(+inpPeso.value||1))});selG=null;}
+    renderG();return;
+  }
+  const move=ev2=>{const p=coordG(ev2);gVerts[i].x=p.x;gVerts[i].y=p.y;renderG();};
+  const up=()=>{window.removeEventListener('pointermove',move);window.removeEventListener('pointerup',up);};
+  window.addEventListener('pointermove',move);
+  window.addEventListener('pointerup',up);
+}
+function dijkstra(){
+  if(gVerts.length<2){toast('Crie pelo menos 2 vértices!');return;}
+  const n=gVerts.length,dist=Array(n).fill(Infinity),prev=Array(n).fill(-1),vis=Array(n).fill(false),adj=Array.from({length:n},()=>[]);
+  dist[0]=0;
+  gArest.forEach(a=>{adj[a.a].push({v:a.b,p:a.p});adj[a.b].push({v:a.a,p:a.p});});
+  for(let k=0;k<n;k++){
+    let u=-1;for(let j=0;j<n;j++)if(!vis[j]&&(u===-1||dist[j]<dist[u]))u=j;
+    if(u===-1||dist[u]===Infinity)break;vis[u]=true;
+    adj[u].forEach(o=>{if(dist[u]+o.p<dist[o.v]){dist[o.v]=dist[u]+o.p;prev[o.v]=u;}});
+  }
+  gArest.forEach(a=>a.ativa=false);
+  if(dist[n-1]===Infinity){renderG();toast('Não existe caminho entre o 1º e o último vértice!');return;}
+  const cam=[];let cur=n-1;
+  while(cur!==-1){cam.unshift(gVerts[cur].nome);cur=prev[cur];}
+  cam.forEach((nome,i)=>{if(i){const ia=verticesIdx(cam[i-1]),ib=verticesIdx(nome);const a=gArest.find(x=>(x.a===ia&&x.b===ib)||(x.b===ia&&x.a===ib));if(a)a.ativa=true;}});
+  renderG();
+  outG.innerHTML='Menor caminho (Dijkstra): <b>'+cam.join(' → ')+'</b> · custo total <b>'+dist[n-1]+'</b>';
+  toast('Menor caminho calculado!');
+}
+function verticesIdx(nome){return gVerts.findIndex(v=>v.nome===nome);}
+function kruskal(){
+  if(gVerts.length<2){toast('Crie pelo menos 2 vértices!');return;}
+  const pai=gVerts.map((_,i)=>i);
+  const find=x=>pai[x]===x?x:(pai[x]=find(pai[x]));
+  gArest.forEach(a=>a.ativa=false);
+  let total=0,usadas=0;
+  [...gArest].sort((a,b)=>a.p-b.p).forEach(a=>{
+    const ra=find(a.a),rb=find(a.b);
+    if(ra!==rb){pai[ra]=rb;a.ativa=true;total+=a.p;usadas++;}
+  });
+  renderG();
+  outG.innerHTML='Árvore geradora mínima (Kruskal): <b>'+usadas+'</b> arestas · custo total <b>'+total+'</b>';
+  toast('Kruskal aplicado!');
+}
+document.getElementById('btnModoCriar').addEventListener('click',()=>{modoG='criar';selG=null;document.getElementById('btnModoCriar').classList.add('btn-tinta');document.getElementById('btnModoAresta').classList.remove('btn-tinta');renderG();});
+document.getElementById('btnModoAresta').addEventListener('click',()=>{modoG='ligar';selG=null;document.getElementById('btnModoAresta').classList.add('btn-tinta');document.getElementById('btnModoCriar').classList.remove('btn-tinta');renderG();});
+document.getElementById('btnModoCriar').classList.add('btn-tinta');
+document.getElementById('btnLimparG').addEventListener('click',()=>{gVerts=[];gArest=[];contG=0;selG=null;renderG();toast('Quadro limpo!');});
+document.getElementById('btnDijkstra').addEventListener('click',dijkstra);
+document.getElementById('btnKruskal').addEventListener('click',kruskal);
+renderG();
+
+/* ---------- visualizador de vetores ---------- */
+const svgV=document.getElementById('svgVet'),outV=document.getElementById('outVet');
+const vetAX=document.getElementById('vetAX'),vetAY=document.getElementById('vetAY'),vetBX=document.getElementById('vetBX'),vetBY=document.getElementById('vetBY');
+function seta(x1,y1,x2,y2,cor,dash){
+  const g=el('g',{});
+  g.appendChild(el('line',{x1:x1,y1:y1,x2:x2,y2:y2,stroke:cor,'stroke-width':3.2,'stroke-linecap':'round','stroke-dasharray':dash||'none'}));
+  const ang=Math.atan2(y2-y1,x2-x1),L=14,A=Math.PI/7;
+  g.appendChild(el('polygon',{points:x2+','+y2+' '+(x2-L*Math.cos(ang-A))+','+(y2-L*Math.sin(ang-A))+' '+(x2-L*Math.cos(ang+A))+','+(y2-L*Math.sin(ang+A)),fill:cor}));
+  return g;
+}
+function desenharVetores(){
+  const ax=+vetAX.value||0,ay=+vetAY.value||0,bx=+vetBX.value||0,by=+vetBY.value||0;
+  const cx=400,cy=215,esc=34;
+  svgV.innerHTML='';
+  svgV.appendChild(el('line',{x1:20,y1:cy,x2:780,y2:cy,stroke:'#c9d1ea','stroke-width':1.6}));
+  svgV.appendChild(el('line',{x1:cx,y1:15,x2:cx,y2:415,stroke:'#c9d1ea','stroke-width':1.6}));
+  svgV.appendChild(seta(cx,cy,cx+ax*esc,cy-ay*esc,'#2450c4'));
+  svgV.appendChild(seta(cx,cy,cx+bx*esc,cy-by*esc,'#0e8a4e'));
+  const rx=ax+bx,ry=ay+by;
+  svgV.appendChild(seta(cx,cy,cx+rx*esc,cy-ry*esc,'#cf3f3f','7 5'));
+  const lbl=(x,y,txt,cor)=>{const t=el('text',{x:x,y:y,fill:cor,class:'vetor-lbl'});t.textContent=txt;svgV.appendChild(t);};
+  lbl(cx+ax*esc+8,cy-ay*esc,'a','#2450c4');
+  lbl(cx+bx*esc+8,cy-by*esc,'b','#0e8a4e');
+  lbl(cx+rx*esc+8,cy-ry*esc,'a+b','#cf3f3f');
+  const ma=Math.hypot(ax,ay),mb=Math.hypot(bx,by),pe=ax*bx+ay*by;
+  const cos=(ma&&mb)?pe/(ma*mb):0;
+  const ang=Math.acos(Math.max(-1,Math.min(1,cos)))*180/Math.PI;
+  outV.innerHTML='|<span class="vet">a</span>| = <b>'+ma.toFixed(2)+'</b> · |<span class="vet">b</span>| = <b>'+mb.toFixed(2)+'</b> · <span class="vet">a</span>+<span class="vet">b</span> = ('+rx+', '+ry+') · <span class="vet">a</span>·<span class="vet">b</span> = <b>'+pe+'</b> · ângulo entre eles ≈ <b>'+ang.toFixed(1)+'°</b>';
+}
+document.getElementById('btnVetCalc').addEventListener('click',()=>{desenharVetores();toast('Vetores calculados!');});
+desenharVetores();
+
+/* ---------- lab de decomposição ---------- */
+const deA=document.getElementById('deA'),deT=document.getElementById('deT'),svgD=document.getElementById('svgDec'),deOut=document.getElementById('deOut');
+function desenharDecomp(){
+  document.getElementById('deAv').textContent=deA.value;
+  document.getElementById('deTv').textContent=deT.value;
+  const A=+deA.value,graus=+deT.value,t=graus*Math.PI/180;
+  const ax=A*Math.cos(t),ay=A*Math.sin(t);
+  const cx=400,cy=195,esc=8;
+  svgD.innerHTML='';
+  svgD.appendChild(el('line',{x1:20,y1:cy,x2:780,y2:cy,stroke:'#8a93bd','stroke-width':1.6}));
+  svgD.appendChild(el('line',{x1:cx,y1:15,x2:cx,y2:375,stroke:'#8a93bd','stroke-width':1.6}));
+  svgD.appendChild(el('line',{x1:cx+ax*esc,y1:cy-ay*esc,x2:cx+ax*esc,y2:cy,stroke:'#9aa5c4','stroke-width':1.4,'stroke-dasharray':'5 4'}));
+  svgD.appendChild(el('line',{x1:cx+ax*esc,y1:cy-ay*esc,x2:cx,y2:cy-ay*esc,stroke:'#9aa5c4','stroke-width':1.4,'stroke-dasharray':'5 4'}));
+  svgD.appendChild(seta(cx,cy,cx+ax*esc,cy,'#0e8a4e'));
+  svgD.appendChild(seta(cx,cy,cx,cy-ay*esc,'#2450c4'));
+  svgD.appendChild(seta(cx,cy,cx+ax*esc,cy-ay*esc,'#cf3f3f'));
+  const lb=(x,y,txt,cor)=>{const e2=el('text',{x:x,y:y,fill:cor,'font-family':'JetBrains Mono,monospace','font-size':13,'font-weight':700});e2.textContent=txt;svgD.appendChild(e2);};
+  lb(cx+ax*esc+10,cy-ay*esc,'A ('+A+' u)','#cf3f3f');
+  lb(cx+ax*esc+6,cy+22,'Ax = '+ax.toFixed(2),'#0e8a4e');
+  lb(cx+14,cy-ay*esc-10,'Ay = '+ay.toFixed(2),'#2450c4');
+  const qx=graus<90?'1º':graus<180?'2º':graus<270?'3º':'4º';
+  deOut.innerHTML='θ = <b>'+graus+'°</b> ('+qx+' quadrante) · Ax = '+A+'·cos '+graus+'° = <b>'+ax.toFixed(2)+'</b> · Ay = '+A+'·sen '+graus+'° = <b>'+ay.toFixed(2)+'</b> · conferindo Pitágoras: √(Ax²+Ay²) = <b>'+Math.hypot(ax,ay).toFixed(2)+'</b> = A ✓';
+}
+deA.addEventListener('input',desenharDecomp);
+deT.addEventListener('input',desenharDecomp);
+desenharDecomp();
+
+/* ---------- pintar bipartido ---------- */
+const svgBip=document.getElementById('svgBip'),outBip=document.getElementById('outBip');
+const BIP_PRESETS=[
+  {v:['A','B','C','D'],p:[[300,100],[500,100],[300,280],[500,280]],e:[[0,1],[1,3],[3,2],[2,0]]},
+  {v:['A','B','C'],p:[[400,90],[270,290],[530,290]],e:[[0,1],[1,2],[2,0]]},
+  {v:['A','B','C','D','E','F'],p:[[530,195],[465,305],[335,305],[270,195],[335,85],[465,85]],e:[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]]},
+  {v:['A','B','C','D','E'],p:[[300,160],[500,160],[540,300],[260,300],[400,70]],e:[[0,1],[1,2],[2,3],[3,0],[0,4],[1,4]]},
+  {v:['A','B','C','D','E'],p:[[200,140],[200,260],[600,80],[600,195],[600,300]],e:[[0,2],[0,3],[0,4],[1,2],[1,3],[1,4]]}
+];
+let bipG=null,bipCores=[],bipFerr=1,bipPos=0;
+function bipAdj(){const a=bipG.v.map(()=>[]);bipG.e.forEach(([u,v])=>{a[u].push(v);a[v].push(u);});return a;}
+function renderBipFerr(){
+  svgBip.innerHTML='';
+  bipG.e.forEach(p=>svgBip.appendChild(el('line',{x1:bipG.p[p[0]][0],y1:bipG.p[p[0]][1],x2:bipG.p[p[1]][0],y2:bipG.p[p[1]][1],stroke:'#7c86ad','stroke-width':3})));
+  bipG.v.forEach((nome,i)=>{
+    const c=el('circle',{cx:bipG.p[i][0],cy:bipG.p[i][1],r:27,'stroke-width':2.4,class:'bip-vert'});
+    c.style.stroke='var(--ink)';
+    c.setAttribute('fill',bipCores[i]===1?'#2450c4':bipCores[i]===2?'#ffd60a':'#ffffff');
+    c.style.cursor='pointer';
+    c.addEventListener('click',()=>{bipCores[i]=bipFerr===3?0:bipFerr;renderBipFerr();});
+    svgBip.appendChild(c);
+    const t=el('text',{x:bipG.p[i][0],y:bipG.p[i][1]+5,'text-anchor':'middle','font-family':'JetBrains Mono,monospace','font-size':13,'font-weight':700});
+    if(bipCores[i]===0)t.style.fill='var(--ink)';else t.setAttribute('fill',bipCores[i]===1?'#fff':'#0b0d1c');
+    t.textContent=nome;svgBip.appendChild(t);
+  });
+}
+function bipCarrega(){
+  bipG=BIP_PRESETS[bipPos%BIP_PRESETS.length];
+  bipCores=bipG.v.map(()=>0);
+  outBip.textContent='Novo grafo! Pinte os vértices e clique em Verificar.';
+  renderBipFerr();
+}
+function bipFerrSet(n,btn){
+  bipFerr=n;
+  [pintAzul,pintAmarela,pintBorracha].forEach(b=>b.classList.remove('btn-tinta','btn-marca'));
+  btn.classList.add(n===1?'btn-tinta':n===2?'btn-marca':'btn-tinta');
+}
+const pintAzul=document.getElementById('pintAzul'),pintAmarela=document.getElementById('pintAmarela'),pintBorracha=document.getElementById('pintBorracha');
+pintAzul.addEventListener('click',()=>bipFerrSet(1,pintAzul));
+pintAmarela.addEventListener('click',()=>bipFerrSet(2,pintAmarela));
+pintBorracha.addEventListener('click',()=>bipFerrSet(3,pintBorracha));
+document.getElementById('btnVerificarBip').addEventListener('click',()=>{
+  if(bipCores.some(c=>!c)){outBip.innerHTML='⚠️ Ainda há vértices sem tinta — pinte todos antes de verificar.';return;}
+  let problema=null;
+  bipG.e.forEach(p=>{if(bipCores[p[0]]===bipCores[p[1]])problema=p;});
+  if(problema){
+    outBip.innerHTML='✗ <b>NÃO é bipartido:</b> a aresta '+bipG.v[problema[0]]+'–'+bipG.v[problema[1]]+' liga duas cores iguais. Dica: procure o ciclo ímpar!';
+    toast('Cores iguais numa aresta — não é bipartido!');
+  }else{
+    const p1=bipG.v.filter((_,i)=>bipCores[i]===1).join(', '),p2=bipG.v.filter((_,i)=>bipCores[i]===2).join(', ');
+    outBip.innerHTML='✓ <b>É bipartido!</b> Partições: {'+p1+'} e {'+p2+'} — toda aresta liga conjuntos diferentes.';
+    toast('Bipartido confirmado! 🎉');
+  }
+});
+document.getElementById('btnSolucaoBip').addEventListener('click',()=>{
+  const cor=bipG.v.map(()=>0),adj=bipAdj();let falha=false;
+  bipG.v.forEach((_,s)=>{
+    if(cor[s])return;
+    cor[s]=1;const fila=[s];
+    while(fila.length){const u=fila.shift();adj[u].forEach(v=>{if(!cor[v]){cor[v]=cor[u]===1?2:1;fila.push(v);}else if(cor[v]===cor[u])falha=true;});}
+  });
+  if(falha){
+    bipCores=bipG.v.map(()=>0);renderBipFerr();
+    outBip.innerHTML='✗ <b>Este grafo NÃO é bipartido</b> — a coloração 2-cores falha porque existe um ciclo de comprimento ímpar.';
+  }else{
+    bipCores=cor;renderBipFerr();
+    const p1=bipG.v.filter((_,i)=>cor[i]===1).join(', '),p2=bipG.v.filter((_,i)=>cor[i]===2).join(', ');
+    outBip.innerHTML='✓ Coloração encontrada: {'+p1+'} (azuis) × {'+p2+'} (amarelos) — <b>é bipartido</b>.';
+  }
+});
+document.getElementById('btnOutroBip').addEventListener('click',()=>{bipPos=(bipPos+1)%BIP_PRESETS.length;bipCarrega();});
+bipCarrega();
+/* ---------- banco do simulado (24 questões) ---------- */
+const gnd=(n,x,y)=>'<g class="gnd" data-nome="'+n+'"><circle cx="'+x+'" cy="'+y+'" r="20"/><text x="'+x+'" y="'+(y+5)+'">'+n+'</text></g>';
+const ln=(x1,y1,x2,y2)=>'<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'"/>';
+const pl=(x,y,t)=>'<text class="peso-lbl" x="'+x+'" y="'+y+'">'+t+'</text>';
+const svgMaior=()=>'<svg viewBox="0 0 300 220">'+ln(60,60,190,40)+ln(60,60,125,115)+ln(190,40,125,115)+ln(125,115,60,170)+ln(125,115,200,170)+ln(60,170,200,170)+gnd('A',60,60)+gnd('B',190,40)+gnd('C',125,115)+gnd('D',60,170)+gnd('E',200,170)+'</svg>';
+const svgCaminho=()=>'<svg viewBox="0 0 340 190">'+ln(50,95,170,35)+ln(50,95,170,155)+ln(170,35,290,95)+ln(170,155,290,95)+ln(170,35,170,155)+pl(100,55,'2')+pl(96,138,'4')+pl(238,55,'5')+pl(238,138,'1')+pl(180,100,'6')+gnd('A',50,95)+gnd('B',170,35)+gnd('C',170,155)+gnd('D',290,95)+'</svg>';
+const svgQuad=()=>'<svg viewBox="0 0 200 190">'+ln(60,50,140,50)+ln(140,50,140,140)+ln(140,140,60,140)+ln(60,140,60,50)+gnd('A',60,50)+gnd('B',140,50)+gnd('C',140,140)+gnd('D',60,140)+'</svg>';
+const svgTri=()=>'<svg viewBox="0 0 200 190">'+ln(100,40,55,135)+ln(100,40,145,135)+ln(55,135,145,135)+gnd('A',100,40)+gnd('B',55,135)+gnd('C',145,135)+'</svg>';
+
+const BANCO=[
+{t:'mc',e:'Qual alternativa contém <span class="hl">somente</span> grandezas vetoriais?',a:['Massa, tempo e temperatura','Força, velocidade e aceleração','Distância, volume e tempo','Energia, massa e aceleração'],c:1,x:'Vetoriais precisam de módulo, direção e sentido: força, velocidade e aceleração. As demais são escalares.'},
+{t:'num',e:'Dois vetores de mesma direção e sentido valem <b>6 N</b> e <b>3 N</b>. Qual o módulo do resultante?',r:9,tol:.01,u:'N',x:'Sentidos iguais: somamos os módulos (6 + 3). Direção e sentido se mantêm.'},
+{t:'num',e:'Mesma direção, sentidos <b>opostos</b>: vetores de <b>6 N</b> e <b>3 N</b>. Módulo do resultante?',r:3,tol:.01,u:'N',x:'Sentidos opostos: subtraímos os módulos (6 − 3); o sentido é o do vetor de maior módulo.'},
+{t:'num',e:'Vetores perpendiculares de <b>3 u</b> e <b>4 u</b>: módulo do resultante?',r:5,tol:.01,u:'u',x:'Pitágoras: R = √(3² + 4²) = √25 = 5 u.'},
+{t:'num',e:'Vetores perpendiculares de <b>6 N</b> e <b>8 N</b>: módulo do resultante?',r:10,tol:.01,u:'N',x:'R = √(6² + 8²) = √100 = 10 N.'},
+{t:'num',e:'Oblíquos com a = 5 u, b = 8 u e θ = 60°. Módulo de R? (2 casas)',r:11.36,tol:.06,u:'u',x:'R = √(25 + 64 + 2·5·8·cos 60°) = √(89 + 40) = √129 ≈ 11,36 u.'},
+{t:'mc',e:'Se A = 10 u e θ = 30°, a componente horizontal Ax vale:',a:['5√3 ≈ 8,66 u','5 u','10 u','20 u'],c:0,x:'Ax = A·cos θ = 10·(√3/2) = 5√3 ≈ 8,66 u.'},
+{t:'mc',e:'Multiplicando <span class="vet">a</span> por um número real <b>k &lt; 0</b>, o vetor resultante:',a:['mantém módulo, direção e sentido','tem sentido invertido e direção mantida','tem direção invertida e sentido mantido','é sempre o vetor nulo'],c:1,x:'k &lt; 0: módulo multiplicado por |k|, direção mantida, sentido invertido.'},
+{t:'num',e:'Se |<span class="vet">a</span>| = 5 u, qual o módulo do vetor <b>−3<span class="vet">a</span></b>?',r:15,tol:.01,u:'u',x:'|−3<span class="vet">a</span>| = |−3| · |<span class="vet">a</span>| = 3 · 5 = 15 u, em sentido oposto a <span class="vet">a</span>.'},
+{t:'num',e:'Quanto vale <b>sen 30°</b>? (decimal)',r:0.5,tol:.01,u:'',x:'Dos ângulos notáveis: sen 30° = 1/2 = 0,5.'},
+{t:'mc',e:'Quanto vale <b>cos 120°</b>?',a:['1/2','√3/2','−1/2','−√3/2'],c:2,x:'120° está no 2º quadrante: sen + e cos −. cos 120° = −cos 60° = −1/2.'},
+{t:'num',e:'A = 20 u e θ = 60°. Componente <b>vertical</b> Ay? (2 casas)',r:17.32,tol:.06,u:'u',x:'Ay = 20·sen 60° = 20·(√3/2) = 10√3 ≈ 17,32 u.'},
+{t:'mc',e:'Em um grafo, os <b>vértices</b> representam…',a:['as ligações entre os pontos','os pontos de conexão (as regiões)','as distâncias reais','os pesos das arestas'],c:1,x:'Vértice = ponto de conexão (era uma região de terra); aresta = ligação (era uma ponte).'},
+{t:'mc',e:'Grafo em linha A—B—C. Complete: V = {A,B,C} e E = {{A,B},{B,C}}. Portanto o grafo tem:',a:['3 vértices e 3 arestas','2 vértices e 3 arestas','3 vértices e 2 arestas','2 vértices e 2 arestas'],c:2,x:'V tem 3 elementos; E tem 2 arestas: A–B e B–C.'},
+{t:'clique',e:'Clique no vértice de <b>maior grau</b>.',svg:svgMaior,nome:'C',x:'C incide em 4 arestas (A, B, D e E) — grau 4. Os demais têm grau 2.'},
+{t:'mc',e:'Uma rua de <b>mão única</b> (só dá para ir de A para B) é modelada como:',a:['grafo não direcionado','grafo direcionado (dígrafo)','grafo bipartido','árvore geradora'],c:1,x:'Quando a ligação tem sentido, a aresta vira um arco do dígrafo: E = {(A, B)}.'},
+{t:'num',e:'Na cidade de Euler, a Ilha Kneiphof tinha <b>5 pontes</b>. Então o grau do vértice Kneiphof era…',r:5,tol:.01,u:'',x:'Grau = número de arestas que incidem no vértice = 5 (ímpar → já era um problema!).'},
+{t:'caminho',e:'Monte o <b>menor caminho</b> de A até D (clique nos vértices na ordem) e digite o custo total.',svg:svgCaminho,seq:['A','C','D'],custo:5,x:'A→C→D custa 4 + 1 = 5; A→B→D custa 2 + 5 = 7. Menor caminho não é o de menos arestas!'},
+{t:'mc',e:'Um <b>ciclo</b> em um grafo é um caminho que…',a:['só usa arestas com peso','só passa por vértices de grau par','começa e termina no mesmo vértice','liga vértices isolados'],c:2,x:'Ciclo: caminho que inicia e encerra no mesmo vértice, sem repetir arestas.'},
+{t:'bip',e:'Qual dos grafos abaixo é <b>bipartido</b>?',opcoes:[{t:svgQuad(),ok:true,d:'Grafo 1'},{t:svgTri(),ok:false,d:'Grafo 2'}],x:'O quadrado (ciclo de 4) particiona em {A, C} e {B, D}. O triângulo (ciclo ímpar) não é bipartido.'},
+{t:'mc',e:'Em um grafo de interseção, há aresta entre dois conjuntos quando…',a:['A ∩ B = ∅','A ∩ B ≠ ∅','A ⊂ B','A e B têm o mesmo tamanho'],c:1,x:'Liga-se A a B se a interseção não é vazia — eles têm algo em comum.'},
+{t:'num',e:'Um grafo tem vértices de graus (5, 2, 2, 2, 2, 1). Quantas <b>arestas</b> ele tem?',r:7,tol:.01,u:'',x:'Σ graus = 14 = 2|E| → |E| = 7 arestas.'},
+{t:'mc',e:'Existe um grafo com graus (3, 3, 3, 3, 5)?',a:['Sim, com 9 arestas','Sim, com 17 arestas','Não — a soma dos graus é ímpar','Não — todo vértice precisa ter grau par'],c:2,x:'Soma = 17 (ímpar). Como Σ graus = 2|E| é sempre par, esse grafo não existe.'},
+{t:'mc',e:'O passeio das 7 pontes de Königsberg é impossível porque:',a:['há pontes demais para cruzar','todas as 4 regiões têm grau ímpar','o rio não pode ser atravessado 2 vezes','as distâncias entre as ilhas são grandes'],c:1,x:'Com 4 vértices de grau ímpar não existe caminho euleriano — no máximo 2 vértices podem ter grau ímpar.'},
+{t:'mc',e:'1 rad vale aproximadamente…',a:['57,3°','60°','90°','180°'],c:0,x:'Da relação 180° = π rad: 1 rad ≈ 57,3°.'},
+{t:'mc',e:'Várias forças atuando sobre um corpo podem ser trocadas por…',a:['apenas um vetor: o resultante','sempre dois vetores','um número escalar','nada — é impossível simplificar'],c:0,x:'Esse é o conceito de vetor resultante (Aula 3): um vetor que equivale ao conjunto.'},
+{t:'num',e:'A = 20 u e θ = 30°. Quanto vale <b>Ax</b>? (2 casas)',r:17.32,tol:.06,u:'u',x:'Ax = 20·cos 30° = 20·(√3/2) = 10√3 ≈ 17,32 u.'},
+{t:'mc',e:'Se α + β = 180° (ângulos suplementares), então:',a:['sen α = sen β e cos α = −cos β','sen α = −sen β e cos α = cos β','sen α = cos β','tg α = tg β'],c:0,x:'Suplementares: os senos são iguais e os cossenos têm sinais opostos.'},
+{t:'num',e:'Um grafo tem vértices de graus (4, 3, 3, 2). Quantas <b>arestas</b> ele tem?',r:6,tol:.01,u:'',x:'Soma dos graus = 12 = 2|E| → |E| = 6 arestas.'},
+{t:'mc',e:'Um grafo bipartido pode conter um ciclo de comprimento 5?',a:['Não — em grafo bipartido todo ciclo tem comprimento par','Sim, desde que o grafo seja conexo','Sim, qualquer grafo admite ciclos ímpares','Não existe ciclo em grafo bipartido'],c:0,x:'Ciclo ímpar ⇒ não é bipartido. É o teste rápido da Aula 11.'},
+{t:'mc',e:'Quando existe um passeio que usa <b>todas</b> as arestas sem repetir nenhuma?',a:['Quando todos os vértices têm grau par','Com no máximo 2 vértices de grau ímpar','Quando o grafo é bipartido','Quando todas as arestas têm peso'],c:1,x:'0 vértices ímpares: fecha em ciclo euleriano; 2: começa em um e termina no outro. 4 ou mais (Königsberg!): impossível.'},
+{t:'num',e:'Königsberg tinha <b>7 pontes</b>. Quanto vale a <b>soma dos graus</b> do grafo da cidade?',r:14,tol:.01,u:'',x:'Σ graus = 2|E| = 2·7 = 14. Confere: 5 + 3 + 3 + 3 = 14 ✓'}
+];
+/* ---------- renderização do simulado ---------- */
+const simQ=document.getElementById('simQuestoes');
+let acertos=0,feitas=0,estado={ordem:[],resp:{}};
+function atualizaHUD(){
+  const TOTAL=BANCO.length;
+  document.getElementById('simAcertos').textContent=acertos;
+  document.getElementById('chipPlacar').textContent='Simulado: '+acertos+'/'+TOTAL;
+  document.getElementById('simBarra').style.width=(feitas/TOTAL*100)+'%';
+  if(feitas===TOTAL){
+    document.getElementById('simResumo').classList.add('mostra');
+    const p=Math.round(acertos/TOTAL*100);
+    document.getElementById('simPct').textContent=p+'%';
+    document.getElementById('simMsg').textContent=p>=80?'Excelente! Você dominou o conteúdo. 🎉':p>=50?'Bom caminho! Revise as questões erradas e refaça.':'Releia as aulas com calma e tente de novo — você chega lá.';
+  }
+}
+function fbMsg(box,ok,msg){const f=box.querySelector('.fb');f.textContent=(ok?'✓ ':'✗ ')+msg;f.className='fb mostra '+(ok?'ok':'no');}
+function pontua(box,ok,respTxt){
+  feitas++;if(ok)acertos++;
+  box.classList.add(ok?'feita-ok':'feita-no','travada');
+  estado.resp[box._q.id]={ok:ok,resp:respTxt||'—',fb:box.querySelector('.fb').textContent};
+  salvaSim();atualizaHUD();
+  box.querySelector('.expl').classList.add('mostra');
+}
+function escHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function salvaSim(){try{localStorage.setItem('simSalvo',JSON.stringify({ordem:estado.ordem,resp:estado.resp}));}catch(e){}}
+function respostaCerta(q){
+  if(q.t==='mc')return 'ABCD'[q.c]+') '+q.a[q.c];
+  if(q.t==='num')return String(q.r).replace('.',',')+(q.u?' '+q.u:'');
+  if(q.t==='clique')return 'vértice '+q.nome;
+  if(q.t==='caminho')return q.seq.join(' → ')+' · custo '+q.custo;
+  return q.opcoes.find(o=>o.ok).d;
+}
+function renderMC(q,i){
+  const box=document.createElement('div');box.className='questao';
+  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3><div class="alts">'+q.a.map((alt,j)=>'<div class="alt" data-j="'+j+'" role="button" tabindex="0"><span class="l">'+'ABCD'[j]+'.</span><span>'+alt+'</span></div>').join('')+'</div><div class="fb"></div><div class="expl">'+q.x+'</div>';
+  box.querySelectorAll('.alt').forEach(a=>a.addEventListener('click',()=>{
+    if(box.classList.contains('travada'))return;
+    const j=+a.dataset.j,ok=j===q.c;
+    box.querySelectorAll('.alt').forEach((al,k)=>{if(k===q.c)al.classList.add('certa');else if(k===j)al.classList.add('errada');});
+    fbMsg(box,ok,ok?'Correto!':'A resposta certa é a alternativa '+'ABCD'[q.c]+'.');
+    pontua(box,ok,'ABCD'[j]);
+  }));
+  return box;
+}
+function renderNum(q,i){
+  const box=document.createElement('div');box.className='questao';
+  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3><div class="resp-linha"><input class="resp-entrada" type="text" inputmode="decimal" placeholder="'+(q.u?'resposta em '+q.u:'sua resposta')+'"><button class="btn btn-fino btn-marca">Conferir</button></div><div class="fb"></div><div class="expl">'+q.x+'</div>';
+  const inp=box.querySelector('input');
+  const go=()=>{
+    if(box.classList.contains('travada'))return;
+    const ok=numEq(inp.value,q.r,q.tol);
+    inp.disabled=true;
+    fbMsg(box,ok,ok?'Correto!':'A resposta era '+String(q.r).replace('.',',')+(q.u?' '+q.u:'')+'.');
+    pontua(box,ok,inp.value);
+  };
+  box.querySelector('button').addEventListener('click',go);
+  inp.addEventListener('keydown',ev=>{if(ev.key==='Enter')go();});
+  return box;
+}
+function renderClique(q,i){
+  const box=document.createElement('div');box.className='questao';
+  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3><div class="graf-box">'+q.svg()+'</div><div class="fb"></div><div class="expl">'+q.x+'</div>';
+  box.querySelectorAll('.gnd').forEach(g=>g.addEventListener('click',()=>{
+    if(box.classList.contains('travada'))return;
+    const ok=g.dataset.nome===q.nome;
+    g.classList.add(ok?'certo':'errado');
+    if(!ok)[...box.querySelectorAll('.gnd')].find(x=>x.dataset.nome===q.nome).classList.add('certo');
+    fbMsg(box,ok,ok?'Correto!':'O vértice certo era '+q.nome+'.');
+    pontua(box,ok,g.dataset.nome);
+  }));
+  return box;
+}
+function renderCaminho(q,i){
+  const box=document.createElement('div');box.className='questao';
+  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3><div class="graf-box">'+q.svg()+'</div><div class="caminho-display">Percurso: (clique nos vértices)</div><div class="resp-linha"><input class="resp-entrada" type="text" inputmode="decimal" placeholder="custo total"><button class="btn btn-fino btn-marca">Conferir</button></div><div class="fb"></div><div class="expl">'+q.x+'</div>';
+  const disp=box.querySelector('.caminho-display');let seq=[];
+  box.querySelectorAll('.gnd').forEach(g=>g.addEventListener('click',()=>{
+    if(box.classList.contains('travada'))return;
+    const n=g.dataset.nome,idx=seq.indexOf(n);
+    if(idx!==-1&&idx===seq.length-1){seq.pop();g.classList.remove('certo');}
+    else if(idx===-1){seq.push(n);g.classList.add('certo');}
+    disp.textContent='Percurso: '+(seq.length?seq.join(' → '):'(clique nos vértices)');
+  }));
+  const inp=box.querySelector('input');
+  box.querySelector('button').addEventListener('click',()=>{
+    if(box.classList.contains('travada'))return;
+    const okSeq=seq.join('')===q.seq.join(''),okC=numEq(inp.value,q.custo,.01),ok=okSeq&&okC;
+    if(!okSeq){
+      seq=[];box.querySelectorAll('.gnd').forEach(g=>g.classList.remove('certo','errado'));
+      q.seq.forEach(n=>[...box.querySelectorAll('.gnd')].find(x=>x.dataset.nome===n).classList.add('certo'));
+      disp.textContent='Percurso correto: '+q.seq.join(' → ');
+    }
+    inp.disabled=true;
+    fbMsg(box,ok,ok?'Correto!':(!okSeq?'O menor percurso era '+q.seq.join(' → ')+'.':'O percurso estava certo, mas o custo era '+q.custo+'.'));
+    pontua(box,ok,seq.join(' → ')+' · custo '+inp.value);
+  });
+  return box;
+}
+function renderBip(q,i){
+  const box=document.createElement('div');box.className='questao';
+  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3><div class="bip-linha">'+q.opcoes.map((o,j)=>'<div class="bip-item" data-j="'+j+'" role="button" tabindex="0"><h4>'+o.d+'</h4>'+o.t+'</div>').join('')+'</div><div class="fb"></div><div class="expl">'+q.x+'</div>';
+  box.querySelectorAll('.bip-item').forEach(it=>it.addEventListener('click',()=>{
+    if(box.classList.contains('travada'))return;
+    const j=+it.dataset.j,ok=q.opcoes[j].ok,certo=q.opcoes.findIndex(o=>o.ok);
+    q.opcoes.forEach((o,k)=>box.querySelector('.bip-item[data-j="'+k+'"]').classList.add(o.ok?'certo':'errado'));
+    fbMsg(box,ok,ok?'Correto!':'O grafo bipartido era o '+(certo+1)+'º (sem ciclo ímpar).');
+    pontua(box,ok,q.opcoes[j].d);
+  }));
+  return box;
+}
+const RENDER={mc:renderMC,num:renderNum,clique:renderClique,caminho:renderCaminho,bip:renderBip};
+function embaralha(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));const t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function aplicaSalvo(box,q,s){
+  box.classList.add(s.ok?'feita-ok':'feita-no','travada');
+  const f=box.querySelector('.fb');f.textContent=s.fb||'';f.className='fb mostra '+(s.ok?'ok':'no');
+  box.querySelector('.expl').classList.add('mostra');
+  if(q.t==='mc'){
+    const j=(s.resp||'?').charCodeAt(0)-65;
+    box.querySelectorAll('.alt').forEach((al,k)=>{if(k===q.c)al.classList.add('certa');else if(k===j)al.classList.add('errada');});
+  }else if(q.t==='num'){
+    const inp=box.querySelector('input');inp.value=s.resp;inp.disabled=true;
+  }else if(q.t==='clique'){
+    box.querySelectorAll('.gnd').forEach(g=>{
+      if(g.dataset.nome===q.nome)g.classList.add('certo');
+      else if(!s.ok&&g.dataset.nome===s.resp)g.classList.add('errado');
+    });
+  }else if(q.t==='caminho'){
+    box.querySelectorAll('.gnd').forEach(g=>{if(q.seq.includes(g.dataset.nome))g.classList.add('certo');});
+    box.querySelector('.caminho-display').textContent=(s.ok?'Percurso: ':'Percurso correto: ')+q.seq.join(' → ');
+    const inp=box.querySelector('input');inp.value=(s.resp||'').split(' · custo ')[1]||'';inp.disabled=true;
+  }else if(q.t==='bip'){
+    box.querySelectorAll('.bip-item').forEach(it=>it.classList.add(q.opcoes[+it.dataset.j].ok?'certo':'errado'));
+  }
+}
+function montarSimulado(restaurar){
+  acertos=0;feitas=0;simQ.innerHTML='';
+  document.getElementById('simResumo').classList.remove('mostra');
+  document.getElementById('simGabarito').classList.remove('mostra');
+  let lista=null,salvo=null;
+  if(restaurar){try{salvo=JSON.parse(localStorage.getItem('simSalvo')||'null');}catch(e){}}
+  if(salvo&&salvo.ordem&&salvo.ordem.length===BANCO.length){
+    estado={ordem:salvo.ordem,resp:salvo.resp||{}};
+    lista=salvo.ordem.map(id=>BANCO[id]);
+  }else{
+    lista=embaralha(BANCO);
+    estado={ordem:lista.map(q=>q.id),resp:{}};
+    salvaSim();
+  }
+  lista.forEach((q,i)=>{
+    const box=RENDER[q.t](q,i);
+    box._q=q;
+    const s=estado.resp[q.id];
+    if(s)aplicaSalvo(box,q,s);
+    simQ.appendChild(box);
+  });
+  feitas=Object.keys(estado.resp).length;
+  acertos=Object.keys(estado.resp).filter(k=>estado.resp[k].ok).length;
+  atualizaHUD();
+}
+function montarGabarito(){
+  const g=document.getElementById('simGabarito');
+  g.innerHTML='<h3 style="font:700 1.2rem var(--display);margin:.2rem 0 .8rem">📋 Gabarito comentado</h3>'+estado.ordem.map((id,i)=>{
+    const q=BANCO[id],s=estado.resp[id]||{},ok=s.ok;
+    const detalhe=ok
+      ?'<span class="sua ok">Você respondeu "'+escHtml(s.resp)+'"</span> — correta! ✓'
+      :'<span class="sua">Você respondeu "'+escHtml(s.resp||'—')+'"</span>, mas a correta é <span class="certa-r">'+respostaCerta(q)+'</span>';
+    return '<div class="gab-item'+(ok?'':' err')+'"><div class="gq">Questão '+(i+1)+'</div><p>'+q.e+'</p><p style="margin-top:.3rem">'+detalhe+'</p></div>';
+  }).join('');
+  g.classList.add('mostra');
+  g.scrollIntoView({behavior:'smooth',block:'start'});
+}
+document.getElementById('btnResetSim').addEventListener('click',()=>{montarSimulado(false);toast('Simulado resetado!');});
+document.getElementById('btnResetSim2').addEventListener('click',()=>{montarSimulado(false);toast('Simulado resetado!');});
+document.getElementById('btnEnviar').addEventListener('click',montarGabarito);
+BANCO.forEach((q,i)=>q.id=i);
+montarSimulado(true);
+/* ---------- flashcards ---------- */
+const FLASH=[
+{s:'V',f:'Quais as três características de um vetor?',v:'<b>Módulo</b> (valor numérico com unidade), <b>direção</b> (inclinação da reta suporte) e <b>sentido</b> (indicado pela seta).'},
+{s:'V',f:'Cite exemplos de grandezas vetoriais e de escalares.',v:'<b>Vetoriais:</b> força, velocidade, aceleração, deslocamento.<br><b>Escalares:</b> massa, tempo, temperatura, distância, volume.'},
+{s:'V',f:'O que é o vetor resultante?',v:'O resultado de operações vetoriais: um único vetor que equivale ao conjunto todo (várias forças agindo → uma força resultante).'},
+{s:'V',f:'Somando vetores de mesma direção e sentidos <b>iguais</b>, o que faz?',v:'<b>Soma os módulos</b> e mantém a direção e o sentido (vale a comutativa).'},
+{s:'V',f:'E se os sentidos forem <b>opostos</b>?',v:'<b>Subtrai os módulos</b>; o sentido do resultante é o do vetor de <b>maior módulo</b>. Subtrair = somar com o oposto.'},
+{s:'V',f:'Fórmula do resultante de vetores <b>perpendiculares</b>?',v:'Teorema de Pitágoras: <b>R = √(a² + b²)</b> — o resultante é a hipotenusa do triângulo retângulo.'},
+{s:'V',f:'Fórmula do resultante de vetores <b>oblíquos</b>?',v:'Lei dos Cossenos: <b>R = √(a² + b² + 2ab·cos θ)</b> (método do paralelogramo).'},
+{s:'V',f:'Como se decompõe o vetor A em x e y?',v:'<b>Ax = A·cos θ</b> e <b>Ay = A·sen θ</b>. Atenção: Ax + Ay <b>não</b> é o módulo — ele vem de √(Ax² + Ay²).'},
+{s:'V',f:'O que acontece com o vetor ao multiplicar por k real?',v:'<b>k &gt; 0:</b> módulo × |k|, mesmo sentido.<br><b>k &lt; 0:</b> módulo × |k|, sentido <b>invertido</b>.<br><b>k = 0:</b> vetor nulo. <b>k = 1:</b> igual.'},
+{s:'V',f:'sen 30°, sen 45° e sen 60° valem…',v:'<b>1/2</b>, <b>√2/2</b> e <b>√3/2</b> (o cosseno segue a ordem inversa: cos 60° = 1/2 …).'},
+{s:'V',f:'Sinais de sen, cos e tg no 2º e 3º quadrantes?',v:'<b>2º:</b> sen +, cos −, tg −.<br><b>3º:</b> sen −, cos −, tg +.<br>(1º tudo +; 4º: sen −, cos +, tg −.)'},
+{s:'G',f:'O que é um grafo? Escreva a notação.',v:'<b>G = (V, E)</b>: V é o conjunto de <b>vértices</b> (pontos de conexão) e E o conjunto de <b>arestas</b> (ligações). Nasceu de Königsberg com Euler, 1736.'},
+{s:'G',f:'O que é o grau de um vértice? E o Lema do Aperto de Mãos?',v:'<b>Grau:</b> nº de arestas que incidem no vértice. <b>Lema:</b> Σ graus = 2·nº de arestas (cada aresta conta para 2 vértices).'},
+{s:'G',f:'Diferença entre grafo direcionado e não direcionado?',v:'<b>Não direcionado:</b> mão dupla (viaja nos dois sentidos).<br><b>Direcionado (dígrafo):</b> mão única — a aresta vira <b>arco</b> (A, B).'},
+{s:'G',f:'O que é um grafo ponderado?',v:'Arestas com <b>peso</b> associado: distância, tempo, custo ou capacidade (ex.: estradas de 120 km).'},
+{s:'G',f:'O que é um caminho? E seu comprimento?',v:'Sequência de vértices ligados dois a dois por arestas. O <b>comprimento</b> é o nº de arestas percorridas.'},
+{s:'G',f:'O que é um ciclo?',v:'Caminho que <b>começa e termina no mesmo vértice</b>, sem repetir arestas.'},
+{s:'G',f:'O que é o menor caminho em um grafo ponderado?',v:'A sequência de arestas de <b>menor soma de pesos</b> (não necessariamente a de menos arestas!). Algoritmo clássico: Dijkstra.'},
+{s:'G',f:'O que é um grafo de interseção?',v:'Liga dois vértices quando eles têm algo em comum: há aresta entre A e B se <b>A ∩ B ≠ ∅</b>.'},
+{s:'G',f:'Quando um grafo é bipartido?',v:'Quando os vértices dividem em <b>2 conjuntos</b> e toda aresta liga conjuntos diferentes. Equivalente: colorir com 2 cores. <b>Ciclo ímpar ⇒ não é bipartido.</b>'},
+{s:'G',f:'Quando existe o passeio que usa todas as arestas sem repetir?',v:'Com <b>0 vértices de grau ímpar</b> (fecha em ciclo) ou <b>2</b> (começa num, termina no outro). Königsberg tinha 4 ímpares → impossível!'},
+{s:'G',f:'Pode existir um grafo com graus (3, 3, 3, 3, 5)?',v:'<b>Não.</b> Soma = 17, ímpar — mas Σ graus = 2|E| é sempre par. Viola o Lema do Aperto de Mãos.'}
+];
+const fcCarta=document.getElementById('fcCarta'),fcStatus=document.getElementById('fcStatus');
+let fcFila=[],fcIdx=0,fcTema='tudo',fcDif=[];
+try{fcDif=JSON.parse(localStorage.getItem('flashDificeis')||'[]');}catch(e){}
+function fcSalvaDif(){try{localStorage.setItem('flashDificeis',JSON.stringify(fcDif));}catch(e){}}
+function fcBtnOn(){[['fcTudo','tudo'],['fcVet','V'],['fcGraf','G']].forEach(p=>document.getElementById(p[0]).classList.toggle('btn-tinta',fcTema===p[1]));}
+function fcMonta(){
+  fcFila=embaralha(FLASH.filter(c=>fcTema==='tudo'||c.s===fcTema));
+  fcIdx=0;fcBtnOn();fcMostra();
+}
+function fcMostra(){
+  fcCarta.classList.remove('virada');
+  const tag=document.getElementById('fcTag'),fr=document.getElementById('fcFrente'),vo=document.getElementById('fcVerso');
+  if(fcIdx>=fcFila.length){
+    tag.textContent='—';fr.textContent='Fim do baralho! 🎉';vo.textContent='Use os filtros acima para embaralhar uma nova rodada.';
+    fcStatus.textContent='Rodada concluída · marcadas como difíceis: '+fcDif.length;
+    return;
+  }
+  const c=fcFila[fcIdx];
+  tag.textContent=c.s==='V'?'Vetores':'Grafos';
+  fr.innerHTML=c.f;vo.innerHTML=c.v;
+  fcStatus.textContent='Carta '+(fcIdx+1)+' de '+fcFila.length+' (fila restante: '+(fcFila.length-fcIdx)+') · marcadas como difíceis: '+fcDif.length;
+}
+fcCarta.addEventListener('click',()=>fcCarta.classList.toggle('virada'));
+fcCarta.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fcCarta.classList.toggle('virada');}});
+document.getElementById('fcNao').addEventListener('click',()=>{
+  if(fcIdx>=fcFila.length)return;
+  const c=fcFila[fcIdx];
+  if(!fcDif.includes(c.f)){fcDif.push(c.f);fcSalvaDif();}
+  fcFila.push(c);fcIdx++;fcMostra();
+});
+document.getElementById('fcSim').addEventListener('click',()=>{
+  if(fcIdx>=fcFila.length)return;
+  const c=fcFila[fcIdx],i=fcDif.indexOf(c.f);
+  if(i>-1){fcDif.splice(i,1);fcSalvaDif();}
+  fcIdx++;fcMostra();
+});
+document.getElementById('fcProx').addEventListener('click',()=>{if(fcIdx<fcFila.length){fcIdx++;fcMostra();}});
+document.getElementById('fcTudo').addEventListener('click',()=>{fcTema='tudo';fcMonta();});
+document.getElementById('fcVet').addEventListener('click',()=>{fcTema='V';fcMonta();});
+document.getElementById('fcGraf').addEventListener('click',()=>{fcTema='G';fcMonta();});
+document.getElementById('fcLimpaDif').addEventListener('click',()=>{fcDif=[];fcSalvaDif();fcMostra();toast('Marcações de "difíceis" limpas!');});
+fcMonta();
+
+/* ---------- modo intensivo ---------- */
+const BANCO_INT=[
+{e:'Qual grandeza precisa de direção e sentido?',a:['massa','força','temperatura','tempo'],c:1},
+{e:'O módulo de um vetor é…',a:['sua direção','seu valor numérico','seu sentido','sua origem'],c:1},
+{e:'6 N e 3 N, mesma direção e sentido → R =',a:['9 N','3 N','18 N','2 N'],c:0},
+{e:'6 N e 3 N, sentidos opostos → R =',a:['9 N','2 N','3 N','6 N'],c:2},
+{e:'Perpendiculares de 3 u e 4 u → R =',a:['7 u','12 u','5 u','1 u'],c:2},
+{e:'Perpendiculares de 6 N e 8 N → R =',a:['14 N','10 N','48 N','2 N'],c:1},
+{e:'Ax = A·cos θ. Com A = 10 u e θ = 60°, Ax =',a:['5 u','8,66 u','10 u','17,32 u'],c:0},
+{e:'Ay = A·sen θ. Com A = 10 u e θ = 30°, Ay =',a:['5 u','8,66 u','10 u','2,5 u'],c:0},
+{e:'Multiplicar por k = 0 resulta em…',a:['vetor igual','vetor nulo','sentido invertido','módulo dobrado'],c:1},
+{e:'|<span class="vet">a</span>| = 4 u. O módulo de 2<span class="vet">a</span> vale:',a:['2 u','6 u','8 u','16 u'],c:2},
+{e:'sen 30° =',a:['0,5','√3/2','√2/2','1'],c:0},
+{e:'cos 60° =',a:['0,5','√3/2','√2/2','1'],c:0},
+{e:'cos 120° =',a:['0,5','−0,5','√3/2','1'],c:1},
+{e:'tg 45° =',a:['0','√3','1','√3/3'],c:2},
+{e:'sen 90° =',a:['0','0,5','1','não existe'],c:2},
+{e:'O vértice representa __ e a aresta representa __:',a:['ligação; ponto','ponto; ligação','peso; direção','direção; peso'],c:1},
+{e:'G = (V, E) com V = {A,B,C} e ligações A—B—C. Então |E| =',a:['1','2','3','0'],c:1},
+{e:'Uma estrada de mão dupla entre A e B é um grafo…',a:['direcionado','não direcionado','bipartido','ponderado'],c:1},
+{e:'O grau de um vértice é…',a:['a metade dos vértices vizinhos','o número de arestas que incidem nele','o número de ciclos que passa por ele','o seu peso'],c:1},
+{e:'A soma dos graus de todos os vértices é…',a:['o número de arestas','o dobro do número de arestas','o número de vértices','o dobro dos vértices'],c:1},
+{e:'A Ilha Kneiphof tinha 5 pontes. Seu grau era…',a:['par','ímpar','nulo','indefinido'],c:1},
+{e:'O passeio das 7 pontes é impossível porque…',a:['4 vértices têm grau ímpar','falta uma ponte','as ilhas são pequenas','as arestas têm peso'],c:0},
+{e:'Um ciclo é um caminho que…',a:['usa pesos negativos','termina onde começou','só tem 2 vértices','nunca se repete'],c:1},
+{e:'O menor caminho entre dois vértices considera…',a:['a menor quantidade de arestas','a menor soma de pesos','sempre a diagonal','apenas graus pares'],c:1},
+{e:'A→B→D custa 2+5=7 e A→C→D custa 4+1=5. O menor caminho é…',a:['A→B→D','A→C→D','são iguais','nenhum existe'],c:1},
+{e:'Em um grafo de interseção, há aresta entre A e B se…',a:['A ∩ B ≠ ∅','A ∩ B = ∅','A = B','A ∪ B = ∅'],c:0},
+{e:'Graus (5, 2, 2, 2, 2, 1) → o grafo tem quantas arestas?',a:['6','7','14','5'],c:1},
+{e:'Graus (3, 3, 3, 3, 5): esse grafo existe?',a:['Sim, com 8 arestas','Sim, com 9 arestas','Não — a soma dos graus é ímpar','Sim, com 17 arestas'],c:2},
+{e:'cos 30° =',a:['√3/2','1/2','√2/2','√3/3'],c:0},
+{e:'tg 60° =',a:['√3','1','√3/3','0'],c:0},
+{e:'1 rad vale aproximadamente…',a:['57,3°','30°','90°','180°'],c:0},
+{e:'π/6 rad corresponde a…',a:['30°','45°','60°','90°'],c:0},
+{e:'As componentes Ax e Ay são…',a:['paralelas entre si','perpendiculares entre si','sempre iguais','sempre negativas'],c:1},
+{e:'Ax + Ay é igual ao módulo do vetor?',a:['Sim, sempre','Não — o módulo vem de √(Ax²+Ay²)','Sim, se θ = 45°','Não — é sempre o dobro'],c:1},
+{e:'Perpendiculares de 7 u e 24 u → R =',a:['31 u','25 u','17 u','168 u'],c:1},
+{e:'Graus (4, 3, 3, 2) → o grafo tem quantas arestas?',a:['5','6','12','4'],c:1},
+{e:'Um grafo com 8 arestas tem soma dos graus igual a…',a:['8','16','4','64'],c:1},
+{e:'Um ciclo de comprimento 7 num grafo bipartido é…',a:['impossível — todo ciclo bipartido é par','possível sempre','possível só se ponderado','possível só se conexo'],c:0},
+{e:'Uma aresta com direção (mão única) chama-se…',a:['arco (dígrafo)','laço','ramo duplicado','diagonal'],c:0},
+{e:'Quem provou a impossibilidade das 7 pontes, e em que ano?',a:['Euler, em 1736','Gauss, em 1799','Pitágoras, 500 a.C.','Boole, em 1854'],c:0}
+];
+const intPontos=document.getElementById('intPontos'),intRodada=document.getElementById('intRodada'),intTempo=document.getElementById('intTempo'),painelQ=document.getElementById('painelQ'),resInt=document.getElementById('resultadoInt');
+let rodadas=[],idxInt=0,pontos=0,travadaInt=false,tTimer=null,tRest=30;
+function novaRodada(){
+  clearInterval(tTimer);
+  if(idxInt>=rodadas.length){fimJogo();return;}
+  travadaInt=false;
+  const q=rodadas[idxInt];
+  intRodada.textContent=(idxInt+1)+'/10';
+  document.getElementById('intConta').textContent='Rodada '+(idxInt+1)+' de 10';
+  document.getElementById('intEnun').innerHTML=q.e;
+  const ops=document.getElementById('intOpcoes');ops.innerHTML='';
+  q.a.forEach((t,j)=>{
+    const b=document.createElement('button');b.className='opcao-int';
+    b.innerHTML='<span style="font:700 .8rem var(--mono);color:var(--blue-deep)">'+'ABCD'[j]+'.</span> '+t;
+    b.addEventListener('click',()=>responder(j,b));
+    ops.appendChild(b);
+  });
+  tRest=30;intTempo.textContent=tRest;
+  tTimer=setInterval(()=>{tRest--;intTempo.textContent=tRest;if(tRest<=0){clearInterval(tTimer);responder(-1,null);}},1000);
+}
+function responder(j){
+  if(travadaInt)return;travadaInt=true;clearInterval(tTimer);
+  const q=rodadas[idxInt],ops=document.getElementById('intOpcoes');
+  ops.querySelectorAll('.opcao-int').forEach((b,k)=>{if(k===q.c)b.classList.add('certa');else if(k===j)b.classList.add('errada');b.disabled=true;});
+  if(j===q.c){pontos+=10+(tRest>=20?5:0);toast('+10 pontos!'+(tRest>=20?' bônus de tempo +5!':''));}
+  intPontos.textContent=pontos;
+  setTimeout(()=>{idxInt++;novaRodada();},900);
+}
+function fimJogo(){
+  painelQ.style.display='none';resInt.classList.add('mostra');
+  document.getElementById('intFinal').textContent=pontos;
+  document.getElementById('intMsgFinal').textContent=pontos>=100?'Domínio absoluto! 🏆':pontos>=60?'Muito bom — mais uma rodada e vira recorde!':'Revise as aulas e volte mais forte.';
+}
+function iniciarInt(){
+  rodadas=embaralha(BANCO_INT).slice(0,10);
+  idxInt=0;pontos=0;intPontos.textContent='0';
+  painelQ.style.display='flex';resInt.classList.remove('mostra');
+  novaRodada();
+}
+document.getElementById('btnIntIniciar').addEventListener('click',iniciarInt);
+document.getElementById('btnIntNovamente').addEventListener('click',iniciarInt);
+</script>
+</body>
+</html>

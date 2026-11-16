@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treino Interativo — Vetores &amp; Grafos</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --blue:#0d3b8e; --blue2:#1a56b0; --yellow:#ffcf3f; --green:#1f9d55; --red:#d64545;
+    --bg:#eef2f9; --card:#ffffff; --ink:#1c2540; --muted:#5a6b8c;
+  }
+  body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);min-height:100vh}
+  .topbar{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;box-shadow:0 3px 12px rgba(13,59,142,.35)}
+  .topbar h1{font-size:1.1rem}
+  .topbar h1 span{color:var(--yellow)}
+  .chip{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.35);padding:6px 14px;border-radius:999px;font-weight:700;font-size:.9rem}
+  .wrap{max-width:920px;margin:0 auto;padding:16px 14px 60px}
+  .tabs{display:flex;gap:10px;margin:14px 0}
+  .tab{flex:1;padding:12px;border:none;border-radius:12px;background:#dde5f3;color:var(--blue);font-weight:700;font-size:1rem;cursor:pointer;transition:.2s}
+  .tab.active{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 6px 14px rgba(13,59,142,.35)}
+  .progress-wrap{background:#dde5f3;border-radius:999px;height:12px;overflow:hidden}
+  #progressBar{height:100%;width:0;background:linear-gradient(90deg,var(--yellow),#ffb03a);transition:width .3s}
+  .progress-label{font-size:.85rem;color:var(--muted);margin:6px 0 4px;text-align:center}
+  .banner{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;border-radius:14px;padding:14px 18px;margin:10px 0 4px}
+  .banner h2{font-size:1.2rem}
+  .banner h2 em{color:var(--yellow);font-style:normal}
+  .banner p{font-size:.9rem;opacity:.92;margin-top:4px}
+  details.rev{background:#fff;border-radius:12px;padding:10px 14px;margin:10px 0;box-shadow:0 3px 10px rgba(28,37,64,.08)}
+  details.rev summary{font-weight:700;color:var(--blue);cursor:pointer}
+  details.rev ul{margin:8px 0 2px 18px;font-size:.9rem;color:#24325c;line-height:1.6}
+  .card{background:var(--card);border-radius:14px;padding:16px 18px;margin:14px 0;box-shadow:0 3px 10px rgba(28,37,64,.08)}
+  .q-head{display:flex;gap:10px;align-items:flex-start}
+  .q-num{min-width:28px;height:28px;border-radius:50%;background:var(--blue2);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;flex-shrink:0}
+  .q-text{font-weight:600;line-height:1.45}
+  .q-body{margin-top:12px}
+  .card.answered .q-body{pointer-events:none}
+  .card.ok{border-left:6px solid var(--green)}
+  .card.bad{border-left:6px solid var(--red)}
+  .options{display:grid;gap:8px}
+  .option{display:flex;gap:10px;align-items:center;border:2px solid #e3eaf6;border-radius:10px;padding:10px 12px;cursor:pointer;transition:.15s;font-size:.95rem;user-select:none}
+  .option:hover{border-color:var(--blue2);background:#f6f9ff}
+  .option.correct{border-color:var(--green);background:#e6f7ec}
+  .option.wrong{border-color:var(--red);background:#fdeaea}
+  .opt-letter{font-weight:800;color:var(--blue2)}
+  .answer-row{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;align-items:center}
+  .answer-input{padding:10px 12px;border:2px solid #e3eaf6;border-radius:10px;font-size:1rem;width:150px}
+  .answer-input:focus{outline:none;border-color:var(--blue2)}
+  .btn{padding:10px 16px;border:none;border-radius:10px;font-weight:700;cursor:pointer;transition:.15s;font-size:.95rem}
+  .btn-check{background:var(--yellow);color:#5b4300}
+  .btn-check:hover{filter:brightness(1.05)}
+  .btn-ghost{background:#e3eaf6;color:var(--blue)}
+  .feedback{font-weight:700;margin-top:10px;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{color:var(--green)} .feedback.bad{color:var(--red)} .feedback.info{color:#b06a00}
+  .expl{display:none;margin-top:10px;background:#f2f6ff;border-left:4px solid var(--blue2);padding:10px 12px;border-radius:8px;font-size:.92rem;color:#24325c;line-height:1.5}
+  .expl.show{display:block}
+  svg.gsvg{width:100%;height:auto;max-width:520px;display:block;margin:0 auto;background:#f8faff;border:1px solid #e3eaf6;border-radius:12px;user-select:none}
+  svg.small{max-width:170px;border:none;background:transparent}
+  svg line{stroke:#8fa3c8;stroke-width:3;stroke-linecap:round}
+  svg.ko line{stroke:#d95d5d;stroke-width:3.5}
+  svg line.active{stroke:#ff9f1a;stroke-width:5}
+  g.node{cursor:pointer}
+  .node circle{fill:var(--blue2);stroke:#fff;stroke-width:3;cursor:pointer;transition:.15s}
+  .node:hover circle{stroke:var(--yellow)}
+  .node.correct circle{fill:var(--green)!important}
+  .node.wrong circle{fill:var(--red)!important}
+  .node text{fill:#fff;font-weight:700;font-size:13px;text-anchor:middle;pointer-events:none;user-select:none}
+  .wlabel{font-size:13px;font-weight:700;fill:#0d3b8e;paint-order:stroke;stroke:#fff;stroke-width:5px;text-anchor:middle;pointer-events:none}
+  .nlabel{font-size:12px;font-weight:600;fill:#33415e;paint-order:stroke;stroke:#fff;stroke-width:5px;text-anchor:middle;pointer-events:none}
+  .path-display{margin-top:10px;background:#f2f6ff;border:2px dashed #b9c8ea;border-radius:10px;padding:10px 12px;font-weight:700;color:var(--blue);min-height:44px}
+  .bip-row{display:flex;gap:14px;flex-wrap:wrap}
+  .bip{flex:1;min-width:180px;border:2px solid #dde5f3;border-radius:12px;padding:8px;cursor:pointer;text-align:center;transition:.15s;background:#fff;user-select:none}
+  .bip:hover{border-color:var(--yellow)}
+  .bip.correct{border-color:var(--green);background:#e6f7ec}
+  .bip.wrong{border-color:var(--red);background:#fdeaea}
+  .bip h4{font-size:.9rem;color:var(--muted);margin-bottom:4px}
+  .hint{font-size:.85rem;color:var(--muted);margin-top:10px}
+  .section-result{display:none;background:#fff;border:2px dashed var(--blue2);border-radius:12px;padding:14px;text-align:center;font-size:1.05rem;margin:16px 0}
+  .result{display:none;text-align:center;background:linear-gradient(135deg,#0d3b8e,#1a56b0);color:#fff;border-radius:16px;padding:24px;margin:18px 0}
+  .result.show{display:block}
+  .result .big{font-size:1.4rem;font-weight:800;margin-bottom:6px}
+  .result .pct{font-size:2.6rem;font-weight:900;color:var(--yellow)}
+  .result p{margin-top:6px;opacity:.95}
+  .actions{display:flex;justify-content:center;margin:10px 0 40px}
+  .hidden{display:none}
+  footer{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:20px}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <h1>📘 Treino <span>Interativo</span> — Vetores &amp; Grafos</h1>
+  <div class="chip" id="scoreChip">⭐ 0 / 20</div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs">
+    <button class="tab active" data-tab="vetores">➡️ Vetores</button>
+    <button class="tab" data-tab="grafos">🔗 Grafos</button>
+  </nav>
+
+  <div class="progress-wrap"><div id="progressBar"></div></div>
+  <div class="progress-label" id="progressLabel">0/20 respondidas • 0 certas</div>
+
+  <section id="tab-vetores" class="quiz">
+    <div class="banner">
+      <h2>➡️ <em>Vetores</em> — Grandezas, Operações e Decomposição</h2>
+      <p>10 questões: marque a alternativa certa, digite o resultado ou interaja.</p>
+    </div>
+    <details class="rev">
+      <summary>📋 Revisão rápida (fórmulas dos slides)</summary>
+      <ul>
+        <li><b>Mesma direção:</b> sentidos iguais → soma (R = a + b); sentidos opostos → subtração (R = |a − b|, sentido do maior).</li>
+        <li><b>Perpendiculares (Pitágoras):</b> R = √(a² + b²).</li>
+        <li><b>Oblíquos (Lei dos Cossenos):</b> R = √(a² + b² + 2ab·cos θ).</li>
+        <li><b>Componentes:</b> Ax = A·cos θ &nbsp;|&nbsp; Ay = A·sen θ &nbsp;|&nbsp; A = √(Ax² + Ay²).</li>
+        <li><b>Multiplicação por real:</b> b⃗ = k·a⃗ → |b⃗| = |k|·|a⃗|; k &lt; 0 inverte o sentido; k = 0 → vetor nulo.</li>
+      </ul>
+    </details>
+    <div class="section-result" id="res-vetores"></div>
+  </section>
+
+  <section id="tab-grafos" class="quiz hidden">
+    <div class="banner">
+      <h2>🔗 <em>Teoria dos Grafos</em> — Vértices, Arestas e Caminhos</h2>
+      <p>10 questões: conceitos, cliques no grafo e montagem de caminhos.</p>
+    </div>
+    <details class="rev">
+      <summary>📋 Revisão rápida (fórmulas dos slides)</summary>
+      <ul>
+        <li><b>Grafo:</b> G = (V, E) — vértices (elementos) e arestas (ligações).</li>
+        <li><b>Grau de um vértice:</b> nº de arestas incidentes; soma dos graus = 2 × nº de arestas.</li>
+        <li><b>Caminho:</b> sequência de vértices ligados; <b>Ciclo:</b> começa e termina no mesmo vértice.</li>
+        <li><b>Tipos:</b> dígrafo (arestas com direção), ponderado (arestas com pesos), bipartido (sem ciclo ímpar).</li>
+        <li><b>Grafo de interseção:</b> aresta entre A e B ⇔ A ∩ B ≠ ∅.</li>
+        <li><b>Königsberg:</b> passeio sem repetir arestas exige no máximo 2 vértices de grau ímpar.</li>
+      </ul>
+    </details>
+    <div class="section-result" id="res-grafos"></div>
+  </section>
+
+  <div id="globalResult" class="result"></div>
+
+  <div class="actions"><button class="btn btn-ghost" id="resetBtn">🔄 Reiniciar exercícios</button></div>
+
+  <footer>Baseado nos slides de Vetores (VETORES.pdf) e Teoria dos Grafos.</footer>
+</div>
+
+<script>
+'use strict';
+// ---------- Helpers SVG ----------
+function nodeSVG(id,x,y,r){
+  r = r || 20;
+  return '<g class="node" data-id="'+id+'"><circle cx="'+x+'" cy="'+y+'" r="'+r+'"></circle><text x="'+x+'" y="'+(y+5)+'">'+id+'</text></g>';
+}
+function svgStr(N,E,vb,cls){
+  var lines = E.map(function(e){
+    return '<line x1="'+N[e[0]][0]+'" y1="'+N[e[0]][1]+'" x2="'+N[e[1]][0]+'" y2="'+N[e[1]][1]+'" data-key="'+[e[0],e[1]].sort().join('|')+'"></line>';
+  }).join('');
+  var nodes = Object.keys(N).map(function(id){ return nodeSVG(id,N[id][0],N[id][1]); }).join('');
+  return '<svg viewBox="'+vb+'" class="gsvg '+(cls||'')+'">'+lines+nodes+'</svg>';
+}
+function curvePath(p1,p2,k){
+  var mx=(p1[0]+p2[0])/2, my=(p1[1]+p2[1])/2;
+  var dx=p2[0]-p1[0], dy=p2[1]-p1[1];
+  var len=Math.hypot(dx,dy);
+  var cx=mx+(-dy/len)*k, cy=my+(dx/len)*k;
+  return 'M '+p1[0]+' '+p1[1]+' Q '+cx+' '+cy+' '+p2[0]+' '+p2[1];
+}
+// Grafo "maior grau": C tem grau 4
+function svgMaiorGrau(){
+  var N={A:[60,90],B:[140,40],C:[200,120],D:[140,190],E:[60,170]};
+  var E=[['A','B'],['A','C'],['B','C'],['B','D'],['C','D'],['C','E'],['D','E']];
+  return svgStr(N,E,'0 0 260 232');
+}
+// Königsberg: graus MN=3, MS=3, IK=5, IL=3 (7 pontas/arestas)
+function svgKo(){
+  var N={MN:[170,50],IK:[62,155],IL:[278,155],MS:[170,260]};
+  var edges=[
+    ['MN','IK',36],['MN','IK',-36],
+    ['IK','MS',36],['IK','MS',-36],
+    ['IK','IL',0],
+    ['MN','IL',14],['MS','IL',-14]
+  ];
+  var paths=edges.map(function(e){
+    return '<path d="'+curvePath(N[e[0]],N[e[1]],e[2])+'" fill="none"></path>';
+  }).join('');
+  var names=[['Margem Norte',170,18],['Ilha Kneiphof',62,200],['Ilha Lomse',278,200],['Margem Sul',170,302]]
+    .map(function(t){ return '<text class="nlabel" x="'+t[1]+'" y="'+t[2]+'">'+t[0]+'</text>'; }).join('');
+  var nodes=Object.keys(N).map(function(id){ return nodeSVG(id,N[id][0],N[id][1],21); }).join('');
+  return '<svg viewBox="0 0 340 315" class="gsvg ko">'+paths+names+nodes+'</svg>';
+}
+// Grafos pequenos (bipartição)
+function svgTri(){
+  var N={A:[65,35],B:[25,120],C:[105,120]};
+  return svgStr(N,[['A','B'],['B','C'],['C','A']],'0 0 130 155','small');
+}
+function svgQuad(){
+  var N={a:[35,40],b:[115,40],c:[115,125],d:[35,125]};
+  return svgStr(N,[['a','b'],['b','c'],['c','d'],['d','a']],'0 0 150 165','small');
+}
+// ---------- Banco de questões ----------
+var QUESTIONS = {
+vetores: [
+ {type:'mc',
+  q:'Para descrever completamente uma <b>grandeza vetorial</b>, é preciso informar:',
+  options:['Apenas o valor numérico e a unidade','Apenas a direção da reta suporte','Módulo, direção e sentido','Apenas o sentido da seta'],
+  correct:2,
+  expl:'Vetor é a representação que determina o <b>módulo</b> (intensidade), a <b>direção</b> (inclinação da reta suporte) e o <b>sentido</b> (para onde a seta aponta).'},
+ {type:'mc',
+  q:'Qual das alternativas contém <b>somente</b> grandezas vetoriais?',
+  options:['Massa, tempo e temperatura','Força, velocidade e aceleração','Distância, energia e tempo','Peso, volume e temperatura'],
+  correct:1,
+  expl:'São vetoriais: força, velocidade, aceleração e deslocamento. Massa, tempo, temperatura, distância e volume são <b>escalares</b> (só precisam de valor numérico).'},
+ {type:'input', unit:'N', answer:9,
+  q:'Um corpo recebe dois empurrões na <b>mesma direção e no mesmo sentido</b>: b⃗ = 6 N e a⃗ = 3 N (ambos para a direita). Qual é o módulo do vetor resultante (em N)?',
+  expl:'Sentidos iguais → somamos os módulos e mantemos a direção e o sentido: <b>R = 6 + 3 = 9 N</b>.'},
+ {type:'input', unit:'N', answer:3,
+  q:'Agora os mesmos vetores têm <b>sentidos opostos</b>: b⃗ = 6 N (←) e a⃗ = 3 N (→). Qual é o módulo do vetor resultante (em N)?',
+  expl:'Sentidos opostos → subtraímos os módulos: R = 6 − 3 = <b>3 N</b>, e o resultante fica no <b>sentido do vetor de maior módulo</b> (b⃗). Equivale a a⃗ − b⃗ = a⃗ + (−b⃗).'},
+ {type:'input', unit:'u', answer:5,
+  q:'a⃗ e b⃗ são <b>perpendiculares</b>, com |a⃗| = 3 u e |b⃗| = 4 u. Qual é o módulo do vetor resultante (em u)?',
+  expl:'Perpendiculares → Teorema de Pitágoras: R = √(3² + 4²) = √(9 + 16) = √25 = <b>5 u</b>.'},
+ {type:'input', unit:'N', answer:10,
+  q:'Vetores <b>perpendiculares</b>: |a⃗| = 6 N e |b⃗| = 8 N. Qual é o módulo do resultante (em N)?',
+  expl:'R = √(6² + 8²) = √(36 + 64) = √100 = <b>10 N</b>.'},
+ {type:'input', unit:'u', answer:11.36, tol:0.06,
+  q:'Vetores <b>oblíquos</b>: |a⃗| = 5 u, |b⃗| = 8 u e ângulo θ = 60°. Usando a Lei dos Cossenos, calcule o módulo do resultante em u (duas casas decimais, ex.: 11,36).',
+  expl:'Lei dos Cossenos: R = √(a² + b² + 2ab·cos θ) = √(25 + 64 + 2·5·8·0,5) = √129 ≈ <b>11,36 u</b>.'},
+ {type:'input', unit:'u', answer:10,
+  q:'<b>Decomposição vetorial:</b> um vetor de módulo A = 20 u forma ângulo de 60° com o eixo x. Qual é a componente horizontal Ax (em u)?',
+  expl:'Ax = A·cos θ = 20 · cos 60° = 20 · 0,5 = <b>10 u</b>. (A componente vertical seria Ay = 20 · sen 60° ≈ 17,32 u.)'},
+ {type:'mc',
+  q:'Sendo b⃗ = k·a⃗ com k &lt; 0, é correto afirmar que b⃗:',
+  options:['Tem o mesmo sentido de a⃗ e módulo k·|a⃗|','Tem sentido oposto ao de a⃗ e módulo |k|·|a⃗|','Tem direção diferente da de a⃗','É sempre o vetor nulo'],
+  correct:1,
+  expl:'k &lt; 0 → <b>sentido invertido</b> e módulo multiplicado por |k|. A direção (reta suporte) nunca muda; se k = 0, o resultado é o vetor nulo.'},
+ {type:'input', unit:'u', answer:15,
+  q:'Se |a⃗| = 5 u e b⃗ = −3·a⃗, qual é o módulo |b⃗| (em u)?',
+  expl:'|b⃗| = |−3| · |a⃗| = 3 · 5 = <b>15 u</b>, com sentido oposto ao de a⃗ (pois o escalar é negativo).'}
+],
+grafos: [
+ {type:'mc',
+  q:'Em Teoria dos Grafos, um <b>vértice</b> representa:',
+  options:['A ligação entre dois elementos','Um elemento (ponto de conexão)','Um algoritmo','O peso de uma conexão'],
+  correct:1,
+  expl:'<b>Vértices</b> representam os elementos (computador, pessoa, cidade…); <b>arestas</b> representam as ligações (conexões) entre eles.'},
+ {type:'mc',
+  q:'Um grafo tem V = {A, B, C} e E = {{A,B}, {B,C}}. Quantos vértices e quantas arestas ele possui?',
+  options:['2 vértices e 3 arestas','3 vértices e 2 arestas','3 vértices e 3 arestas','2 vértices e 2 arestas'],
+  correct:1,
+  expl:'V = {A, B, C} → <b>3 vértices</b>; E = {{A,B}, {B,C}} → <b>2 arestas</b> (ligações A–B e B–C).'},
+ {type:'vertex', svg:'maiorGrau', answer:'C',
+  q:'Clique no vértice de <b>maior grau</b> do grafo abaixo:',
+  expl:'O grau é a quantidade de arestas que "chegam" no vértice: A = 3, B = 3, <b>C = 4</b>, D = 3, E = 1. Conferindo pela regra do grau: soma dos graus = 14 = 2 × 7 arestas ✓'},
+ {type:'mc',
+  q:'Uma rua de <b>mão única</b> permite trafegar apenas de A para B. O grafo que representa essa situação é:',
+  options:['Grafo direcionado (dígrafo)','Grafo não direcionado','Grafo ponderado','Grafo bipartido'],
+  correct:0,
+  expl:'Quando a ligação tem <b>sentido definido</b> (só A → B), trata-se de um <b>grafo direcionado (dígrafo)</b>. Estrada de mão dupla → grafo não direcionado.'},
+ {type:'vertex', svg:'ko', answer:'IK',
+  q:'Este é o grafo das <b>Sete Pontes de Königsberg</b>. Clique no vértice que tem <b>grau 5</b>:',
+  expl:'A <b>Ilha Kneiphof</b> toca em 5 pontes (grau 5); Margem Norte, Margem Sul e Ilha Lomse têm grau 3. Como os 4 vértices têm grau ímpar, Euler provou que o passeio sem repetir pontes é <b>matematicamente impossível</b>.'},
+ {type:'path',
+  q:'Monte o caminho de <b>menor custo</b> do servidor <b>A</b> até o servidor <b>D</b>, clicando nos vértices na ordem:',
+  expl:'Caminhos mínimos com custo <b>5 ms</b>: <b>A → B → D</b> (2+3) e <b>A → B → C → D</b> (2+1+2). Já A → C → D custa 6 ms.'},
+ {type:'mc',
+  q:'Qual das sequências representa um <b>ciclo</b>?',
+  options:['A → B → C','A → B → C → A','A → C → D','B → D'],
+  correct:1,
+  expl:'Ciclo é o percurso que <b>começa e termina no mesmo vértice</b>, sem repetir os demais: A → B → C → <b>A</b> ✓'},
+ {type:'bip', answer:'quad',
+  q:'Clique no grafo que <b>é bipartido</b> (Grafo 1: triângulo A, B, C — Grafo 2: quadrado a, b, c, d):',
+  expl:'Um grafo é <b>bipartido</b> quando não possui nenhum <b>ciclo ímpar</b>. O triângulo (ciclo de 3) não é bipartido; o quadrado (ciclo de 4) é ✓'},
+ {type:'mc',
+  q:'Em um <b>grafo de interseção</b>, dois vértices são ligados por uma aresta quando:',
+  options:['A interseção dos conjuntos é não vazia','Os conjuntos são iguais','A interseção dos conjuntos é vazia','Os conjuntos são disjuntos'],
+  correct:0,
+  expl:'Ligamos A e B se <b>A ∩ B ≠ ∅</b> (têm pelo menos um elemento em comum). Se A ∩ B = ∅, não existe aresta.'},
+ {type:'input', unit:'arestas', answer:7,
+  q:'Um grafo simples tem vértices de graus 5, 2, 2, 2, 2 e 1. Quantas <b>arestas</b> ele possui?',
+  expl:'Lema do Aperto de Mãos: soma dos graus = 2 × nº de arestas. Soma = 5+2+2+2+2+1 = 14 → arestas = 14 ÷ 2 = <b>7</b>.'}
+]};
+
+// ---------- Estado ----------
+var results = {};
+var totalQ = QUESTIONS.vetores.length + QUESTIONS.grafos.length;
+var LETTERS = ['A','B','C','D'];
+
+function praise(p){
+  if(p>=90) return '🏆 Excelente! Você domina o conteúdo!';
+  if(p>=70) return '👏 Muito bom! Só revise os pequenos erros.';
+  if(p>=50) return '👍 Bom começo — revise os slides marcados e repita.';
+  return '📚 Hora de revisar o material com calma e tentar de novo!';
+}
+function updateHUD(){
+  var answered = Object.keys(results).length;
+  var correct = 0, k;
+  for(k in results){ if(results[k]) correct++; }
+  document.getElementById('scoreChip').textContent = '⭐ ' + correct + ' / ' + totalQ;
+  document.getElementById('progressBar').style.width = (answered/totalQ*100) + '%';
+  document.getElementById('progressLabel').textContent = answered + '/' + totalQ + ' respondidas • ' + correct + ' certas';
+  [['vetores','res-vetores'],['grafos','res-grafos']].forEach(function(pair){
+    var sec = pair[0], el = document.getElementById(pair[1]);
+    var done = QUESTIONS[sec].every(function(_,i){ return (sec+'-'+i) in results; });
+    if(done){
+      var c = QUESTIONS[sec].filter(function(_,i){ return results[sec+'-'+i]; }).length;
+      var pct = Math.round(c/QUESTIONS[sec].length*100);
+      el.style.display = 'block';
+      el.innerHTML = (pct>=70?'🎉':'💪') + ' Resultado <b>' + sec.toUpperCase() + '</b>: <b>' + c + '</b> de ' +
+        QUESTIONS[sec].length + ' certas (' + pct + '%)';
+    }
+  });
+  if(answered === totalQ){
+    var pct = Math.round(correct/totalQ*100);
+    var gr = document.getElementById('globalResult');
+    gr.innerHTML = '<div class="big">' + praise(pct) + '</div><div class="pct">' + pct + '%</div>' +
+      '<p>' + correct + ' de ' + totalQ + ' questões certas no total.</p>';
+    gr.classList.add('show');
+    gr.scrollIntoView({behavior:'smooth'});
+  }
+}
+function showFb(card,msg,cls){
+  var fb = card.querySelector('.feedback');
+  fb.textContent = msg;
+  fb.className = 'feedback show ' + cls;
+}
+function complete(card,sec,i,ok,msg){
+  if(card.classList.contains('answered')) return;
+  card.classList.add('answered', ok ? 'ok' : 'bad');
+  showFb(card, msg, ok ? 'ok' : 'bad');
+  card.querySelector('.expl').classList.add('show');
+  results[sec+'-'+i] = ok;
+  updateHUD();
+}
+// ---------- Construtores de cada tipo ----------
+function buildMC(q,card,body,sec,i){
+  q.options.forEach(function(op,idx){
+    var d = document.createElement('div');
+    d.className = 'option';
+    d.innerHTML = '<span class="opt-letter">' + LETTERS[idx] + ')</span><span>' + op + '</span>';
+    d.addEventListener('click',function(){
+      if(card.classList.contains('answered')) return;
+      var ok = idx === q.correct;
+      d.classList.add(ok ? 'correct' : 'wrong');
+      if(!ok) body.children[q.correct].classList.add('correct');
+      complete(card,sec,i,ok, ok ? '✅ Correto!' : '❌ Resposta incorreta.');
+    });
+    body.appendChild(d);
+  });
+}
+function buildInput(q,card,body,sec,i){
+  body.innerHTML = '<div class="answer-row">' +
+    '<input class="answer-input" inputmode="decimal" placeholder="Resposta (' + q.unit + ')">' +
+    '<button class="btn btn-check">✔ Verificar</button></div>';
+  var inp = body.querySelector('input');
+  function go(){
+    if(card.classList.contains('answered')) return;
+    var v = parseFloat(inp.value.trim().replace(',','.'));
+    if(isNaN(v)){ showFb(card,'⚠️ Digite um número (ex.: 9 ou 11,36).','info'); return; }
+    var ok = Math.abs(v - q.answer) <= (q.tol !== undefined ? q.tol : 0.02);
+    complete(card,sec,i,ok, ok ? '✅ Correto!' :
+      '❌ Resposta correta: ' + String(q.answer).replace('.',',') + ' ' + q.unit);
+  }
+  body.querySelector('button').addEventListener('click',go);
+  inp.addEventListener('keydown',function(e){ if(e.key==='Enter') go(); });
+}
+function buildVertex(q,card,body,sec,i){
+  var svgHTML = q.svg === 'ko' ? svgKo() : svgMaiorGrau();
+  body.innerHTML = '<div class="graph-wrap">' + svgHTML + '</div>';
+  body.querySelector('svg').addEventListener('click',function(e){
+    if(card.classList.contains('answered')) return;
+    var g = e.target.closest('.node');
+    if(!g) return;
+    var ok = g.getAttribute('data-id') === q.answer;
+    g.classList.add(ok ? 'correct' : 'wrong');
+    if(!ok){
+      var right = body.querySelector('.node[data-id="' + q.answer + '"]');
+      if(right) right.classList.add('correct');
+    }
+    complete(card,sec,i,ok, ok ? '✅ Isso mesmo!' : '❌ Não é esse vértice.');
+  });
+}
+function buildBip(q,card,body,sec,i){
+  body.innerHTML = '<div class="bip-row">' +
+    '<div class="bip" data-g="tri"><h4>Grafo 1</h4>' + svgTri() + '</div>' +
+    '<div class="bip" data-g="quad"><h4>Grafo 2</h4>' + svgQuad() + '</div></div>' +
+    '<p class="hint">💡 Dica: procure ciclos <b>ímpares</b> antes de clicar!</p>';
+  body.querySelectorAll('.bip').forEach(function(el){
+    el.addEventListener('click',function(){
+      if(card.classList.contains('answered')) return;
+      var ok = el.getAttribute('data-g') === q.answer;
+      el.classList.add(ok ? 'correct' : 'wrong');
+      if(!ok) body.querySelector('.bip[data-g="' + q.answer + '"]').classList.add('correct');
+      complete(card,sec,i,ok, ok ? '✅ Correto! Esse grafo é bipartido.' : '❌ Grafo não bipartido (possui ciclo ímpar).');
+    });
+  });
+}
+function buildPath(q,card,body,sec,i){
+  var N = {A:[60,135],B:[160,55],C:[160,215],D:[270,135]};
+  var E = {'A|B':2,'A|C':4,'B|C':1,'B|D':3,'C|D':2};
+  var W = {'A|B':[92,82],'A|C':[86,182],'B|C':[183,140],'B|D':[234,84],'C|D':[234,182]};
+  var seq = [];
+  var s = '';
+  Object.keys(E).forEach(function(k){
+    var p = k.split('|');
+    s += '<line data-key="' + k + '" x1="' + N[p[0]][0] + '" y1="' + N[p[0]][1] + '" x2="' + N[p[1]][0] + '" y2="' + N[p[1]][1] + '"></line>';
+  });
+  Object.keys(W).forEach(function(k){
+    s += '<text class="wlabel" x="' + W[k][0] + '" y="' + W[k][1] + '">' + E[k] + ' ms</text>';
+  });
+  Object.keys(N).forEach(function(id){ s += nodeSVG(id,N[id][0],N[id][1]); });
+  body.innerHTML = '<div class="graph-wrap"><svg viewBox="0 0 330 265" class="gsvg">' + s + '</svg></div>' +
+    '<div class="path-display"></div>' +
+    '<div class="answer-row">' +
+    '<button class="btn btn-check bp-verify">✅ Verificar caminho</button>' +
+    '<button class="btn btn-ghost bp-clear">🧹 Limpar</button></div>';
+  var svg = body.querySelector('svg');
+  var disp = body.querySelector('.path-display');
+  function redraw(){
+    svg.querySelectorAll('line.active').forEach(function(l){ l.classList.remove('active'); });
+    var cost = 0;
+    for(var j=1;j<seq.length;j++){
+      var key = [seq[j-1],seq[j]].sort().join('|');
+      if(key in E){
+        var l = svg.querySelector('line[data-key="' + key + '"]');
+        if(l) l.classList.add('active');
+        cost += E[key];
+      }
+    }
+    if(!seq.length){
+      disp.textContent = 'Clique nos vértices para montar o caminho de A até D…';
+    } else {
+      disp.textContent = seq.join(' → ') + (seq.length > 1 ? '   |   custo: ' + cost + ' ms' : '');
+    }
+  }
+  svg.addEventListener('click',function(e){
+    if(card.classList.contains('answered')) return;
+    var g = e.target.closest('.node');
+    if(!g) return;
+    seq.push(g.getAttribute('data-id'));
+    redraw();
+  });
+  body.querySelector('.bp-clear').addEventListener('click',function(){
+    if(card.classList.contains('answered')) return;
+    seq = [];
+    redraw();
+    var fb = card.querySelector('.feedback');
+    fb.className = 'feedback';
+  });
+  body.querySelector('.bp-verify').addEventListener('click',function(){
+    if(card.classList.contains('answered')) return;
+    if(seq.length < 2){ showFb(card,'⚠️ Selecione pelo menos A e um destino.','info'); return; }
+    if(seq[0] !== 'A' || seq[seq.length-1] !== 'D'){
+      showFb(card,'⚠️ O caminho deve começar em A e terminar em D.','info'); return;
+    }
+    var cost = 0, j, key;
+    for(j=1;j<seq.length;j++){
+      key = [seq[j-1],seq[j]].sort().join('|');
+      if(!(key in E)){ showFb(card,'❌ Não existe ligação direta entre ' + seq[j-1] + ' e ' + seq[j] + '.','bad'); return; }
+      cost += E[key];
+    }
+    if(cost === 5){
+      complete(card,sec,i,true,'✅ Perfeito! ' + seq.join(' → ') + ' — custo 5 ms (mínimo).');
+    } else {
+      showFb(card,'🤔 Caminho válido, mas com custo ' + cost + ' ms. Existe opção mais barata!','info');
+    }
+  });
+  redraw();
+}
+function buildCard(sec,i,q){
+  var card = document.createElement('div');
+  card.className = 'card q';
+  card.innerHTML = '<div class="q-head"><div class="q-num">' + (i+1) + '</div>' +
+    '<div class="q-text">' + q.q + '</div></div>' +
+    '<div class="q-body"></div>' +
+    '<div class="feedback"></div>' +
+    '<div class="expl">' + q.expl + '</div>';
+  var body = card.querySelector('.q-body');
+  if(q.type==='mc') buildMC(q,card,body,sec,i);
+  else if(q.type==='input') buildInput(q,card,body,sec,i);
+  else if(q.type==='vertex') buildVertex(q,card,body,sec,i);
+  else if(q.type==='bip') buildBip(q,card,body,sec,i);
+  else if(q.type==='path') buildPath(q,card,body,sec,i);
+  return card;
+}
+
+// ---------- Inicialização ----------
+['vetores','grafos'].forEach(function(sec){
+  var section = document.getElementById('tab-' + sec);
+  var anchor = section.querySelector('.section-result');
+  QUESTIONS[sec].forEach(function(q,i){
+    anchor.parentNode.insertBefore(buildCard(sec,i,q), anchor);
+  });
+});
+document.querySelectorAll('.tab').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.tab').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    document.querySelectorAll('.quiz').forEach(function(s){ s.classList.add('hidden'); });
+    document.getElementById('tab-' + btn.getAttribute('data-tab')).classList.remove('hidden');
+  });
+});
+document.getElementById('resetBtn').addEventListener('click',function(){ location.reload(); });
+updateHUD();
+</script>
+</body>
+</html>
