@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Intensivo Interativo — Vetores &amp; Teoria dos Grafos</title>
+<title>Intensivo Interativo — Vetores, Grafos, Sistemas Lineares &amp; Venn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -131,7 +131,8 @@ table.tab{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--
 .como{margin:1.6rem 0 0;max-width:820px}
 .como ol{list-style:none;display:grid;gap:.55rem;counter-reset:passo}
 .como li{counter-increment:passo;display:flex;gap:.8rem;align-items:baseline;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.75rem 1rem;box-shadow:var(--shadow);font-size:.95rem}
-.como li::before{content:counter(passo);font:700 .85rem var(--mono);background:var(--yellow);border-radius:6px;padding:.05rem .5rem;transform:rotate(-2deg)}
+.como li > span{flex:1;min-width:0}
+.como li::before{content:counter(passo);flex:none;font:700 .85rem var(--mono);background:var(--yellow);border-radius:6px;padding:.05rem .5rem;transform:rotate(-2deg)}
 .trilha{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:1rem;margin-top:1.4rem}
 .trilha a{display:block;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--blue);border-radius:12px;padding:1rem 1.1rem;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);transition:transform .15s}
 .trilha a:hover{transform:translateY(-3px)}
@@ -216,6 +217,11 @@ table.tab{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--
 .bip-item svg{max-width:150px;height:auto}
 .bip-item .gnd circle{fill:var(--blue)}
 .bip-item line{stroke:#aab4d6;stroke-width:2.5}
+.bip-item .nd{fill:#fff;stroke:var(--ink);stroke-width:2.2}
+.bip-item .nd-y{fill:var(--yellow);stroke:var(--ink);stroke-width:2}
+.bip-item .lbl{font:600 12.5px var(--mono);fill:var(--ink);text-anchor:middle}
+.bip-item .lbl-w{font:700 12.5px var(--mono);fill:#fff;text-anchor:middle}
+.bip-item .e{stroke:#9aa5c4;stroke-width:2;fill:none}
 .resumo-final{display:none;text-align:center;background:var(--ink);color:#fff;border-radius:16px;padding:2rem 1.5rem;margin:1.4rem 0;box-shadow:8px 8px 0 var(--yellow)}
 .resumo-final.mostra{display:block}
 .resumo-final .pct{font:800 3rem var(--display);color:var(--yellow)}
@@ -320,6 +326,26 @@ body.noturno .hero{box-shadow:8px 8px 0 rgba(0,0,0,.6)}
 body.noturno .graf-box .peso-lbl{stroke:var(--card)}
 body.noturno .fc-face{color:var(--ink)}
 body.noturno .fc-dica{color:var(--ink2)}
+body.noturno .formula{background:#20233f;border-color:#353a63;color:var(--ink)}
+body.noturno .formula b{color:var(--blue-deep)}
+body.noturno .bip-item .nd{fill:var(--card)}
+body.noturno .bip-item .nd-y{fill:var(--yellow-soft)}
+body.noturno .fig .nd-y + .lbl{fill:#111b4b}
+body.noturno .hl{color:#111b4b}
+
+/* ========== NOVOS MÓDULOS: FONTES E VENN ========== */
+.selo-fonte{display:inline-flex;align-items:center;gap:.4rem;font:600 .76rem var(--body);color:var(--ink2);background:var(--card);border:1.5px dashed var(--line);border-radius:999px;padding:.22rem .75rem;margin:.2rem 0 .4rem}
+.fontes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:.7rem;margin:1rem 0 0;max-width:980px}
+.fonte{display:block;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--yellow);border-radius:10px;padding:.7rem .9rem;text-decoration:none;color:var(--ink);box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.fonte:hover{transform:translateY(-2px);border-left-color:var(--blue)}
+.fonte b{display:block;font:700 .95rem var(--display);margin-bottom:.1rem}
+.fonte span{display:block;font-size:.78rem;color:var(--ink2);word-break:break-word;line-height:1.4}
+.fonte .url{font-family:var(--mono);font-size:.72rem;margin-top:.2rem}
+.venn-fig text{font-family:var(--mono)}
+.trilha a.sl{border-left-color:var(--green)}
+.trilha a.vn{border-left-color:#a06b00}
+.formula.nota-larga{display:block;max-width:820px}
+body.noturno .fonte:hover{border-left-color:var(--blue)}
 </style>
 </head>
 <body>
@@ -330,7 +356,7 @@ body.noturno .fc-dica{color:var(--ink2)}
       <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="7" cy="21" r="4.5" fill="#2450c4"/><circle cx="23" cy="7" r="4.5" fill="#111b4b"/><line x1="10" y1="18" x2="20" y2="10" stroke="#ffd60a" stroke-width="3" stroke-linecap="round"/></svg>
       Intensivo <span class="hl">Interativo</span>
     </a>
-    <div class="chip" id="chipPlacar">Simulado: 0/32</div>
+    <div class="chip" id="chipPlacar">Simulado: 0/42</div>
     <button id="btnTema" class="btn btn-fino" title="Alternar tema claro/escuro">🌙</button>
   </div>
   <nav class="aba-nav" aria-label="Seções do site">
@@ -338,6 +364,8 @@ body.noturno .fc-dica{color:var(--ink2)}
       <li><button class="on" data-aba="inicio">Início</button></li>
       <li><button data-aba="vetores">Vetores</button></li>
       <li><button data-aba="grafos">Teoria dos Grafos</button></li>
+      <li><button data-aba="sistemas">Sistemas Lineares</button></li>
+      <li><button data-aba="venn">Diagrama de Venn</button></li>
       <li><button data-aba="flashcards">Flashcards</button></li>
       <li><button data-aba="ferramentas">Ferramentas</button></li>
       <li><button data-aba="simulado">Simulado</button></li>
@@ -352,11 +380,11 @@ body.noturno .fc-dica{color:var(--ink2)}
 <section id="inicio" class="tab on">
   <div class="hero">
     <div>
-      <h1>Vetores e Grafos, <span class="hl">do jeito que cai na prova</span>.</h1>
-      <p class="sub">Todo o conteúdo dos seus slides virou um caderno vivo: teoria organizada aula por aula, ferramentas para desenhar e calcular, e um simulado que corrige na hora.</p>
+      <h1>Vetores, Grafos, Sistemas e Venn, <span class="hl">do jeito que cai na prova</span>.</h1>
+      <p class="sub">Todo o conteúdo dos seus slides e das fontes de referência virou um caderno vivo: teoria organizada aula por aula, ferramentas para desenhar e calcular, e um simulado que corrige na hora.</p>
       <div class="hero-acoes">
         <button class="btn btn-tinta" data-aba="vetores">Começar por Vetores</button>
-        <button class="btn btn-marca" data-aba="simulado">Ir direto ao simulado</button>
+        <button class="btn btn-marca" data-aba="sistemas">Ver os módulos novos</button>
       </div>
     </div>
     <svg class="hero-svg" viewBox="0 0 340 250" aria-hidden="true">
@@ -387,9 +415,9 @@ body.noturno .fc-dica{color:var(--ink2)}
 
   <div class="como">
     <ol>
-      <li><strong>Leia as aulas</strong> — cada bloco vem direto dos seus PDFs, com as figuras e exemplos resolvidos.</li>
-      <li><strong>Use as ferramentas</strong> — desenhe grafos (com Dijkstra e Kruskal) e monte vetores no plano.</li>
-      <li><strong>Treine</strong> — vire os <strong>flashcards</strong>, faça o simulado (corrige na hora) e enfrente o Modo Intensivo contra o relógio.</li>
+      <li><span><strong>Leia as aulas</strong> — cada bloco vem dos seus PDFs e das fontes de referência, com as figuras e exemplos resolvidos.</span></li>
+      <li><span><strong>Use as ferramentas</strong> — desenhe grafos (com Dijkstra e Kruskal) e monte vetores no plano.</span></li>
+      <li><span><strong>Treine</strong> — vire os <strong>flashcards</strong>, faça o simulado (corrige na hora) e enfrente o Modo Intensivo contra o relógio.</span></li>
     </ol>
   </div>
 
@@ -401,6 +429,14 @@ body.noturno .fc-dica{color:var(--ink2)}
     <a class="vg" href="#grafos" data-aba="grafos">
       <h3>🔗 Teoria dos Grafos <span class="hl-soft" style="font-size:.78rem">15 aulas</span></h3>
       <p>Königsberg e Euler · vértices, arestas e graus · caminhos e ciclos · menor caminho · bipartidos · grafos especiais · árvores e florestas · conexidade e paridade.</p>
+    </a>
+    <a class="sl" href="#sistemas" data-aba="sistemas">
+      <h3>🧮 Sistemas Lineares <span class="hl-soft" style="font-size:.78rem">12 aulas</span></h3>
+      <p>Equações e sistemas · classificação (SPD, SPI, SI) · substituição, adição e comparação · matriz e determinante · Regra de Cramer · escalonamento · homogêneos · problemas contextualizados.</p>
+    </a>
+    <a class="vn" href="#venn" data-aba="venn">
+      <h3>🔵 Diagrama de Venn <span class="hl-soft" style="font-size:.78rem">9 aulas</span></h3>
+      <p>Linguagem dos conjuntos · união, interseção e diferença · diagramas de 2 e 3 conjuntos · contagem de regiões · inclusão-exclusão · problemas de pesquisa · De Morgan.</p>
     </a>
   </div>
 </section>
@@ -614,12 +650,18 @@ body.noturno .fc-dica{color:var(--ink2)}
       <div><dt>Se k = 0</dt><dd>o vetor resultante é o <strong>vetor nulo</strong> (módulo zero).</dd></div>
     </div>
     <figure class="fig">
-      <svg viewBox="0 0 620 120" width="620">
-        <line x1="20" y1="60" x2="600" y2="60" stroke="#9aa5c4" stroke-width="1.8"/>
-        <g><line x1="40" y1="60" x2="120" y2="60" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/><text class="lbl2" x="42" y="40">k = 2 · (|a| = 4, mesmo sentido)</text></g>
-        <g><line x1="190" y1="60" x2="230" y2="60" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/><text class="lbl2" x="182" y="40">k = ½ · (|a| = 1, mesmo sentido)</text></g>
-        <g><line x1="400" y1="60" x2="360" y2="60" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/><text class="lbl2" x="332" y="40">k = −½ · (|a| = 1, sentido oposto)</text></g>
-        <g><circle cx="530" cy="60" r="5" fill="#111b4b"/><text class="lbl2" x="512" y="40">k = 0 · (vetor nulo)</text></g>
+      <svg viewBox="0 0 640 250" width="640" role="img" aria-label="Efeito de diferentes valores de k sobre o vetor a, que tem módulo 2">
+        <line x1="24" y1="38" x2="132" y2="38" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <text class="lbl2" x="155" y="43">k = 2 → |b| = 4 u · mesmo sentido</text>
+
+        <line x1="24" y1="98" x2="58" y2="98" stroke="#2450c4" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <text class="lbl2" x="155" y="103">k = ½ → |b| = 1 u · mesmo sentido</text>
+
+        <line x1="102" y1="158" x2="38" y2="158" stroke="#cf3f3f" stroke-width="4" stroke-linecap="round" marker-end="url(#set)"/>
+        <text class="lbl2" x="155" y="163">k = −½ → |b| = 1 u · sentido oposto</text>
+
+        <circle cx="34" cy="218" r="5" fill="#111b4b"/>
+        <text class="lbl2" x="155" y="223">k = 0 → vetor nulo (|b| = 0)</text>
       </svg>
       <figcaption>Com |<span class="vet">a</span>| = 2 u: o efeito de k sobre o vetor <span class="vet">a</span>.</figcaption>
     </figure>
@@ -776,22 +818,22 @@ body.noturno .fc-dica{color:var(--ink2)}
     </table></div>
     <div class="nota">Ao remover as distrações do mundo real, a estrutura verdadeira do problema é revelada: <strong>mapa → simplificação → geometria → o grafo puro</strong>.</div>
     <figure class="fig">
-      <svg viewBox="0 0 360 215" width="360">
-        <path d="M 70 30 Q 50 60 70 105 Q 50 150 70 180" fill="none" stroke="#9aa5c4" stroke-width="3"/>
-        <path d="M 290 30 Q 310 60 290 105 Q 310 150 290 180" fill="none" stroke="#9aa5c4" stroke-width="3"/>
-        <line x1="125" y1="35" x2="72" y2="90" class="e-r"/>
-        <line x1="130" y1="45" x2="80" y2="112" class="e-r"/>
-        <line x1="122" y1="160" x2="74" y2="120" class="e-r"/>
-        <line x1="127" y1="170" x2="80" y2="127" class="e-r"/>
-        <line x1="235" y1="35" x2="288" y2="90" class="e-r"/>
-        <line x1="230" y1="45" x2="280" y2="112" class="e-r"/>
-        <line x1="238" y1="160" x2="286" y2="120" class="e-r"/>
-        <line x1="142" y1="102" x2="218" y2="102" class="e-r"/>
-        <circle cx="125" cy="30" r="18" class="nd-b"/><text class="lbl-w" x="125" y="35">MN</text>
-        <circle cx="125" cy="175" r="18" class="nd-b"/><text class="lbl-w" x="125" y="180">MS</text>
-        <circle cx="68" cy="105" r="18" class="nd-y"/><text class="lbl" x="68" y="110">IK</text>
-        <circle cx="292" cy="105" r="18" class="nd-y"/><text class="lbl" x="292" y="110">IL</text>
-        <text class="lbl2" x="60" y="208">Margem Norte · Ilha Kneiphof · Ilha Lomse · Margem Sul</text>
+      <svg viewBox="0 0 380 250" width="380" role="img" aria-label="Grafo de Königsberg com 4 vértices e 7 arestas">
+        <!-- 7 pontes: 2 MN–IK, 1 MN–IL, 1 MS–IK, 2 MS–IL, 1 IK–IL -->
+        <line x1="150" y1="35" x2="75" y2="105" class="e-r"/>
+        <line x1="155" y1="30" x2="80" y2="100" class="e-r"/>
+        <line x1="150" y1="35" x2="290" y2="105" class="e-r"/>
+        <line x1="150" y1="180" x2="75" y2="105" class="e-r"/>
+        <line x1="150" y1="180" x2="290" y2="105" class="e-r"/>
+        <line x1="155" y1="185" x2="295" y2="110" class="e-r"/>
+        <line x1="75" y1="105" x2="290" y2="105" class="e-r"/>
+        <!-- vértices -->
+        <circle cx="150" cy="35" r="21" class="nd-b"/><text class="lbl-w" x="150" y="40" text-anchor="middle">MN</text>
+        <circle cx="150" cy="180" r="21" class="nd-b"/><text class="lbl-w" x="150" y="185" text-anchor="middle">MS</text>
+        <circle cx="75" cy="105" r="21" class="nd-y"/><text class="lbl" x="75" y="110" text-anchor="middle">IK</text>
+        <circle cx="290" cy="105" r="21" class="nd-y"/><text class="lbl" x="290" y="110" text-anchor="middle">IL</text>
+        <text class="lbl2" x="190" y="226" text-anchor="middle">MN = Margem Norte · MS = Margem Sul</text>
+        <text class="lbl2" x="190" y="242" text-anchor="middle">IK = Ilha Kneiphof · IL = Ilha Lomse</text>
       </svg>
       <figcaption>O grafo puro de Königsberg: 4 vértices e 7 arestas (pontes).</figcaption>
     </figure>
@@ -845,15 +887,31 @@ body.noturno .fc-dica{color:var(--ink2)}
         <div><dt>Grafo ponderado</dt><dd>cada aresta carrega um <strong>peso</strong>: distância, tempo, custo ou capacidade. Exemplo: estradas de 120 km, 90 km e 150 km. <span class="formula">E = {(A,B,120), (B,C,90), (A,C,150)}</span></dd></div>
       </div>
       <figure class="fig" style="margin:0">
-        <svg viewBox="0 0 470 115" width="470">
-          <line x1="35" y1="55" x2="100" y2="55" class="e"/><circle class="nd" cx="35" cy="55" r="17"/><text class="lbl" x="35" y="60">A</text><circle class="nd" cx="100" cy="55" r="17"/><text class="lbl" x="100" y="60">B</text>
-          <text class="lbl2" x="35" y="95">não direcionado</text>
-          <line x1="180" y1="55" x2="245" y2="55" class="e"/><path d="M 236 48 L 247 55 L 236 62 z" fill="#9aa5c4"/><circle class="nd" cx="180" cy="55" r="17"/><text class="lbl" x="180" y="60">A</text><circle class="nd" cx="255" cy="55" r="17"/><text class="lbl" x="255" y="60">B</text>
-          <text class="lbl2" x="184" y="95">dígrafo (mão única)</text>
-          <line x1="325" y1="55" x2="390" y2="55" class="e"/><line x1="325" y1="55" x2="358" y2="16" class="e"/>
-          <text class="peso-lbl" x="360" y="50" fill="#4a517e">5 km</text><text class="peso-lbl" x="310" y="30" fill="#4a517e">3 km</text>
-          <circle class="nd" cx="325" cy="55" r="17"/><text class="lbl" x="325" y="60">A</text><circle class="nd" cx="390" cy="55" r="17"/><text class="lbl" x="390" y="60">B</text><circle class="nd" cx="358" cy="16" r="17"/><text class="lbl" x="358" y="21">C</text>
-          <text class="lbl2" x="330" y="95">ponderado</text>
+        <svg viewBox="0 0 560 135" width="560" role="img" aria-label="Comparação entre grafo não direcionado, dígrafo e grafo ponderado">
+          <!-- não direcionado -->
+          <line x1="55" y1="50" x2="145" y2="50" class="e"/>
+          <circle class="nd" cx="55" cy="50" r="18"/><text class="lbl" x="55" y="55" text-anchor="middle">A</text>
+          <circle class="nd" cx="145" cy="50" r="18"/><text class="lbl" x="145" y="55" text-anchor="middle">B</text>
+          <text class="lbl2" x="100" y="108" text-anchor="middle">não direcionado</text>
+
+          <!-- dígrafo -->
+          <line x1="233" y1="50" x2="307" y2="50" class="e"/>
+          <path d="M 295 43 L 307 50 L 295 57 z" fill="#9aa5c4"/>
+          <circle class="nd" cx="215" cy="50" r="18"/><text class="lbl" x="215" y="55" text-anchor="middle">A</text>
+          <circle class="nd" cx="325" cy="50" r="18"/><text class="lbl" x="325" y="55" text-anchor="middle">B</text>
+          <text class="lbl2" x="270" y="108" text-anchor="middle">dígrafo (mão única)</text>
+
+          <!-- ponderado -->
+          <line x1="410" y1="75" x2="510" y2="75" class="e"/>
+          <line x1="410" y1="75" x2="460" y2="25" class="e"/>
+          <line x1="510" y1="75" x2="460" y2="25" class="e"/>
+          <text class="lbl2" x="460" y="94" text-anchor="middle">5</text>
+          <text class="lbl2" x="421" y="40" text-anchor="middle">3</text>
+          <text class="lbl2" x="499" y="40" text-anchor="middle">4</text>
+          <circle class="nd" cx="410" cy="75" r="18"/><text class="lbl" x="410" y="80" text-anchor="middle">A</text>
+          <circle class="nd" cx="510" cy="75" r="18"/><text class="lbl" x="510" y="80" text-anchor="middle">B</text>
+          <circle class="nd" cx="460" cy="25" r="18"/><text class="lbl" x="460" y="30" text-anchor="middle">C</text>
+          <text class="lbl2" x="460" y="108" text-anchor="middle">ponderado (pesos em km)</text>
         </svg>
       </figure>
     </div>
@@ -890,15 +948,24 @@ body.noturno .fc-dica{color:var(--ink2)}
       <div><dt>Ciclo</dt><dd>caminho que <strong>começa e termina no mesmo vértice</strong>, sem repetir arestas. Exemplo: A → B → C → A.</dd></div>
     </div>
     <figure class="fig">
-      <svg viewBox="0 0 340 170" width="340">
-        <line x1="60" y1="50" x2="170" y2="30" class="e"/><line x1="170" y1="30" x2="280" y2="55" class="e"/><line x1="60" y1="50" x2="115" y2="130" class="e"/><line x1="115" y1="130" x2="230" y2="140" class="e"/><line x1="230" y1="140" x2="280" y2="55" class="e"/><line x1="170" y1="30" x2="115" y2="130" class="e"/>
-        <path d="M 280 55 A 95 95 0 0 1 230 140" fill="none" stroke="#cf3f3f" stroke-width="3" stroke-dasharray="7 5"/>
-        <circle class="nd" cx="60" cy="50" r="18"/><text class="lbl" x="60" y="55">A</text>
-        <circle class="nd" cx="170" cy="30" r="18"/><text class="lbl" x="170" y="35">B</text>
-        <circle class="nd" cx="280" cy="55" r="18"/><text class="lbl" x="280" y="60">C</text>
-        <circle class="nd" cx="115" cy="130" r="18"/><text class="lbl" x="115" y="135">D</text>
-        <circle class="nd" cx="230" cy="140" r="18"/><text class="lbl" x="230" y="145">E</text>
-        <text class="lbl2" x="292" y="105" fill="#cf3f3f">ciclo C–B–D–E–C</text>
+      <svg viewBox="0 0 360 200" width="360" role="img" aria-label="Grafo com o ciclo C-B-D-E-C destacado em tracejado">
+        <line x1="60" y1="50" x2="170" y2="30" class="e"/>
+        <line x1="60" y1="50" x2="115" y2="130" class="e"/>
+        <line x1="170" y1="30" x2="280" y2="55" class="e"/>
+        <line x1="170" y1="30" x2="115" y2="130" class="e"/>
+        <line x1="115" y1="130" x2="230" y2="140" class="e"/>
+        <line x1="230" y1="140" x2="280" y2="55" class="e"/>
+        <!-- ciclo C–B–D–E–C destacado -->
+        <line x1="280" y1="55" x2="170" y2="30" class="e-r" stroke-dasharray="7 5"/>
+        <line x1="170" y1="30" x2="115" y2="130" class="e-r" stroke-dasharray="7 5"/>
+        <line x1="115" y1="130" x2="230" y2="140" class="e-r" stroke-dasharray="7 5"/>
+        <line x1="230" y1="140" x2="280" y2="55" class="e-r" stroke-dasharray="7 5"/>
+        <circle class="nd" cx="60" cy="50" r="18"/><text class="lbl" x="60" y="55" text-anchor="middle">A</text>
+        <circle class="nd" cx="170" cy="30" r="18"/><text class="lbl" x="170" y="35" text-anchor="middle">B</text>
+        <circle class="nd" cx="280" cy="55" r="18"/><text class="lbl" x="280" y="60" text-anchor="middle">C</text>
+        <circle class="nd" cx="115" cy="130" r="18"/><text class="lbl" x="115" y="135" text-anchor="middle">D</text>
+        <circle class="nd" cx="230" cy="140" r="18"/><text class="lbl" x="230" y="145" text-anchor="middle">E</text>
+        <text class="lbl2" x="180" y="192" fill="#cf3f3f" text-anchor="middle">ciclo C–B–D–E–C (tracejado)</text>
       </svg>
       <figcaption>Um grafo com um ciclo destacado (tracejado).</figcaption>
     </figure>
@@ -979,12 +1046,13 @@ body.noturno .fc-dica{color:var(--ink2)}
     <div class="nota">Um grafo é <span class="hl">bipartido</span> quando seus vértices podem ser divididos em <strong>dois conjuntos independentes</strong>, de modo que <strong>toda aresta liga um vértice de um conjunto a um vértice do outro</strong> — nunca dois do mesmo conjunto. Exemplo dos slides: <strong>operários × máquinas</strong> (cada aresta indica quem sabe operar o quê).</div>
     <div class="bip-linha">
       <div class="bip-item">
-        <h4>Operários</h4>
-        <svg viewBox="0 0 150 130" width="150">
-          <circle class="nd" cx="40" cy="35" r="16"/><text class="lbl" x="40" y="40">O1</text>
-          <circle class="nd" cx="40" cy="95" r="16"/><text class="lbl" x="40" y="100">O2</text>
-          <circle class="nd" cx="110" cy="35" r="16"/><text class="lbl" x="110" y="40">M1</text>
-          <circle class="nd" cx="110" cy="95" r="16"/><text class="lbl" x="110" y="100">M2</text>
+        <h4>Operários × Máquinas</h4>
+        <svg viewBox="0 0 150 130" width="150" role="img" aria-label="Grafo bipartido com operários O1 e O2 e máquinas M1 e M2">
+          <line x1="75" y1="8" x2="75" y2="122" stroke="#d9dff0" stroke-width="1.5" stroke-dasharray="4 4"/>
+          <circle class="nd" cx="40" cy="35" r="16"/><text class="lbl" x="40" y="40" text-anchor="middle">O1</text>
+          <circle class="nd" cx="40" cy="95" r="16"/><text class="lbl" x="40" y="100" text-anchor="middle">O2</text>
+          <circle class="nd" cx="110" cy="35" r="16"/><text class="lbl" x="110" y="40" text-anchor="middle">M1</text>
+          <circle class="nd" cx="110" cy="95" r="16"/><text class="lbl" x="110" y="100" text-anchor="middle">M2</text>
           <line x1="56" y1="35" x2="94" y2="35" class="e"/><line x1="56" y1="35" x2="94" y2="95" class="e"/><line x1="56" y1="95" x2="94" y2="95" class="e"/>
         </svg>
       </div>
@@ -1087,6 +1155,549 @@ body.noturno .fc-dica{color:var(--ink2)}
     </div>
   </div>
 </section>
+<!-- ============ SISTEMAS LINEARES ============ -->
+<section id="sistemas" class="tab">
+  <div class="divisor"><span class="num">03</span><h2>Sistemas Lineares</h2><span class="fim" id="fimSL">Brasil Escola + Toda Matéria + UNIFAL + Wikipédia · 12 aulas</span></div>
+  <p class="selo-fonte">📚 Módulo novo — conteúdo baseado em Brasil Escola, Toda Matéria, UNIFAL-MG e Wikipédia (links completos no fim do módulo)</p>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 1</span> Equação linear: a peça básica</h3>
+    <div class="nota">Uma <span class="hl">equação linear</span> nas incógnitas x<sub>1</sub>, x<sub>2</sub>, …, x<sub>n</sub> é toda equação do tipo<br><span class="formula">a<sub>1</sub>x<sub>1</sub> + a<sub>2</sub>x<sub>2</sub> + … + a<sub>n</sub>x<sub>n</sub> = b</span><br>em que os <strong>coeficientes</strong> a<sub>i</sub> e o <strong>termo independente</strong> b são números reais. O que caracteriza a equação linear é que <strong>cada incógnita aparece na primeira potência</strong>, sem estar multiplicada por outra incógnita, sem expoente negativo e sem dentro de raiz.</div>
+    <div class="def-lista">
+      <div><dt>Coeficientes</dt><dd>os números que multiplicam cada incógnita. Em <span class="formula">3x − 2y = 7</span>, os coeficientes são 3 e −2.</dd></div>
+      <div><dt>Termo independente</dt><dd>o número isolado do outro lado da igualdade. No mesmo exemplo, b = 7.</dd></div>
+      <div><dt>Solução</dt><dd>uma sequência ordenada de valores que torna a igualdade verdadeira. Uma equação com duas incógnitas tem <strong>infinitas soluções</strong> (cada uma é um ponto de uma reta).</dd></div>
+    </div>
+    <div class="grid2">
+      <div class="nota destaque" style="margin:0"><strong>São lineares:</strong> 2x + 3y = 7 · x − y + 4z = 1 · 5x = 10 · 0x + 0y = 0.</div>
+      <div class="nota atencao" style="margin:0"><strong>Não são lineares:</strong> x² + y = 1 (expoente 2) · xy = 4 (produto de incógnitas) · 1/x + y = 3 (incógnita no denominador) · √x = 2.</div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — (2, 1) é solução de 2x + 3y = 8?</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Substitua x = 2 e y = 1: <span class="formula">2·2 + 3·1 = 4 + 3 = 7</span>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Como 7 ≠ 8, o par <strong>(2, 1) não é solução</strong>. Já (1, 2) funciona: 2·1 + 3·2 = 8. ✓</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 2</span> Sistema linear e solução comum</h3>
+    <div class="nota">Um <span class="hl">sistema linear</span> é um conjunto finito de duas ou mais equações lineares nas <strong>mesmas incógnitas</strong>. Resolver o sistema é encontrar a sequência de valores que satisfaz <strong>todas as equações ao mesmo tempo</strong>.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — resolvendo “de cabeça” para entender a ideia</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Sistema: <span class="formula">x + y = 5</span> e <span class="formula">x − y = 1</span>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Testando (3, 2): 3 + 2 = 5 ✓ e 3 − 2 = 1 ✓. Logo, <strong>x = 3 e y = 2</strong>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>A solução é o par ordenado <strong>(3, 2)</strong> — a ordem importa: (x, y), não (y, x).</p></div>
+      </div>
+    </div>
+    <div class="nota destaque"><strong>Leitura geométrica:</strong> cada equação linear de duas incógnitas é uma <strong>reta</strong> no plano. A solução do sistema é o <strong>ponto onde as retas se encontram</strong> — quando existe.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 3</span> Classificação: SPD, SPI ou SI</h3>
+    <div class="nota">Quanto ao número de soluções, todo sistema linear é <span class="hl">possível e determinado</span>, <span class="hl">possível e indeterminado</span> ou <span class="hl">impossível</span>. É a primeira pergunta a fazer em qualquer exercício.</div>
+    <div class="def-lista">
+      <div><dt>SPD — possível e determinado</dt><dd>tem <strong>uma única solução</strong>. No plano, as retas são concorrentes (se cruzam em um ponto).</dd></div>
+      <div><dt>SPI — possível e indeterminado</dt><dd>tem <strong>infinitas soluções</strong>. No plano, as retas são coincidentes (uma em cima da outra).</dd></div>
+      <div><dt>SI — sistema impossível</dt><dd><strong>não tem solução</strong>. No plano, as retas são paralelas distintas — nunca se encontram.</dd></div>
+    </div>
+    <figure class="fig">
+      <svg viewBox="0 0 720 195" width="720" role="img" aria-label="Três casos de sistemas 2x2: retas concorrentes, coincidentes e paralelas">
+        <rect x="20" y="20" width="200" height="130" rx="8" fill="none" stroke="#d9dff0"/>
+        <line x1="40" y1="135" x2="200" y2="40" stroke="#2450c4" stroke-width="3"/>
+        <line x1="40" y1="45" x2="200" y2="140" stroke="#cf3f3f" stroke-width="3"/>
+        <circle cx="120" cy="90" r="5" fill="#111b4b"/>
+        <text class="lbl2" x="120" y="180" text-anchor="middle">SPD · concorrentes · 1 solução</text>
+
+        <rect x="260" y="20" width="200" height="130" rx="8" fill="none" stroke="#d9dff0"/>
+        <line x1="280" y1="120" x2="440" y2="50" stroke="#2450c4" stroke-width="5"/>
+        <line x1="280" y1="116" x2="440" y2="46" stroke="#cf3f3f" stroke-width="2.4" stroke-dasharray="7 5"/>
+        <text class="lbl2" x="360" y="180" text-anchor="middle">SPI · coincidentes · infinitas</text>
+
+        <rect x="500" y="20" width="200" height="130" rx="8" fill="none" stroke="#d9dff0"/>
+        <line x1="520" y1="125" x2="680" y2="65" stroke="#2450c4" stroke-width="3"/>
+        <line x1="520" y1="65" x2="680" y2="5" stroke="#cf3f3f" stroke-width="3"/>
+        <text class="lbl2" x="600" y="180" text-anchor="middle">SI · paralelas · nenhuma</text>
+      </svg>
+      <figcaption>As três possibilidades para um sistema 2×2: um ponto, a reta inteira ou nenhum ponto em comum.</figcaption>
+    </figure>
+    <div class="tabela-scroll">
+      <table class="tab">
+        <thead><tr><th>Classificação</th><th>Nº de soluções</th><th>Retas no plano</th><th>Determinante (2×2)</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SPD</strong></td><td>uma só</td><td>concorrentes</td><td class="mono">D ≠ 0</td></tr>
+          <tr><td><strong>SPI</strong></td><td>infinitas</td><td>coincidentes</td><td class="mono">D = 0 (equações equivalentes)</td></tr>
+          <tr><td><strong>SI</strong></td><td>nenhuma</td><td>paralelas distintas</td><td class="mono">D = 0 (equações incompatíveis)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota atencao"><strong>Cuidado:</strong> D = 0 <strong>não decide sozinho</strong> entre SPI e SI — é preciso substituir/eliminar para ver se as equações “combinam” ou se geram uma contradição (como 0 = 5).</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 4</span> Método da substituição</h3>
+    <div class="nota">O roteiro é sempre o mesmo: <strong>1)</strong> isole uma incógnita em uma equação; <strong>2)</strong> substitua essa expressão na outra; <strong>3)</strong> resolva a equação de uma incógnita; <strong>4)</strong> volte para achar a outra.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — x + y = 10 e 2x − y = 2</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Da primeira equação: <span class="formula">x = 10 − y</span>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Substituindo na segunda: <span class="formula">2(10 − y) − y = 2</span>.</p></div>
+        <div class="passo"><span class="pn">3</span><p><span class="formula">20 − 2y − y = 2 → −3y = −18 → y = 6</span>.</p></div>
+        <div class="passo"><span class="pn">4</span><p>Voltando: <span class="formula">x = 10 − 6 = 4</span>. Solução: <strong>(4, 6)</strong>. Conferindo: 8 − 6 = 2 ✓</p></div>
+      </div>
+    </div>
+    <div class="nota destaque"><strong>Quando usar:</strong> quando uma das incógnitas já aparece isolada ou com coeficiente 1 — é o caminho mais curto e o menos sujeito a erro de sinal.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 5</span> Método da adição (eliminação)</h3>
+    <div class="nota">A ideia é <strong>somar as equações</strong> para eliminar uma incógnita. Se os coeficientes não forem opostos, multiplique uma (ou as duas) equações por números convenientes antes de somar.</div>
+    <div class="grid2">
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Exemplo 1 — coeficientes já opostos</div>
+        <div class="ex-b">
+          <div class="passo"><span class="pn">1</span><p><span class="formula">3x + 2y = 16</span> e <span class="formula">4x − 2y = 12</span>.</p></div>
+          <div class="passo"><span class="pn">2</span><p>Somando: <span class="formula">7x = 28 → x = 4</span>.</p></div>
+          <div class="passo"><span class="pn">3</span><p>Em 3x + 2y = 16: 12 + 2y = 16 → <strong>y = 2</strong>. Solução (4, 2).</p></div>
+        </div>
+      </div>
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Exemplo 2 — precisamos multiplicar</div>
+        <div class="ex-b">
+          <div class="passo"><span class="pn">1</span><p><span class="formula">2x + 3y = 13</span> e <span class="formula">3x − y = 3</span>.</p></div>
+          <div class="passo"><span class="pn">2</span><p>Multiplicando a 2ª por 3: <span class="formula">9x − 3y = 9</span>.</p></div>
+          <div class="passo"><span class="pn">3</span><p>Somando com a 1ª: <span class="formula">11x = 22 → x = 2</span>; então 6 − y = 3 → <strong>y = 3</strong>.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>Erro clássico:</strong> multiplicar a equação inteira — inclusive o termo independente! Se multiplicar o lado esquerdo por 3, o direito também vai por 3.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 6</span> Método da comparação</h3>
+    <div class="nota">Isolamos a <strong>mesma incógnita</strong> nas duas equações e igualamos as expressões. É o método mais direto quando as duas equações já estão “prontas” para isolar o x (ou o y).</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — x + y = 7 e x − y = 1</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Isolando x: <span class="formula">x = 7 − y</span> e <span class="formula">x = 1 + y</span>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Igualando: <span class="formula">7 − y = 1 + y → 6 = 2y → y = 3</span>.</p></div>
+        <div class="passo"><span class="pn">3</span><p><span class="formula">x = 7 − 3 = 4</span>. Solução: <strong>(4, 3)</strong>.</p></div>
+      </div>
+    </div>
+    <div class="nota destaque"><strong>Os três métodos são equivalentes.</strong> Em prova, escolha o que der menos contas: coeficientes opostos → adição; incógnita isolada → substituição; mesma incógnita fácil de isolar nas duas → comparação.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 7</span> Forma matricial e determinante</h3>
+    <div class="nota">Todo sistema linear pode ser escrito como <span class="hl">A·X = B</span>, em que <strong>A</strong> é a matriz dos coeficientes, <strong>X</strong> a matriz das incógnitas e <strong>B</strong> a matriz dos termos independentes. No caso 2×2:</div>
+    <p>
+      <span class="formula">a<sub>1</sub>x + b<sub>1</sub>y = c<sub>1</sub></span>
+      <span class="formula">a<sub>2</sub>x + b<sub>2</sub>y = c<sub>2</sub></span>
+      <span class="formula">A = [ a<sub>1</sub> b<sub>1</sub> ; a<sub>2</sub> b<sub>2</sub> ]</span>
+      <span class="formula">det A = a<sub>1</sub>b<sub>2</sub> − b<sub>1</sub>a<sub>2</sub></span>
+    </p>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — determinante do sistema 2x + y = 7 e x − y = 2</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Matriz dos coeficientes: <span class="formula">A = [ 2 1 ; 1 −1 ]</span>.</p></div>
+        <div class="passo"><span class="pn">2</span><p><span class="formula">D = 2·(−1) − 1·1 = −2 − 1 = −3</span>. Como <strong>D ≠ 0</strong>, o sistema é SPD.</p></div>
+      </div>
+    </div>
+    <div class="nota"><strong>Determinante 3×3 (Regra de Sarrus):</strong> repita as duas primeiras colunas e combine as diagonais — três produtos “descendo” menos três produtos “subindo”. Você vai usar isso na Regra de Cramer da próxima aula.</div>
+    <figure class="fig">
+      <svg viewBox="0 0 620 230" width="620" role="img" aria-label="Esquema da regra de Sarrus para determinante 3x3">
+        <text class="lbl2" x="18" y="75">D =</text>
+        <text class="lbl" x="58" y="45">a₁  b₁  c₁</text>
+        <text class="lbl" x="58" y="75">a₂  b₂  c₂</text>
+        <text class="lbl" x="58" y="105">a₃  b₃  c₃</text>
+        <line x1="50" y1="25" x2="50" y2="120" stroke="#111b4b" stroke-width="2"/>
+        <line x1="155" y1="25" x2="155" y2="120" stroke="#111b4b" stroke-width="2"/>
+        <line x1="50" y1="25" x2="155" y2="25" stroke="#111b4b" stroke-width="2"/>
+        <line x1="50" y1="120" x2="155" y2="120" stroke="#111b4b" stroke-width="2"/>
+        <line x1="166" y1="25" x2="166" y2="120" stroke="#9aa5c4" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text class="lbl" x="178" y="45" fill="#0e8a4e">a₁  b₁</text>
+        <text class="lbl" x="178" y="75" fill="#0e8a4e">a₂  b₂</text>
+        <text class="lbl" x="178" y="105" fill="#0e8a4e">a₃  b₃</text>
+        <text class="lbl2" x="50" y="148">colunas 1 e 2 repetidas à direita</text>
+        <text class="lbl" x="50" y="185" fill="#0e8a4e">+ a₁b₂c₃ + b₁c₂a₃ + c₁a₂b₃</text>
+        <text class="lbl" x="50" y="212" fill="#cf3f3f">− c₁b₂a₃ − a₁c₂b₃ − b₁a₂c₃</text>
+      </svg>
+      <figcaption>Regra de Sarrus: diagonais descendentes somam, ascendentes subtraem.</figcaption>
+    </figure>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 8</span> Regra de Cramer</h3>
+    <div class="nota">A <span class="hl">Regra de Cramer</span> resolve sistemas em que o número de equações é igual ao de incógnitas e <strong>D ≠ 0</strong>. Cada incógnita é o quociente entre o determinante da matriz <em>com aquela coluna trocada pelos termos independentes</em> e o determinante original:</div>
+    <p>
+      <span class="formula">x = D<sub>x</sub> / D</span>
+      <span class="formula">y = D<sub>y</sub> / D</span>
+      <span class="formula">D ≠ 0 → solução única</span>
+    </p>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — 2x + y = 7 e x − y = 2</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p><span class="formula">D = | 2 1 ; 1 −1 | = −2 − 1 = −3</span>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Trocando a coluna do x pelos termos independentes: <span class="formula">D<sub>x</sub> = | 7 1 ; 2 −1 | = −7 − 2 = −9</span>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Para o y: <span class="formula">D<sub>y</sub> = | 2 7 ; 1 2 | = 4 − 7 = −3</span>.</p></div>
+        <div class="passo"><span class="pn">4</span><p><span class="formula">x = −9/−3 = 3</span> e <span class="formula">y = −3/−3 = 1</span>. Solução: <strong>(3, 1)</strong>. Conferindo: 6 + 1 = 7 ✓ e 3 − 1 = 2 ✓</p></div>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>Limitação:</strong> se D = 0, Cramer não se aplica (divisão por zero). Nesse caso o sistema é SPI ou SI — volte ao escalonamento para decidir.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 9</span> Escalonamento (método de Gauss)</h3>
+    <div class="nota">Para sistemas 3×3 ou maiores, o caminho mais seguro é o <span class="hl">escalonamento</span>: combinar as equações (somar múltiplos de uma com outra) para eliminar incógnitas e chegar a um sistema “em escada”, fácil de resolver de baixo para cima.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — x + y + z = 6 · 2x − y + z = 3 · x + 2y − z = 2</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Faça (II) − 2·(I): <span class="formula">(2x − y + z) − (2x + 2y + 2z) = 3 − 12 → −3y − z = −9</span>, ou <strong>3y + z = 9</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Faça (III) − (I): <span class="formula">(x + 2y − z) − (x + y + z) = 2 − 6 → y − 2z = −4</span>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Da 1ª relação, z = 9 − 3y. Substituindo: <span class="formula">y − 2(9 − 3y) = −4 → 7y = 14 → y = 2</span>.</p></div>
+        <div class="passo"><span class="pn">4</span><p>Então z = 9 − 6 = <strong>3</strong> e, em (I), x = 6 − 2 − 3 = <strong>1</strong>. Solução: <strong>(1, 2, 3)</strong>.</p></div>
+      </div>
+    </div>
+    <div class="nota destaque"><strong>Meta do escalonamento:</strong> deixar o sistema triangular — a última equação com uma incógnita, a penúltima com duas, e assim por diante. A partir daí é substituição “de baixo para cima”.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 10</span> Sistemas homogêneos e discussão com parâmetro</h3>
+    <div class="nota">Um sistema é <span class="hl">homogêneo</span> quando todos os termos independentes são iguais a zero. Ele <strong>sempre admite a solução trivial</strong> (0, 0, …, 0) — portanto nunca é SI. Se D ≠ 0, ela é a única (SPD); se D = 0, há infinitas (SPI).</div>
+    <div class="grid2">
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Homogêneo SPD</div>
+        <div class="ex-b"><p><span class="formula">2x + 3y = 0</span> e <span class="formula">x − y = 0</span>. D = −2 − 3 = −5 ≠ 0 → solução única: <strong>(0, 0)</strong>.</p></div>
+      </div>
+      <div class="exemplo" style="margin:0">
+        <div class="ex-t">Homogêneo SPI</div>
+        <div class="ex-b"><p><span class="formula">x + y = 0</span> e <span class="formula">2x + 2y = 0</span>. D = 0 → infinitas soluções: <strong>(−y, y)</strong>, com y real.</p></div>
+      </div>
+    </div>
+    <div class="nota">Na <span class="hl">discussão com parâmetro</span>, o objetivo é descobrir para quais valores do parâmetro o sistema é SPD, SPI ou SI. Estude primeiro o determinante e depois teste os valores que o anulam.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — x + y = 2 e 2x + 2y = k</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>D = 1·2 − 1·2 = 0 para <strong>qualquer k</strong>. Logo, nunca é SPD.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Se <strong>k = 4</strong>, a segunda equação é o dobro da primeira → <strong>SPI</strong> (infinitas soluções).</p></div>
+        <div class="passo"><span class="pn">3</span><p>Se <strong>k ≠ 4</strong>, chegamos a uma contradição (0 = k − 4) → <strong>SI</strong> (impossível).</p></div>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>Estratégia de prova:</strong> calcule D; se D ≠ 0, é SPD e você pode resolver por Cramer. Se D = 0, substitua o(s) valor(es) do parâmetro no sistema original e escalone para separar SPI de SI.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 11</span> Problemas contextualizados</h3>
+    <div class="nota">A parte mais cobrada: transformar o enunciado em equações. Procure <strong>duas grandezas desconhecidas</strong>, duas informações e monte o sistema — depois resolva e <strong>confira se a resposta faz sentido no contexto</strong>.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — cédulas no bolso</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Tenho 30 cédulas, entre R$ 5 e R$ 10, totalizando R$ 230. Quantas de cada?</p></div>
+        <div class="passo"><span class="pn">2</span><p>Sejam x as de R$ 5 e y as de R$ 10: <span class="formula">x + y = 30</span> e <span class="formula">5x + 10y = 230</span>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Dividindo a 2ª por 5: <span class="formula">x + 2y = 46</span>. Subtraindo a 1ª: <span class="formula">y = 16</span> e <span class="formula">x = 14</span>.</p></div>
+        <div class="passo"><span class="pn">✓</span><p><strong>14 cédulas de R$ 5 e 16 de R$ 10</strong> (14 + 16 = 30; 70 + 160 = 230 ✓).</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — idades</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>A idade do pai é o triplo da do filho. Em 10 anos, será o dobro. Qual a idade de cada um hoje?</p></div>
+        <div class="passo"><span class="pn">2</span><p><span class="formula">p = 3f</span> e <span class="formula">p + 10 = 2(f + 10)</span>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Substituindo: <span class="formula">3f + 10 = 2f + 20 → f = 10</span> e <span class="formula">p = 30</span>.</p></div>
+        <div class="passo"><span class="pn">✓</span><p><strong>Filho: 10 anos; pai: 30 anos.</strong> Em 10 anos: 40 = 2 × 20 ✓</p></div>
+      </div>
+    </div>
+    <div class="nota destaque"><strong>Roteiro:</strong> 1) nomeie as incógnitas; 2) traduza cada frase em uma equação; 3) resolva pelo método mais confortável; 4) verifique nas duas condições do enunciado.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 12</span> Resumo de bolso</h3>
+    <div class="tabela-scroll">
+      <table class="tab">
+        <thead><tr><th>Situação</th><th>Melhor caminho</th><th>Por quê</th></tr></thead>
+        <tbody>
+          <tr><td>Uma incógnita já isolada</td><td>Substituição</td><td>Evita manipulação algébrica extra</td></tr>
+          <tr><td>Coeficientes opostos (ex.: +2y e −2y)</td><td>Adição</td><td>A incógnita desaparece na soma</td></tr>
+          <tr><td>Mesma incógnita fácil de isolar nas duas</td><td>Comparação</td><td>Iguala duas expressões simples</td></tr>
+          <tr><td>Sistema 2×2 com D ≠ 0</td><td>Cramer</td><td>Fórmulas diretas com determinantes</td></tr>
+          <tr><td>3×3 ou maior</td><td>Escalonamento</td><td>Organiza a eliminação sem decoreba</td></tr>
+          <tr><td>D = 0</td><td>Escalonar e substituir</td><td>Só assim separa SPI de SI</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="nota destaque" style="margin:0"><strong>Nunca esqueça:</strong> SPD = uma solução · SPI = infinitas · SI = nenhuma. E todo sistema homogêneo é possível (tem pelo menos a solução trivial).</div>
+      <div class="nota atencao" style="margin:0"><strong>Sinais:</strong> ao subtrair equações, troque o sinal de <em>todos</em> os termos da equação subtraída. É a maior fonte de erro em sistemas.</div>
+    </div>
+
+    <h3 style="font:700 1.25rem var(--display);margin:2rem 0 .3rem">🔗 Fontes deste módulo</h3>
+    <p style="font-size:.88rem;color:var(--ink2);max-width:75ch">Clique para abrir o material original em uma nova aba. O conteúdo acima é um resumo de estudo; consulte as fontes para aprofundar.</p>
+    <div class="fontes">
+      <a class="fonte" href="https://brasilescola.uol.com.br/matematica/sistemas-lineares.htm" target="_blank" rel="noopener">
+        <b>Brasil Escola — Sistemas Lineares</b>
+        <span>Definição, classificação e exemplos resolvidos.</span>
+        <span class="url">brasilescola.uol.com.br</span>
+      </a>
+      <a class="fonte" href="https://www.todamateria.com.br/sistemas-lineares/" target="_blank" rel="noopener">
+        <b>Toda Matéria — Sistemas Lineares</b>
+        <span>Métodos de resolução e exercícios comentados.</span>
+        <span class="url">todamateria.com.br</span>
+      </a>
+      <a class="fonte" href="https://www.unifal-mg.edu.br/ictmath/sistemas-lineares/" target="_blank" rel="noopener">
+        <b>UNIFAL-MG — Sistemas Lineares</b>
+        <span>Material universitário com escalonamento e discussão.</span>
+        <span class="url">unifal-mg.edu.br/ictmath</span>
+      </a>
+      <a class="fonte" href="https://pt.wikipedia.org/wiki/Sistema_de_equa%C3%A7%C3%B5es_lineares" target="_blank" rel="noopener">
+        <b>Wikipédia — Sistema de equações lineares</b>
+        <span>Formalização, forma matricial e métodos numéricos.</span>
+        <span class="url">pt.wikipedia.org</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DIAGRAMA DE VENN ============ -->
+<section id="venn" class="tab">
+  <div class="divisor"><span class="num">04</span><h2>Diagrama de Venn</h2><span class="fim" id="fimVenn">Toda Matéria + Wikipédia + UNIVESP · 9 aulas</span></div>
+  <p class="selo-fonte">📚 Módulo novo — conteúdo baseado em Toda Matéria, Wikipédia e no app da UNIVESP (links completos no fim do módulo)</p>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 1</span> A linguagem dos conjuntos</h3>
+    <div class="nota">Um <span class="hl">conjunto</span> é uma coleção de objetos — os <strong>elementos</strong>. Usamos letras maiúsculas para nomear conjuntos (A, B, C…) e representamos os elementos entre chaves: <span class="formula">A = {1, 2, 3, 4}</span>.</div>
+    <div class="def-lista">
+      <div><dt>Pertinência (∈ / ∉)</dt><dd>indica se um elemento está ou não no conjunto: <span class="formula">3 ∈ A</span> e <span class="formula">7 ∉ A</span>.</dd></div>
+      <div><dt>Conjunto vazio (∅)</dt><dd>não possui elemento algum. Ex.: o conjunto dos números naturais entre 1 e 2.</dd></div>
+      <div><dt>Conjunto universo (U)</dt><dd>o “mundo” de onde saem todos os elementos analisados. Em problemas de pesquisa, é o total de pessoas entrevistadas.</dd></div>
+      <div><dt>Subconjunto (⊂)</dt><dd>A é subconjunto de B quando todo elemento de A também está em B: <span class="formula">A ⊂ B</span>.</dd></div>
+      <div><dt>Igualdade</dt><dd>dois conjuntos são iguais quando têm exatamente os mesmos elementos — a ordem não importa: {1, 2, 3} = {3, 1, 2}.</dd></div>
+    </div>
+    <div class="nota destaque"><strong>Notação de intervalo:</strong> também usamos conjuntos numéricos como <span class="formula">A = {x ∈ ℝ | 1 &lt; x ≤ 5}</span> — lê-se “x pertence aos reais, tal que x é maior que 1 e menor ou igual a 5”.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 2</span> Operações entre conjuntos</h3>
+    <div class="tabela-scroll">
+      <table class="tab">
+        <thead><tr><th>Operação</th><th>Notação</th><th>Significado</th><th>Exemplo (A = {1,2,3,4}; B = {3,4,5})</th></tr></thead>
+        <tbody>
+          <tr><td><strong>União</strong></td><td class="mono">A ∪ B</td><td>elementos que estão em A <em>ou</em> em B (ou nos dois)</td><td class="mono">{1, 2, 3, 4, 5}</td></tr>
+          <tr><td><strong>Interseção</strong></td><td class="mono">A ∩ B</td><td>elementos que estão em A <em>e</em> em B ao mesmo tempo</td><td class="mono">{3, 4}</td></tr>
+          <tr><td><strong>Diferença</strong></td><td class="mono">A − B</td><td>elementos de A que <em>não</em> estão em B</td><td class="mono">{1, 2}</td></tr>
+          <tr><td><strong>Complementar</strong></td><td class="mono">A<sup>c</sup></td><td>elementos do universo que não estão em A</td><td class="mono">depende de U</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="nota atencao"><strong>Atenção às palavras:</strong> “ou” em matemática é <strong>inclusivo</strong> (união); “e” pede a <strong>simultaneidade</strong> (interseção). Já “somente A” significa A − B: só o que é exclusivo de A.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo rápido</div>
+      <div class="ex-b"><p>Com A = {1,2,3,4} e B = {3,4,5}: <span class="formula">A ∪ B = {1,2,3,4,5}</span> · <span class="formula">A ∩ B = {3,4}</span> · <span class="formula">A − B = {1,2}</span> · <span class="formula">B − A = {5}</span>. Repare que <strong>A − B ≠ B − A</strong>.</p></div>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 3</span> O que é o diagrama de Venn</h3>
+    <div class="nota">O <span class="hl">diagrama de Venn</span> representa conjuntos por meio de <strong>regiões fechadas</strong> (normalmente círculos) dentro de um retângulo que simboliza o conjunto universo. Foi popularizado pelo lógico inglês <strong>John Venn (1834–1923)</strong> em 1880, a partir de ideias anteriores de Euler e Leibniz.</div>
+    <div class="def-lista">
+      <div><dt>Retângulo</dt><dd>o conjunto universo U — tudo o que está sendo considerado no problema.</dd></div>
+      <div><dt>Círculos</dt><dd>cada conjunto. Círculos que se sobrepõem criam uma região de <strong>interseção</strong>.</dd></div>
+      <div><dt>Regiões</dt><dd>cada “pedaço” do desenho corresponde a uma combinação lógica: só A, só B, A e B, fora dos dois…</dd></div>
+    </div>
+    <figure class="fig">
+      <svg class="venn-fig" viewBox="0 0 380 230" width="380" role="img" aria-label="Diagrama de Venn com os conjuntos A igual a 1, 2, 3, 4 e B igual a 3, 4, 5, 6">
+        <rect x="12" y="12" width="356" height="180" rx="10" fill="none" stroke="#9aa5c4" stroke-width="1.6"/>
+        <circle cx="145" cy="100" r="72" fill="rgba(36,80,196,.15)" stroke="#2450c4" stroke-width="2.2"/>
+        <circle cx="235" cy="100" r="72" fill="rgba(255,214,10,.28)" stroke="#a07d00" stroke-width="2.2"/>
+        <text class="lbl2" x="36" y="34">U</text>
+        <text class="lbl2" x="88" y="46">A</text>
+        <text class="lbl2" x="292" y="46">B</text>
+        <text class="lbl" x="112" y="85">1</text>
+        <text class="lbl" x="128" y="118">2</text>
+        <text class="lbl" x="190" y="85">3</text>
+        <text class="lbl" x="190" y="118">4</text>
+        <text class="lbl" x="258" y="85">5</text>
+        <text class="lbl" x="272" y="118">6</text>
+        <text class="lbl2" x="190" y="218" text-anchor="middle">A = {1, 2, 3, 4} · B = {3, 4, 5, 6} · A ∩ B = {3, 4}</text>
+      </svg>
+      <figcaption>Os números 3 e 4 ficam na região comum; 1 e 2 só em A; 5 e 6 só em B.</figcaption>
+    </figure>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 4</span> As quatro regiões de dois conjuntos</h3>
+    <div class="nota">Com dois conjuntos, o diagrama se divide em <strong>quatro regiões</strong>: <span class="formula">somente A = |A| − |A∩B|</span> · <span class="formula">somente B = |B| − |A∩B|</span> · <span class="formula">A∩B</span> · <span class="formula">fora = |U| − |A∪B|</span>. Preencha sempre começando pela <strong>interseção</strong>.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — turma com 30 alunos</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Em uma turma de 30 alunos, 20 gostam de Matemática, 15 de Física e 8 gostam das duas. Quantos gostam de pelo menos uma? Quantos de nenhuma?</p></div>
+        <div class="passo"><span class="pn">2</span><p>Interseção = 8. Somente Matemática = 20 − 8 = <strong>12</strong>; somente Física = 15 − 8 = <strong>7</strong>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Pelo menos uma = 12 + 8 + 7 = <strong>27</strong>. Nenhuma = 30 − 27 = <strong>3</strong>.</p></div>
+      </div>
+    </div>
+    <figure class="fig">
+      <svg class="venn-fig" viewBox="0 0 380 230" width="380" role="img" aria-label="Diagrama de Venn com 12 somente em Matemática, 8 na interseção, 7 somente em Física e 3 fora">
+        <rect x="12" y="12" width="356" height="180" rx="10" fill="none" stroke="#9aa5c4" stroke-width="1.6"/>
+        <circle cx="145" cy="100" r="72" fill="rgba(36,80,196,.15)" stroke="#2450c4" stroke-width="2.2"/>
+        <circle cx="235" cy="100" r="72" fill="rgba(255,214,10,.28)" stroke="#a07d00" stroke-width="2.2"/>
+        <text class="lbl2" x="36" y="34">U = 30</text>
+        <text class="lbl2" x="88" y="46">Mat.</text>
+        <text class="lbl2" x="278" y="46">Fís.</text>
+        <text class="lbl" x="106" y="105">12</text>
+        <text class="lbl" x="190" y="105">8</text>
+        <text class="lbl" x="266" y="105">7</text>
+        <text class="lbl" x="330" y="160">3</text>
+        <text class="lbl2" x="190" y="218" text-anchor="middle">|A∪B| = 12 + 8 + 7 = 27 · fora = 3</text>
+      </svg>
+      <figcaption>As quatro regiões do problema: só Matemática, interseção, só Física e fora.</figcaption>
+    </figure>
+    <div class="nota destaque"><strong>Dica de ouro:</strong> nunca preencha “20” dentro do círculo de Matemática. O 20 inclui os 8 da interseção — dentro do círculo vão <strong>12 e 8</strong>, que somam 20.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 5</span> Três conjuntos: as oito regiões</h3>
+    <div class="nota">Com três conjuntos, o diagrama tem <span class="hl">oito regiões</span> (incluindo a parte externa). A região central é <strong>A ∩ B ∩ C</strong>. O segredo é preencher <strong>de dentro para fora</strong>: primeiro os três, depois as interseções duas a duas, depois as partes exclusivas e, por fim, o lado de fora.</div>
+    <figure class="fig">
+      <svg class="venn-fig" viewBox="0 0 380 340" width="380" role="img" aria-label="Diagrama de Venn de três conjuntos com as oito regiões preenchidas">
+        <rect x="8" y="8" width="364" height="304" rx="10" fill="none" stroke="#9aa5c4" stroke-width="1.6"/>
+        <circle cx="150" cy="115" r="85" fill="rgba(36,80,196,.13)" stroke="#2450c4" stroke-width="2.2"/>
+        <circle cx="215" cy="115" r="85" fill="rgba(255,214,10,.24)" stroke="#a07d00" stroke-width="2.2"/>
+        <circle cx="182" cy="180" r="85" fill="rgba(14,138,78,.14)" stroke="#0e8a4e" stroke-width="2.2"/>
+        <text class="lbl2" x="326" y="36">U</text>
+        <text class="lbl2" x="70" y="44">A</text>
+        <text class="lbl2" x="294" y="44">B</text>
+        <text class="lbl2" x="182" y="302" text-anchor="middle">C</text>
+        <text class="lbl" x="100" y="104">8</text>
+        <text class="lbl" x="264" y="104">5</text>
+        <text class="lbl" x="182" y="90">5</text>
+        <text class="lbl" x="182" y="150">3</text>
+        <text class="lbl" x="138" y="190">4</text>
+        <text class="lbl" x="226" y="190">2</text>
+        <text class="lbl" x="182" y="243">9</text>
+        <text class="lbl" x="330" y="62">4</text>
+        <text class="lbl2" x="330" y="78" text-anchor="middle">fora</text>
+        <text class="lbl2" x="190" y="330" text-anchor="middle">8 + 5 + 9 + 5 + 4 + 2 + 3 = 36 dentro · 4 fora</text>
+      </svg>
+      <figcaption>Exemplo: |A|=20, |B|=15, |C|=18, |A∩B|=8, |A∩C|=7, |B∩C|=5, |A∩B∩C|=3 e |U|=40.</figcaption>
+    </figure>
+    <div class="exemplo">
+      <div class="ex-t">📌 Como chegar aos números do desenho</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Comece pela tripla: <strong>A∩B∩C = 3</strong>.</p></div>
+        <div class="passo"><span class="pn">2</span><p>Só A∩B = 8 − 3 = <strong>5</strong> · só A∩C = 7 − 3 = <strong>4</strong> · só B∩C = 5 − 3 = <strong>2</strong>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Só A = 20 − 5 − 4 − 3 = <strong>8</strong> · só B = 15 − 5 − 2 − 3 = <strong>5</strong> · só C = 18 − 4 − 2 − 3 = <strong>9</strong>.</p></div>
+        <div class="passo"><span class="pn">4</span><p>Soma dentro = 8 + 5 + 9 + 5 + 4 + 2 + 3 = 36. Como |U| = 40, ficam <strong>4 fora</strong>.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 6</span> Princípio da inclusão-exclusão</h3>
+    <div class="nota">Para contar a união <strong>sem contar ninguém duas vezes</strong>, somamos os tamanhos e retiramos as interseções. Com dois conjuntos:<br><span class="formula nota-larga">|A ∪ B| = |A| + |B| − |A ∩ B|</span>Com três conjuntos:<br><span class="formula nota-larga">|A∪B∪C| = |A| + |B| + |C| − |A∩B| − |A∩C| − |B∩C| + |A∩B∩C|</span></div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — dois conjuntos</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Em 30 alunos: 18 estudam Matemática, 12 estudam Física e 6 estudam as duas. Quantos estudam pelo menos uma? Quantos nenhuma?</p></div>
+        <div class="passo"><span class="pn">2</span><p><span class="formula">|M∪F| = 18 + 12 − 6 = 24</span>. Nenhuma = 30 − 24 = <strong>6</strong>.</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — três conjuntos</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>|A| = 20, |B| = 15, |C| = 12; |A∩B| = 5, |A∩C| = 4, |B∩C| = 3 e |A∩B∩C| = 2. Calcule |A∪B∪C|.</p></div>
+        <div class="passo"><span class="pn">2</span><p><span class="formula">|A∪B∪C| = 20 + 15 + 12 − 5 − 4 − 3 + 2 = 37</span>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Por que <strong>somar</strong> a tripla no final? Ao subtrair as três interseções duplas, a região dos três foi retirada uma vez a mais — então ela volta.</p></div>
+      </div>
+    </div>
+    <div class="nota atencao"><strong>Erro comum:</strong> subtrair a interseção tripla em vez de somar. Use o diagrama para conferir: a fórmula tem sinais alternados <strong>+ − +</strong>.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 7</span> Problemas de pesquisa</h3>
+    <div class="nota">Os enunciados de “pesquisa de opinião” são inclusão-exclusão disfarçada. Sempre identifique: <strong>total entrevistado</strong> (universo), <strong>quantos escolheram cada opção</strong> e <strong>quantos escolheram duas</strong>.</div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 1 — café ou chá</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>De 50 pessoas, 30 bebem café, 25 bebem chá e 10 bebem os dois. Quantas bebem só café? E nenhum dos dois?</p></div>
+        <div class="passo"><span class="pn">2</span><p>Só café = 30 − 10 = <strong>20</strong> · só chá = 25 − 10 = <strong>15</strong> · pelo menos um = 20 + 10 + 15 = <strong>45</strong>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Nenhum = 50 − 45 = <strong>5</strong>. Confira pela fórmula: 30 + 25 − 10 = 45 ✓</p></div>
+      </div>
+    </div>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo 2 — idiomas</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p>Em um grupo de 100 estudantes, 60 falam inglês, 45 falam espanhol e 20 falam os dois. Quantos falam apenas inglês? Quantos não falam nenhum dos dois?</p></div>
+        <div class="passo"><span class="pn">2</span><p>Só inglês = 60 − 20 = <strong>40</strong> · só espanhol = 45 − 20 = <strong>25</strong> · união = 40 + 20 + 25 = <strong>85</strong>.</p></div>
+        <div class="passo"><span class="pn">3</span><p>Nenhum = 100 − 85 = <strong>15</strong>.</p></div>
+      </div>
+    </div>
+    <div class="nota destaque"><strong>Roteiro de prova:</strong> 1) desenhe o retângulo do universo; 2) coloque a interseção primeiro; 3) complete “só A” e “só B”; 4) some as regiões para achar a união; 5) o que faltar para o total fica fora.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 8</span> Complementar, diferença e Leis de De Morgan</h3>
+    <div class="nota">A <span class="hl">diferença</span> A − B é a parte de A que não está em B. O <span class="hl">complementar</span> A<sup>c</sup> é tudo o que está no universo e não está em A. As <strong>Leis de De Morgan</strong> conectam essas operações:</div>
+    <p>
+      <span class="formula">(A ∪ B)<sup>c</sup> = A<sup>c</sup> ∩ B<sup>c</sup></span>
+      <span class="formula">(A ∩ B)<sup>c</sup> = A<sup>c</sup> ∪ B<sup>c</sup></span>
+      <span class="formula">A − B = A ∩ B<sup>c</sup></span>
+    </p>
+    <div class="exemplo">
+      <div class="ex-t">📌 Exemplo — U = {1, 2, …, 10}, A = {1,2,3,4,5}, B = {4,5,6,7}</div>
+      <div class="ex-b">
+        <div class="passo"><span class="pn">1</span><p><span class="formula">A − B = {1, 2, 3}</span> e <span class="formula">B − A = {6, 7}</span>.</p></div>
+        <div class="passo"><span class="pn">2</span><p><span class="formula">A ∪ B = {1,2,3,4,5,6,7}</span> → complementar <span class="formula">(A∪B)<sup>c</sup> = {8,9,10}</span>.</p></div>
+        <div class="passo"><span class="pn">3</span><p><span class="formula">A<sup>c</sup> = {6,7,8,9,10}</span> e <span class="formula">B<sup>c</sup> = {1,2,3,8,9,10}</span> → <span class="formula">A<sup>c</sup> ∩ B<sup>c</sup> = {8,9,10}</span> ✓ igual ao item anterior.</p></div>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="nota" style="margin:0"><strong>Na lógica:</strong> “não (A e B)” equivale a “não A ou não B”. É a mesma Lei de De Morgan, trocando conjuntos por proposições.</div>
+      <div class="nota" style="margin:0"><strong>Ligação com Grafos:</strong> na Aula 10 de Teoria dos Grafos, dois vértices são ligados quando a interseção dos conjuntos é <strong>não vazia</strong> — um grafo de interseção é uma aplicação direta do diagrama de Venn.</div>
+    </div>
+    <div class="nota atencao"><strong>Não confunda:</strong> A − B não é o complementar de A. A diferença depende dos dois conjuntos; o complementar depende do universo escolhido.</div>
+  </div>
+
+  <div class="aula">
+    <h3><span class="aula-tag">Aula 9</span> Resumo de bolso</h3>
+    <div class="grid2">
+      <div class="nota destaque" style="margin:0"><strong>Fórmulas:</strong><br>|A∪B| = |A| + |B| − |A∩B|<br>|A∪B∪C| = |A|+|B|+|C| − |A∩B| − |A∩C| − |B∩C| + |A∩B∩C|<br>|A−B| = |A| − |A∩B|<br>Fora = |U| − |A∪B|</div>
+      <div class="nota" style="margin:0"><strong>Passo a passo:</strong><br>1. Desenhe o retângulo (universo) e os círculos.<br>2. Preencha primeiro a interseção (e a tripla, se houver).<br>3. Complete as partes exclusivas.<br>4. Some para achar a união.<br>5. Subtraia do total para achar quem fica fora.</div>
+    </div>
+    <div class="tabela-scroll">
+      <table class="tab">
+        <thead><tr><th>Termo do enunciado</th><th>Região do diagrama</th></tr></thead>
+        <tbody>
+          <tr><td>“A ou B” / “pelo menos um”</td><td>A ∪ B</td></tr>
+          <tr><td>“A e B” / “os dois”</td><td>A ∩ B</td></tr>
+          <tr><td>“somente A” / “apenas A”</td><td>A − B (e A − C, com 3 conjuntos)</td></tr>
+          <tr><td>“nem A nem B”</td><td>(A ∪ B)<sup>c</sup> — fora dos círculos</td></tr>
+          <tr><td>“A, mas não B”</td><td>A − B = A ∩ B<sup>c</sup></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 style="font:700 1.25rem var(--display);margin:2rem 0 .3rem">🔗 Fontes deste módulo</h3>
+    <p style="font-size:.88rem;color:var(--ink2);max-width:75ch">Clique para abrir o material original em uma nova aba. O conteúdo acima é um resumo de estudo; consulte as fontes para aprofundar.</p>
+    <div class="fontes">
+      <a class="fonte" href="https://www.todamateria.com.br/diagrama-de-venn/" target="_blank" rel="noopener">
+        <b>Toda Matéria — Diagrama de Venn</b>
+        <span>Explicação, operações e exercícios resolvidos.</span>
+        <span class="url">todamateria.com.br</span>
+      </a>
+      <a class="fonte" href="https://pt.wikipedia.org/wiki/Diagrama_de_Venn" target="_blank" rel="noopener">
+        <b>Wikipédia — Diagrama de Venn</b>
+        <span>História, definição formal e generalizações.</span>
+        <span class="url">pt.wikipedia.org</span>
+      </a>
+      <a class="fonte" href="https://apps.univesp.br/o-diagrama-de-venn/" target="_blank" rel="noopener">
+        <b>UNIVESP — O Diagrama de Venn</b>
+        <span>Material interativo para explorar as regiões.</span>
+        <span class="url">apps.univesp.br</span>
+      </a>
+    </div>
+  </div>
+</section>
 <!-- ============ FLASHCARDS ============ -->
 <section id="flashcards" class="tab">
   <div class="divisor"><span class="num">★</span><h2>Flashcards</h2><span class="fim">revisão rápida na véspera</span></div>
@@ -1094,6 +1705,8 @@ body.noturno .fc-dica{color:var(--ink2)}
     <button class="btn btn-fino btn-tinta" id="fcTudo">Tudo</button>
     <button class="btn btn-fino" id="fcVet">➡️ Vetores</button>
     <button class="btn btn-fino" id="fcGraf">🔗 Grafos</button>
+    <button class="btn btn-fino" id="fcSist">🧮 Sistemas</button>
+    <button class="btn btn-fino" id="fcVenn">🔵 Venn</button>
     <button class="btn btn-fino btn-perigo" id="fcLimpaDif">Limpar marcações de "difíceis"</button>
   </div>
   <div class="fc-palco">
@@ -1116,7 +1729,7 @@ body.noturno .fc-dica{color:var(--ink2)}
 
 <!-- ============ FERRAMENTAS ============ -->
 <section id="ferramentas" class="tab">
-  <div class="divisor"><span class="num">03</span><h2>Ferramentas</h2><span class="fim">pratique enquanto estuda</span></div>
+  <div class="divisor"><span class="num">05</span><h2>Ferramentas</h2><span class="fim">pratique enquanto estuda</span></div>
 
   <div class="ferr-abas">
     <button class="on" id="abaGrafo">🔗 Construtor de grafos</button>
@@ -1176,9 +1789,9 @@ body.noturno .fc-dica{color:var(--ink2)}
 </section>
 <!-- ============ SIMULADO ============ -->
 <section id="simulado" class="tab">
-  <div class="divisor"><span class="num">04</span><h2>Simulado</h2><span class="fim">32 questões em ordem aleatória · correção na hora</span></div>
+  <div class="divisor"><span class="num">06</span><h2>Simulado</h2><span class="fim">42 questões em ordem aleatória · correção na hora</span></div>
   <div class="hud-simulado">
-    <span class="chip" style="margin:0">Acertos: <b id="simAcertos">0</b>/24</span>
+    <span class="chip" style="margin:0">Acertos: <b id="simAcertos">0</b>/42</span>
     <div class="barra"><div id="simBarra"></div></div>
     <button class="btn btn-fino" id="btnResetSim">↺ Resetar simulado</button>
   </div>
@@ -1195,7 +1808,7 @@ body.noturno .fc-dica{color:var(--ink2)}
 
 <!-- ============ MODO INTENSIVO ============ -->
 <section id="intensivo" class="tab">
-  <div class="divisor"><span class="num">05</span><h2>Modo Intensivo</h2><span class="fim">10 questões · 30 s cada</span></div>
+  <div class="divisor"><span class="num">07</span><h2>Modo Intensivo</h2><span class="fim">10 questões · 30 s cada</span></div>
   <div class="hud-int">
     <div class="stat"><div class="valor" id="intPontos">0</div><div class="rotulo">PONTOS</div></div>
     <div class="stat"><div class="valor" id="intRodada">–</div><div class="rotulo">QUESTÃO</div></div>
@@ -1217,7 +1830,7 @@ body.noturno .fc-dica{color:var(--ink2)}
 </main>
 </div>
 
-<footer>Intensivo Interativo · montado a partir do VETORES.pdf, dos slides de Teoria dos Grafos (Aulas 1–8) e de temas extras inspirados no Portal OBMEP/IMPA · boa prova!</footer>
+<footer>Intensivo Interativo · montado a partir do VETORES.pdf, dos slides de Teoria dos Grafos (Aulas 1–8), dos módulos de Sistemas Lineares e Diagrama de Venn (Brasil Escola, Toda Matéria, UNIFAL-MG, Wikipédia e UNIVESP) e de temas extras inspirados no Portal OBMEP/IMPA · boa prova!</footer>
 <div id="toast" role="status"></div>
 
 <script>
@@ -1255,7 +1868,7 @@ try{aplicaTema(localStorage.getItem('temaSite')||'dia');}catch(e){aplicaTema('di
 function leVistas(){try{return JSON.parse(localStorage.getItem('aulasVistas')||'[]');}catch(e){return[];}}
 function atualizaProgresso(){
   const salvo=leVistas();
-  [['vetores','fimVet','VETORES.pdf + extras'],['grafos','fimGraf','Slides + Portal OBMEP']].forEach(p=>{
+  [['vetores','fimVet','VETORES.pdf + extras'],['grafos','fimGraf','Slides + Portal OBMEP'],['sistemas','fimSL','Brasil Escola + Toda Matéria + UNIFAL + Wikipédia'],['venn','fimVenn','Toda Matéria + Wikipédia + UNIVESP']].forEach(p=>{
     const aulas=document.querySelectorAll('#'+p[0]+' .aula');
     let n=0;aulas.forEach((a,i)=>{if(salvo.includes(p[0]+'-'+i))n++;});
     const fim=document.getElementById(p[1]);
@@ -1579,7 +2192,17 @@ const BANCO=[
 {t:'num',e:'Um grafo tem vértices de graus (4, 3, 3, 2). Quantas <b>arestas</b> ele tem?',r:6,tol:.01,u:'',x:'Soma dos graus = 12 = 2|E| → |E| = 6 arestas.'},
 {t:'mc',e:'Um grafo bipartido pode conter um ciclo de comprimento 5?',a:['Não — em grafo bipartido todo ciclo tem comprimento par','Sim, desde que o grafo seja conexo','Sim, qualquer grafo admite ciclos ímpares','Não existe ciclo em grafo bipartido'],c:0,x:'Ciclo ímpar ⇒ não é bipartido. É o teste rápido da Aula 11.'},
 {t:'mc',e:'Quando existe um passeio que usa <b>todas</b> as arestas sem repetir nenhuma?',a:['Quando todos os vértices têm grau par','Com no máximo 2 vértices de grau ímpar','Quando o grafo é bipartido','Quando todas as arestas têm peso'],c:1,x:'0 vértices ímpares: fecha em ciclo euleriano; 2: começa em um e termina no outro. 4 ou mais (Königsberg!): impossível.'},
-{t:'num',e:'Königsberg tinha <b>7 pontes</b>. Quanto vale a <b>soma dos graus</b> do grafo da cidade?',r:14,tol:.01,u:'',x:'Σ graus = 2|E| = 2·7 = 14. Confere: 5 + 3 + 3 + 3 = 14 ✓'}
+{t:'num',e:'Königsberg tinha <b>7 pontes</b>. Quanto vale a <b>soma dos graus</b> do grafo da cidade?',r:14,tol:.01,u:'',x:'Σ graus = 2|E| = 2·7 = 14. Confere: 5 + 3 + 3 + 3 = 14 ✓'},
+{t:'mc',e:'Um sistema linear cujas retas são <b>paralelas distintas</b> é classificado como:',a:['SPD (uma solução)','SPI (infinitas soluções)','SI (nenhuma solução)','sistema homogêneo'],c:2,x:'Retas paralelas distintas nunca se encontram → nenhuma solução → sistema impossível (SI).'},
+{t:'num',e:'No sistema <b>x + y = 10</b> e <b>2x − y = 2</b>, qual é o valor de <b>y</b>?',r:6,tol:.01,u:'',x:'Isolando x = 10 − y: 2(10 − y) − y = 2 → 20 − 3y = 2 → y = 6 (e x = 4).'},
+{t:'mc',e:'A Regra de Cramer fornece solução única quando:',a:['D = 0','D ≠ 0','o sistema é homogêneo','todos os coeficientes são positivos'],c:1,x:'Cramer divide por D — logo só funciona com D ≠ 0 (SPD). Com D = 0, é preciso escalonar para decidir entre SPI e SI.'},
+{t:'mc',e:'Todo sistema linear homogêneo:',a:['é impossível','tem sempre a solução trivial (0, 0, …)','tem sempre infinitas soluções','não pode ser SPD'],c:1,x:'Substituindo todas as incógnitas por zero, as igualdades 0 = 0 valem. Ele nunca é SI; pode ser SPD (só a trivial) ou SPI.'},
+{t:'num',e:'Resolvendo por Cramer o sistema <b>2x + y = 7</b> e <b>x − y = 2</b>, quanto vale <b>x</b>?',r:3,tol:.01,u:'',x:'D = −3, Dₓ = −9 → x = (−9)/(−3) = 3. Depois y = 1.'},
+{t:'num',e:'Em uma turma de 30 alunos, 20 gostam de Matemática, 15 de Física e 8 das duas. Quantos <b>não gostam de nenhuma</b>?',r:3,tol:.01,u:'',x:'|M∪F| = 20 + 15 − 8 = 27. Fora = 30 − 27 = 3.'},
+{t:'num',e:'De 50 pessoas, 30 bebem café, 25 bebem chá e 10 bebem os dois. Quantas bebem <b>somente café</b>?',r:20,tol:.01,u:'',x:'Somente café = 30 − 10 = 20 (a interseção já está dentro dos 30).'},
+{t:'num',e:'Com |A|=20, |B|=15, |C|=12, |A∩B|=5, |A∩C|=4, |B∩C|=3 e |A∩B∩C|=2, quanto vale <b>|A∪B∪C|</b>?',r:37,tol:.01,u:'',x:'20 + 15 + 12 − 5 − 4 − 3 + 2 = 37. A interseção tripla é somada de volta.'},
+{t:'mc',e:'Segundo as Leis de De Morgan, <b>(A ∪ B)<sup>c</sup></b> é igual a:',a:['A<sup>c</sup> ∪ B<sup>c</sup>','A<sup>c</sup> ∩ B<sup>c</sup>','A ∩ B','A − B'],c:1,x:'O complementar da união é a interseção dos complementares: (A∪B)ᶜ = Aᶜ ∩ Bᶜ.'},
+{t:'mc',e:'No diagrama de Venn, a região “<b>somente A</b>” corresponde a:',a:['A ∩ B','A ∪ B','A − B','B − A'],c:2,x:'“Somente A” é o que pertence a A e não pertence a B: A − B = A ∩ Bᶜ.'}
 ];
 /* ---------- renderização do simulado ---------- */
 const simQ=document.getElementById('simQuestoes');
@@ -1780,13 +2403,30 @@ const FLASH=[
 {s:'G',f:'O que é um grafo de interseção?',v:'Liga dois vértices quando eles têm algo em comum: há aresta entre A e B se <b>A ∩ B ≠ ∅</b>.'},
 {s:'G',f:'Quando um grafo é bipartido?',v:'Quando os vértices dividem em <b>2 conjuntos</b> e toda aresta liga conjuntos diferentes. Equivalente: colorir com 2 cores. <b>Ciclo ímpar ⇒ não é bipartido.</b>'},
 {s:'G',f:'Quando existe o passeio que usa todas as arestas sem repetir?',v:'Com <b>0 vértices de grau ímpar</b> (fecha em ciclo) ou <b>2</b> (começa num, termina no outro). Königsberg tinha 4 ímpares → impossível!'},
-{s:'G',f:'Pode existir um grafo com graus (3, 3, 3, 3, 5)?',v:'<b>Não.</b> Soma = 17, ímpar — mas Σ graus = 2|E| é sempre par. Viola o Lema do Aperto de Mãos.'}
+{s:'G',f:'Pode existir um grafo com graus (3, 3, 3, 3, 5)?',v:'<b>Não.</b> Soma = 17, ímpar — mas Σ graus = 2|E| é sempre par. Viola o Lema do Aperto de Mãos.'},
+{s:'S',f:'O que é uma equação linear?',v:'Equação do tipo <b>a₁x₁ + … + aₙxₙ = b</b>: cada incógnita na <b>primeira potência</b>, sem produto entre incógnitas e sem incógnita no denominador.'},
+{s:'S',f:'Qual a diferença entre SPD, SPI e SI?',v:'<b>SPD:</b> uma única solução (retas concorrentes).<br><b>SPI:</b> infinitas soluções (retas coincidentes).<br><b>SI:</b> nenhuma solução (retas paralelas distintas).'},
+{s:'S',f:'Quais são os três métodos clássicos para sistemas 2×2?',v:'<b>Substituição</b> (isolar e substituir), <b>adição/eliminação</b> (somar para cancelar uma incógnita) e <b>comparação</b> (isolar a mesma incógnita e igualar).'},
+{s:'S',f:'Como se calcula o determinante de uma matriz 2×2?',v:'<b>D = a·d − b·c</b> para a matriz [a b; c d]. Se <b>D ≠ 0</b>, o sistema é SPD; se D = 0, é SPI ou SI.'},
+{s:'S',f:'Enuncie a Regra de Cramer.',v:'<b>x = Dₓ/D</b> e <b>y = D_y/D</b>, em que D é o determinante dos coeficientes e Dₓ, D_y trocam a coluna da incógnita pelos termos independentes. Só vale com <b>D ≠ 0</b>.'},
+{s:'S',f:'O que é o escalonamento (método de Gauss)?',v:'Combinar equações para eliminar incógnitas e chegar a um sistema <b>triangular</b> (“em escada”), resolvido de baixo para cima. É o método mais seguro para 3×3 ou maior.'},
+{s:'S',f:'Todo sistema homogêneo tem solução?',v:'<b>Sim</b> — sempre admite a solução trivial (0, 0, …, 0). Se D ≠ 0 é SPD (só a trivial); se D = 0 é SPI (infinitas).'},
+{s:'S',f:'Se D = 0, Cramer resolve a classificação?',v:'<b>Não.</b> D = 0 só indica que não há solução única. É preciso escalonar/substituir para decidir entre <b>SPI</b> (equações equivalentes) e <b>SI</b> (contradição, tipo 0 = 5).'},
+{s:'S',f:'No sistema x + y = 2 e 2x + 2y = k, o que acontece com cada k?',v:'D = 0 sempre (nunca SPD). Se <b>k = 4</b> → SPI (infinitas). Se <b>k ≠ 4</b> → SI (impossível).'},
+{s:'N',f:'O que é o diagrama de Venn?',v:'Representação de conjuntos por <b>regiões fechadas</b> (círculos) dentro de um retângulo que é o <b>conjunto universo</b>. Popularizado por <b>John Venn</b> em 1880.'},
+{s:'N',f:'O que significam A ∪ B, A ∩ B e A − B?',v:'<b>A ∪ B:</b> união (está em A ou em B).<br><b>A ∩ B:</b> interseção (está nos dois).<br><b>A − B:</b> diferença (está em A e não em B).'},
+{s:'N',f:'Fórmula da união de dois conjuntos?',v:'<b>|A ∪ B| = |A| + |B| − |A ∩ B|</b>. Subtrai-se a interseção porque ela foi contada duas vezes.'},
+{s:'N',f:'Fórmula da união de três conjuntos?',v:'<b>|A∪B∪C| = |A|+|B|+|C| − |A∩B| − |A∩C| − |B∩C| + |A∩B∩C|</b>. A tripla volta a ser somada porque foi retirada uma vez a mais.'},
+{s:'N',f:'Quantas regiões tem um diagrama de Venn de 3 conjuntos?',v:'<b>8 regiões</b> (7 dentro dos círculos + a parte externa). Comece sempre pela interseção tripla A∩B∩C e vá completando de dentro para fora.'},
+{s:'N',f:'Como achar “quantos gostam de pelo menos uma opção”?',v:'Some as regiões <b>dentro</b> dos círculos (só A + só B + interseção), ou use inclusão-exclusão. O que faltar para o total do universo fica <b>fora</b>: |U| − |A∪B|.'},
+{s:'N',f:'Quais são as Leis de De Morgan?',v:'<b>(A ∪ B)ᶜ = Aᶜ ∩ Bᶜ</b> e <b>(A ∩ B)ᶜ = Aᶜ ∪ Bᶜ</b>. Na lógica: “não (A e B)” = “não A ou não B”.'},
+{s:'N',f:'“Somente A” e “nem A nem B” correspondem a quais regiões?',v:'<b>Somente A</b> = A − B (fora da interseção).<br><b>Nem A nem B</b> = (A ∪ B)ᶜ — a parte do universo fora dos dois círculos.'}
 ];
 const fcCarta=document.getElementById('fcCarta'),fcStatus=document.getElementById('fcStatus');
 let fcFila=[],fcIdx=0,fcTema='tudo',fcDif=[];
 try{fcDif=JSON.parse(localStorage.getItem('flashDificeis')||'[]');}catch(e){}
 function fcSalvaDif(){try{localStorage.setItem('flashDificeis',JSON.stringify(fcDif));}catch(e){}}
-function fcBtnOn(){[['fcTudo','tudo'],['fcVet','V'],['fcGraf','G']].forEach(p=>document.getElementById(p[0]).classList.toggle('btn-tinta',fcTema===p[1]));}
+function fcBtnOn(){[['fcTudo','tudo'],['fcVet','V'],['fcGraf','G'],['fcSist','S'],['fcVenn','N']].forEach(p=>document.getElementById(p[0]).classList.toggle('btn-tinta',fcTema===p[1]));}
 function fcMonta(){
   fcFila=embaralha(FLASH.filter(c=>fcTema==='tudo'||c.s===fcTema));
   fcIdx=0;fcBtnOn();fcMostra();
@@ -1800,7 +2440,7 @@ function fcMostra(){
     return;
   }
   const c=fcFila[fcIdx];
-  tag.textContent=c.s==='V'?'Vetores':'Grafos';
+  tag.textContent={V:'Vetores',G:'Grafos',S:'Sistemas Lineares',N:'Diagrama de Venn'}[c.s];
   fr.innerHTML=c.f;vo.innerHTML=c.v;
   fcStatus.textContent='Carta '+(fcIdx+1)+' de '+fcFila.length+' (fila restante: '+(fcFila.length-fcIdx)+') · marcadas como difíceis: '+fcDif.length;
 }
@@ -1822,6 +2462,8 @@ document.getElementById('fcProx').addEventListener('click',()=>{if(fcIdx<fcFila.
 document.getElementById('fcTudo').addEventListener('click',()=>{fcTema='tudo';fcMonta();});
 document.getElementById('fcVet').addEventListener('click',()=>{fcTema='V';fcMonta();});
 document.getElementById('fcGraf').addEventListener('click',()=>{fcTema='G';fcMonta();});
+document.getElementById('fcSist').addEventListener('click',()=>{fcTema='S';fcMonta();});
+document.getElementById('fcVenn').addEventListener('click',()=>{fcTema='N';fcMonta();});
 document.getElementById('fcLimpaDif').addEventListener('click',()=>{fcDif=[];fcSalvaDif();fcMostra();toast('Marcações de "difíceis" limpas!');});
 fcMonta();
 
@@ -1866,7 +2508,15 @@ const BANCO_INT=[
 {e:'Um grafo com 8 arestas tem soma dos graus igual a…',a:['8','16','4','64'],c:1},
 {e:'Um ciclo de comprimento 7 num grafo bipartido é…',a:['impossível — todo ciclo bipartido é par','possível sempre','possível só se ponderado','possível só se conexo'],c:0},
 {e:'Uma aresta com direção (mão única) chama-se…',a:['arco (dígrafo)','laço','ramo duplicado','diagonal'],c:0},
-{e:'Quem provou a impossibilidade das 7 pontes, e em que ano?',a:['Euler, em 1736','Gauss, em 1799','Pitágoras, 500 a.C.','Boole, em 1854'],c:0}
+{e:'Quem provou a impossibilidade das 7 pontes, e em que ano?',a:['Euler, em 1736','Gauss, em 1799','Pitágoras, 500 a.C.','Boole, em 1854'],c:0},
+{e:'Um sistema possível e determinado (SPD) tem…',a:['nenhuma solução','uma única solução','infinitas soluções','sempre duas soluções'],c:1},
+{e:'No sistema x + y = 10 e x − y = 2, o valor de x é…',a:['4','6','8','2'],c:1},
+{e:'Em x + y = 2 e 2x + 2y = 4, as equações são equivalentes. O sistema é…',a:['SPD','SPI','SI','homogêneo'],c:1},
+{e:'A Regra de Cramer só fornece solução única quando…',a:['D = 0','D ≠ 0','o sistema é homogêneo','há 3 incógnitas'],c:1},
+{e:'No diagrama de Venn, o retângulo representa…',a:['a interseção','o conjunto universo','a união','o conjunto vazio'],c:1},
+{e:'A fórmula da união de dois conjuntos é…',a:['|A| + |B|','|A| + |B| − |A∩B|','|A| − |B|','|A∩B| + |A∪B|'],c:1},
+{e:'Um diagrama de Venn de 3 conjuntos possui quantas regiões?',a:['6','7','8','9'],c:2},
+{e:'A região “somente A” corresponde a…',a:['A ∪ B','A ∩ B','A − B','B − A'],c:2}
 ];
 const intPontos=document.getElementById('intPontos'),intRodada=document.getElementById('intRodada'),intTempo=document.getElementById('intTempo'),painelQ=document.getElementById('painelQ'),resInt=document.getElementById('resultadoInt');
 let rodadas=[],idxInt=0,pontos=0,travadaInt=false,tTimer=null,tRest=30;
