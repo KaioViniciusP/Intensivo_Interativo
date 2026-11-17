@@ -1,0 +1,51 @@
+name: Erro de conteúdo
+description: Conta errada, gabarito incorreto, texto confuso ou link quebrado.
+title: "[Conteúdo] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar a corrigir o material! Preencha o máximo de contexto possível.
+  - type: dropdown
+    id: modulo
+    attributes:
+      label: Módulo
+      options:
+        - Vetores
+        - Teoria dos Grafos
+        - Sistemas Lineares
+        - Diagrama de Venn
+        - Flashcards
+        - Simulado
+        - Modo Intensivo
+        - Ferramentas
+        - Página de exercícios
+        - Outro / não sei
+    validations:
+      required: true
+  - type: input
+    id: local
+    attributes:
+      label: Onde exatamente?
+      placeholder: "Ex.: Aula 5, questão 12 do simulado de Grafos, carta de Sistemas..."
+    validations:
+      required: true
+  - type: textarea
+    id: problema
+    attributes:
+      label: O que está errado?
+      description: Copie o trecho e explique o problema.
+      placeholder: "O texto diz X, mas o correto seria Y porque..."
+    validations:
+      required: true
+  - type: textarea
+    id: correcao
+    attributes:
+      label: Correção sugerida
+      description: Se souber, escreva a versão correta.
+  - type: textarea
+    id: contexto
+    attributes:
+      label: Contexto adicional
+      description: Print, link da fonte, navegador/dispositivo. Não envie dados pessoais.

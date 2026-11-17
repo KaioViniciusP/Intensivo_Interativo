@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Site ao vivo
+    url: https://kaioviniciusp.github.io/treino/
+    about: Confira se o problema também acontece na versão publicada.
+  - name: Guia de contribuição
+    url: https://github.com/KaioViniciusP/treino/blob/main/CONTRIBUTING.md
+    about: Leia antes de enviar código ou conteúdo.
+  - name: Como adicionar conteúdo
+    url: https://github.com/KaioViniciusP/treino/blob/main/docs/ADICIONAR-CONTEUDO.md
+    about: Passo a passo para aulas, questões, flashcards e matérias novas.

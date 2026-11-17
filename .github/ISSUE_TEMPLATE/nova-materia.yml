@@ -1,0 +1,44 @@
+name: Sugestão de matéria ou funcionalidade
+description: Proponha um módulo novo, uma ferramenta ou uma melhoria no site.
+title: "[Sugestão] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo de sugestão
+      options:
+        - Nova matéria / módulo
+        - Novas questões ou flashcards
+        - Nova ferramenta interativa
+        - Acessibilidade
+        - Design / responsividade
+        - Desempenho
+        - Documentação
+        - Outro
+    validations:
+      required: true
+  - type: textarea
+    id: ideia
+    attributes:
+      label: Qual é a ideia?
+      description: Descreva o que você gostaria de ver no site.
+    validations:
+      required: true
+  - type: textarea
+    id: motivacao
+    attributes:
+      label: Por que isso ajudaria?
+      description: Quem se beneficia e em que situação?
+  - type: textarea
+    id: referencias
+    attributes:
+      label: Referências
+      description: Livros, sites, provas ou exemplos que podem servir de base. Cite as fontes.
+  - type: checkboxes
+    id: disposicao
+    attributes:
+      label: Você gostaria de implementar?
+      options:
+        - label: Posso abrir um pull request com essa mudança.
+        - label: Posso ajudar com conteúdo/revisão, mas não com código.
