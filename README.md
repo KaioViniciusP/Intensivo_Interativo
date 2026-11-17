@@ -14,7 +14,6 @@ O projeto nasceu como material de revisão para uma prova e virou um repositóri
 
 - **Site:** <https://kaioviniciusp.github.io/treino/>
 - **Repositório:** <https://github.com/KaioViniciusP/treino>
-- **Treino extra (Vetores e Grafos):** <https://kaioviniciusp.github.io/treino/exercicios_vetores_grafos.html>
 
 Não precisa instalar nada: o site roda inteiro no navegador e funciona offline depois de carregado (exceto as fontes do Google).
 
