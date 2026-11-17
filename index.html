@@ -171,6 +171,25 @@ table.tab{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--
 .vetor-lbl{font:700 12px var(--mono)}
 
 /* ========== QUESTÕES ========== */
+/* Seletor do tipo de simulado */
+.sim-escolha{background:var(--card);border:2px solid var(--ink);border-radius:16px;padding:1rem 1.15rem;margin:.2rem 0 1.2rem;box-shadow:6px 6px 0 rgba(17,27,75,.85)}
+.sim-escolha>p{font:700 .95rem var(--display);margin-bottom:.7rem;display:flex;align-items:baseline;gap:.55rem;flex-wrap:wrap}
+.sim-escolha>p small{font:500 .78rem var(--body);color:var(--ink2)}
+.sim-opcoes{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:.6rem}
+.sim-opcao{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:.2rem;border:2px solid var(--line);border-radius:12px;padding:.65rem .8rem;background:var(--paper);color:var(--ink);transition:transform .15s,border-color .15s,background .15s}
+.sim-opcao:hover{border-color:var(--blue);transform:translateY(-2px)}
+.sim-opcao .rot{font:700 .92rem var(--display);display:flex;align-items:center;gap:.4rem}
+.sim-opcao .qtd{font:600 .72rem var(--mono);color:var(--ink2);line-height:1.4}
+.sim-opcao.on{background:var(--yellow);border-color:var(--ink);box-shadow:3px 3px 0 rgba(17,27,75,.85);transform:none}
+.sim-opcao.on .qtd{color:#111b4b}
+/* Etiqueta de área dentro da questão */
+.q-area{margin-left:auto;align-self:flex-start;font:700 .68rem var(--body);letter-spacing:.03em;border:1.5px solid currentColor;border-radius:999px;padding:.05rem .5rem;color:var(--blue-deep);white-space:nowrap}
+.q-area.g{color:var(--red)}
+.q-area.s{color:var(--green)}
+.q-area.n{color:#7a4bd6}
+body.noturno .sim-opcao{background:var(--card)}
+body.noturno .sim-opcao.on{background:var(--yellow);color:#111b4b}
+body.noturno .q-area.n{color:#c9b4ff}
 .hud-simulado{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap;margin:.4rem 0 1.2rem}
 .barra{flex:1;min-width:180px;height:14px;background:#fff;border:2px solid var(--ink);border-radius:999px;overflow:hidden}
 .barra>div{height:100%;width:0;background:repeating-linear-gradient(-45deg,var(--yellow) 0 10px,#f7ca00 10px 20px);transition:width .4s}
@@ -204,6 +223,10 @@ table.tab{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--
 .graf-box text{fill:#fff;font:700 13px var(--mono);text-anchor:middle;pointer-events:none}
 .graf-box line{stroke:#aab4d6;stroke-width:2.5}
 .graf-box line.ativa{stroke:#f59e0b;stroke-width:4.5}
+/* Rótulos dos diagramas de Venn dentro das questões */
+.graf-box .vnum{fill:var(--ink);font:700 14px var(--mono)}
+.graf-box .vlb{fill:var(--ink2);font:600 12px var(--mono)}
+.graf-box .vlu{fill:var(--ink2);font:600 12px var(--mono);text-anchor:start}
 .graf-box .peso-lbl{font:700 12px var(--mono);fill:var(--blue-deep);paint-order:stroke;stroke:#fff;stroke-width:5px;text-anchor:middle;pointer-events:none}
 .graf-box .nome-lbl{font:600 11px var(--body);fill:var(--ink2);paint-order:stroke;stroke:#fff;stroke-width:5px;text-anchor:middle;pointer-events:none}
 .graf-box path.g{stroke:#cf5a5a;stroke-width:3;fill:none}
@@ -356,7 +379,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
       <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><circle cx="7" cy="21" r="4.5" fill="#2450c4"/><circle cx="23" cy="7" r="4.5" fill="#111b4b"/><line x1="10" y1="18" x2="20" y2="10" stroke="#ffd60a" stroke-width="3" stroke-linecap="round"/></svg>
       Intensivo <span class="hl">Interativo</span>
     </a>
-    <div class="chip" id="chipPlacar">Simulado: 0/42</div>
+    <div class="chip" id="chipPlacar">Simulado: 0/64</div>
     <button id="btnTema" class="btn btn-fino" title="Alternar tema claro/escuro">🌙</button>
   </div>
   <nav class="aba-nav" aria-label="Seções do site">
@@ -1789,9 +1812,34 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
 </section>
 <!-- ============ SIMULADO ============ -->
 <section id="simulado" class="tab">
-  <div class="divisor"><span class="num">06</span><h2>Simulado</h2><span class="fim">42 questões em ordem aleatória · correção na hora</span></div>
+  <div class="divisor"><span class="num">06</span><h2>Simulado</h2><span class="fim" id="simFim">64 questões em ordem aleatória · correção na hora</span></div>
+  <div class="sim-escolha">
+    <p>Escolha o tipo de simulado <small>O progresso de cada tipo fica salvo separadamente.</small></p>
+    <div class="sim-opcoes" id="simOpcoes" role="group" aria-label="Tipo de simulado">
+      <button type="button" class="sim-opcao on" data-simmodo="geral">
+        <span class="rot"><span aria-hidden="true">🎯</span> Geral</span>
+        <span class="qtd" id="simQtdGeral">64 questões · 4 módulos</span>
+      </button>
+      <button type="button" class="sim-opcao" data-simmodo="V">
+        <span class="rot"><span aria-hidden="true">➡️</span> Vetores</span>
+        <span class="qtd" id="simQtdV">16 questões</span>
+      </button>
+      <button type="button" class="sim-opcao" data-simmodo="G">
+        <span class="rot"><span aria-hidden="true">🕸️</span> Grafos</span>
+        <span class="qtd" id="simQtdG">16 questões</span>
+      </button>
+      <button type="button" class="sim-opcao" data-simmodo="S">
+        <span class="rot"><span aria-hidden="true">🧮</span> Sistemas</span>
+        <span class="qtd" id="simQtdS">5 questões</span>
+      </button>
+      <button type="button" class="sim-opcao" data-simmodo="N">
+        <span class="rot"><span aria-hidden="true">🔵</span> Venn</span>
+        <span class="qtd" id="simQtdN">5 questões</span>
+      </button>
+    </div>
+  </div>
   <div class="hud-simulado">
-    <span class="chip" style="margin:0">Acertos: <b id="simAcertos">0</b>/42</span>
+    <span class="chip" style="margin:0">Acertos: <b id="simAcertos">0</b>/<span id="simTotal">42</span></span>
     <div class="barra"><div id="simBarra"></div></div>
     <button class="btn btn-fino" id="btnResetSim">↺ Resetar simulado</button>
   </div>
@@ -2159,59 +2207,139 @@ const svgMaior=()=>'<svg viewBox="0 0 300 220">'+ln(60,60,190,40)+ln(60,60,125,1
 const svgCaminho=()=>'<svg viewBox="0 0 340 190">'+ln(50,95,170,35)+ln(50,95,170,155)+ln(170,35,290,95)+ln(170,155,290,95)+ln(170,35,170,155)+pl(100,55,'2')+pl(96,138,'4')+pl(238,55,'5')+pl(238,138,'1')+pl(180,100,'6')+gnd('A',50,95)+gnd('B',170,35)+gnd('C',170,155)+gnd('D',290,95)+'</svg>';
 const svgQuad=()=>'<svg viewBox="0 0 200 190">'+ln(60,50,140,50)+ln(140,50,140,140)+ln(140,140,60,140)+ln(60,140,60,50)+gnd('A',60,50)+gnd('B',140,50)+gnd('C',140,140)+gnd('D',60,140)+'</svg>';
 const svgTri=()=>'<svg viewBox="0 0 200 190">'+ln(100,40,55,135)+ln(100,40,145,135)+ln(55,135,145,135)+gnd('A',100,40)+gnd('B',55,135)+gnd('C',145,135)+'</svg>';
+/* Figuras extras usadas nas questões de Sistemas e Venn */
+const svgRetasCruzando=()=>'<svg viewBox="0 0 300 200" role="img" aria-label="Duas retas concorrentes se cruzando em um único ponto"><rect x="20" y="20" width="260" height="140" rx="8" fill="none" stroke="#d9dff0"/><line x1="45" y1="140" x2="255" y2="45" style="stroke:#2450c4;stroke-width:3"/><line x1="45" y1="50" x2="255" y2="145" style="stroke:#cf3f3f;stroke-width:3"/><circle cx="150" cy="95" r="5" fill="#111b4b"/></svg>';
+function svgVenn2(v){
+  return '<svg viewBox="0 0 380 220" role="img" aria-label="Diagrama de Venn de dois conjuntos">'
+    +'<rect x="12" y="12" width="356" height="176" rx="10" fill="none" stroke="#9aa5c4" stroke-width="1.6"/>'
+    +'<circle cx="145" cy="100" r="72" fill="rgba(36,80,196,.15)" stroke="#2450c4" stroke-width="2.2"/>'
+    +'<circle cx="235" cy="100" r="72" fill="rgba(255,214,10,.28)" stroke="#a07d00" stroke-width="2.2"/>'
+    +'<text class="vlu" x="36" y="34">U = '+v.u+'</text>'
+    +'<text class="vlb" x="88" y="46">'+v.la+'</text>'
+    +'<text class="vlb" x="270" y="46">'+v.lb+'</text>'
+    +'<text class="vnum" x="106" y="105">'+v.a+'</text>'
+    +'<text class="vnum" x="190" y="105">'+v.ab+'</text>'
+    +'<text class="vnum" x="266" y="105">'+v.b+'</text>'
+    +'<text class="vnum" x="330" y="160">'+v.out+'</text>'
+    +'</svg>';
+}
+function svgVenn3(v){
+  return '<svg viewBox="0 0 380 330" role="img" aria-label="Diagrama de Venn de três conjuntos">'
+    +'<rect x="8" y="8" width="364" height="294" rx="10" fill="none" stroke="#9aa5c4" stroke-width="1.6"/>'
+    +'<circle cx="150" cy="115" r="85" fill="rgba(36,80,196,.13)" stroke="#2450c4" stroke-width="2.2"/>'
+    +'<circle cx="215" cy="115" r="85" fill="rgba(255,214,10,.24)" stroke="#a07d00" stroke-width="2.2"/>'
+    +'<circle cx="182" cy="180" r="85" fill="rgba(14,138,78,.14)" stroke="#0e8a4e" stroke-width="2.2"/>'
+    +'<text class="vlu" x="32" y="34">U = '+v.u+'</text>'
+    +'<text class="vlb" x="70" y="44">A</text>'
+    +'<text class="vlb" x="294" y="44">B</text>'
+    +'<text class="vlb" x="182" y="296">C</text>'
+    +'<text class="vnum" x="100" y="104">'+v.onlyA+'</text>'
+    +'<text class="vnum" x="264" y="104">'+v.onlyB+'</text>'
+    +'<text class="vnum" x="182" y="88">'+v.ab+'</text>'
+    +'<text class="vnum" x="182" y="150">'+v.abc+'</text>'
+    +'<text class="vnum" x="138" y="190">'+v.ac+'</text>'
+    +'<text class="vnum" x="226" y="190">'+v.bc+'</text>'
+    +'<text class="vnum" x="182" y="243">'+v.onlyC+'</text>'
+    +'<text class="vnum" x="330" y="62">'+v.out+'</text>'
+    +'</svg>';
+}
 
 const BANCO=[
-{t:'mc',e:'Qual alternativa contém <span class="hl">somente</span> grandezas vetoriais?',a:['Massa, tempo e temperatura','Força, velocidade e aceleração','Distância, volume e tempo','Energia, massa e aceleração'],c:1,x:'Vetoriais precisam de módulo, direção e sentido: força, velocidade e aceleração. As demais são escalares.'},
-{t:'num',e:'Dois vetores de mesma direção e sentido valem <b>6 N</b> e <b>3 N</b>. Qual o módulo do resultante?',r:9,tol:.01,u:'N',x:'Sentidos iguais: somamos os módulos (6 + 3). Direção e sentido se mantêm.'},
-{t:'num',e:'Mesma direção, sentidos <b>opostos</b>: vetores de <b>6 N</b> e <b>3 N</b>. Módulo do resultante?',r:3,tol:.01,u:'N',x:'Sentidos opostos: subtraímos os módulos (6 − 3); o sentido é o do vetor de maior módulo.'},
-{t:'num',e:'Vetores perpendiculares de <b>3 u</b> e <b>4 u</b>: módulo do resultante?',r:5,tol:.01,u:'u',x:'Pitágoras: R = √(3² + 4²) = √25 = 5 u.'},
-{t:'num',e:'Vetores perpendiculares de <b>6 N</b> e <b>8 N</b>: módulo do resultante?',r:10,tol:.01,u:'N',x:'R = √(6² + 8²) = √100 = 10 N.'},
-{t:'num',e:'Oblíquos com a = 5 u, b = 8 u e θ = 60°. Módulo de R? (2 casas)',r:11.36,tol:.06,u:'u',x:'R = √(25 + 64 + 2·5·8·cos 60°) = √(89 + 40) = √129 ≈ 11,36 u.'},
-{t:'mc',e:'Se A = 10 u e θ = 30°, a componente horizontal Ax vale:',a:['5√3 ≈ 8,66 u','5 u','10 u','20 u'],c:0,x:'Ax = A·cos θ = 10·(√3/2) = 5√3 ≈ 8,66 u.'},
-{t:'mc',e:'Multiplicando <span class="vet">a</span> por um número real <b>k &lt; 0</b>, o vetor resultante:',a:['mantém módulo, direção e sentido','tem sentido invertido e direção mantida','tem direção invertida e sentido mantido','é sempre o vetor nulo'],c:1,x:'k &lt; 0: módulo multiplicado por |k|, direção mantida, sentido invertido.'},
-{t:'num',e:'Se |<span class="vet">a</span>| = 5 u, qual o módulo do vetor <b>−3<span class="vet">a</span></b>?',r:15,tol:.01,u:'u',x:'|−3<span class="vet">a</span>| = |−3| · |<span class="vet">a</span>| = 3 · 5 = 15 u, em sentido oposto a <span class="vet">a</span>.'},
-{t:'num',e:'Quanto vale <b>sen 30°</b>? (decimal)',r:0.5,tol:.01,u:'',x:'Dos ângulos notáveis: sen 30° = 1/2 = 0,5.'},
-{t:'mc',e:'Quanto vale <b>cos 120°</b>?',a:['1/2','√3/2','−1/2','−√3/2'],c:2,x:'120° está no 2º quadrante: sen + e cos −. cos 120° = −cos 60° = −1/2.'},
-{t:'num',e:'A = 20 u e θ = 60°. Componente <b>vertical</b> Ay? (2 casas)',r:17.32,tol:.06,u:'u',x:'Ay = 20·sen 60° = 20·(√3/2) = 10√3 ≈ 17,32 u.'},
-{t:'mc',e:'Em um grafo, os <b>vértices</b> representam…',a:['as ligações entre os pontos','os pontos de conexão (as regiões)','as distâncias reais','os pesos das arestas'],c:1,x:'Vértice = ponto de conexão (era uma região de terra); aresta = ligação (era uma ponte).'},
-{t:'mc',e:'Grafo em linha A—B—C. Complete: V = {A,B,C} e E = {{A,B},{B,C}}. Portanto o grafo tem:',a:['3 vértices e 3 arestas','2 vértices e 3 arestas','3 vértices e 2 arestas','2 vértices e 2 arestas'],c:2,x:'V tem 3 elementos; E tem 2 arestas: A–B e B–C.'},
-{t:'clique',e:'Clique no vértice de <b>maior grau</b>.',svg:svgMaior,nome:'C',x:'C incide em 4 arestas (A, B, D e E) — grau 4. Os demais têm grau 2.'},
-{t:'mc',e:'Uma rua de <b>mão única</b> (só dá para ir de A para B) é modelada como:',a:['grafo não direcionado','grafo direcionado (dígrafo)','grafo bipartido','árvore geradora'],c:1,x:'Quando a ligação tem sentido, a aresta vira um arco do dígrafo: E = {(A, B)}.'},
-{t:'num',e:'Na cidade de Euler, a Ilha Kneiphof tinha <b>5 pontes</b>. Então o grau do vértice Kneiphof era…',r:5,tol:.01,u:'',x:'Grau = número de arestas que incidem no vértice = 5 (ímpar → já era um problema!).'},
-{t:'caminho',e:'Monte o <b>menor caminho</b> de A até D (clique nos vértices na ordem) e digite o custo total.',svg:svgCaminho,seq:['A','C','D'],custo:5,x:'A→C→D custa 4 + 1 = 5; A→B→D custa 2 + 5 = 7. Menor caminho não é o de menos arestas!'},
-{t:'mc',e:'Um <b>ciclo</b> em um grafo é um caminho que…',a:['só usa arestas com peso','só passa por vértices de grau par','começa e termina no mesmo vértice','liga vértices isolados'],c:2,x:'Ciclo: caminho que inicia e encerra no mesmo vértice, sem repetir arestas.'},
-{t:'bip',e:'Qual dos grafos abaixo é <b>bipartido</b>?',opcoes:[{t:svgQuad(),ok:true,d:'Grafo 1'},{t:svgTri(),ok:false,d:'Grafo 2'}],x:'O quadrado (ciclo de 4) particiona em {A, C} e {B, D}. O triângulo (ciclo ímpar) não é bipartido.'},
-{t:'mc',e:'Em um grafo de interseção, há aresta entre dois conjuntos quando…',a:['A ∩ B = ∅','A ∩ B ≠ ∅','A ⊂ B','A e B têm o mesmo tamanho'],c:1,x:'Liga-se A a B se a interseção não é vazia — eles têm algo em comum.'},
-{t:'num',e:'Um grafo tem vértices de graus (5, 2, 2, 2, 2, 1). Quantas <b>arestas</b> ele tem?',r:7,tol:.01,u:'',x:'Σ graus = 14 = 2|E| → |E| = 7 arestas.'},
-{t:'mc',e:'Existe um grafo com graus (3, 3, 3, 3, 5)?',a:['Sim, com 9 arestas','Sim, com 17 arestas','Não — a soma dos graus é ímpar','Não — todo vértice precisa ter grau par'],c:2,x:'Soma = 17 (ímpar). Como Σ graus = 2|E| é sempre par, esse grafo não existe.'},
-{t:'mc',e:'O passeio das 7 pontes de Königsberg é impossível porque:',a:['há pontes demais para cruzar','todas as 4 regiões têm grau ímpar','o rio não pode ser atravessado 2 vezes','as distâncias entre as ilhas são grandes'],c:1,x:'Com 4 vértices de grau ímpar não existe caminho euleriano — no máximo 2 vértices podem ter grau ímpar.'},
-{t:'mc',e:'1 rad vale aproximadamente…',a:['57,3°','60°','90°','180°'],c:0,x:'Da relação 180° = π rad: 1 rad ≈ 57,3°.'},
-{t:'mc',e:'Várias forças atuando sobre um corpo podem ser trocadas por…',a:['apenas um vetor: o resultante','sempre dois vetores','um número escalar','nada — é impossível simplificar'],c:0,x:'Esse é o conceito de vetor resultante (Aula 3): um vetor que equivale ao conjunto.'},
-{t:'num',e:'A = 20 u e θ = 30°. Quanto vale <b>Ax</b>? (2 casas)',r:17.32,tol:.06,u:'u',x:'Ax = 20·cos 30° = 20·(√3/2) = 10√3 ≈ 17,32 u.'},
-{t:'mc',e:'Se α + β = 180° (ângulos suplementares), então:',a:['sen α = sen β e cos α = −cos β','sen α = −sen β e cos α = cos β','sen α = cos β','tg α = tg β'],c:0,x:'Suplementares: os senos são iguais e os cossenos têm sinais opostos.'},
-{t:'num',e:'Um grafo tem vértices de graus (4, 3, 3, 2). Quantas <b>arestas</b> ele tem?',r:6,tol:.01,u:'',x:'Soma dos graus = 12 = 2|E| → |E| = 6 arestas.'},
-{t:'mc',e:'Um grafo bipartido pode conter um ciclo de comprimento 5?',a:['Não — em grafo bipartido todo ciclo tem comprimento par','Sim, desde que o grafo seja conexo','Sim, qualquer grafo admite ciclos ímpares','Não existe ciclo em grafo bipartido'],c:0,x:'Ciclo ímpar ⇒ não é bipartido. É o teste rápido da Aula 11.'},
-{t:'mc',e:'Quando existe um passeio que usa <b>todas</b> as arestas sem repetir nenhuma?',a:['Quando todos os vértices têm grau par','Com no máximo 2 vértices de grau ímpar','Quando o grafo é bipartido','Quando todas as arestas têm peso'],c:1,x:'0 vértices ímpares: fecha em ciclo euleriano; 2: começa em um e termina no outro. 4 ou mais (Königsberg!): impossível.'},
-{t:'num',e:'Königsberg tinha <b>7 pontes</b>. Quanto vale a <b>soma dos graus</b> do grafo da cidade?',r:14,tol:.01,u:'',x:'Σ graus = 2|E| = 2·7 = 14. Confere: 5 + 3 + 3 + 3 = 14 ✓'},
-{t:'mc',e:'Um sistema linear cujas retas são <b>paralelas distintas</b> é classificado como:',a:['SPD (uma solução)','SPI (infinitas soluções)','SI (nenhuma solução)','sistema homogêneo'],c:2,x:'Retas paralelas distintas nunca se encontram → nenhuma solução → sistema impossível (SI).'},
-{t:'num',e:'No sistema <b>x + y = 10</b> e <b>2x − y = 2</b>, qual é o valor de <b>y</b>?',r:6,tol:.01,u:'',x:'Isolando x = 10 − y: 2(10 − y) − y = 2 → 20 − 3y = 2 → y = 6 (e x = 4).'},
-{t:'mc',e:'A Regra de Cramer fornece solução única quando:',a:['D = 0','D ≠ 0','o sistema é homogêneo','todos os coeficientes são positivos'],c:1,x:'Cramer divide por D — logo só funciona com D ≠ 0 (SPD). Com D = 0, é preciso escalonar para decidir entre SPI e SI.'},
-{t:'mc',e:'Todo sistema linear homogêneo:',a:['é impossível','tem sempre a solução trivial (0, 0, …)','tem sempre infinitas soluções','não pode ser SPD'],c:1,x:'Substituindo todas as incógnitas por zero, as igualdades 0 = 0 valem. Ele nunca é SI; pode ser SPD (só a trivial) ou SPI.'},
-{t:'num',e:'Resolvendo por Cramer o sistema <b>2x + y = 7</b> e <b>x − y = 2</b>, quanto vale <b>x</b>?',r:3,tol:.01,u:'',x:'D = −3, Dₓ = −9 → x = (−9)/(−3) = 3. Depois y = 1.'},
-{t:'num',e:'Em uma turma de 30 alunos, 20 gostam de Matemática, 15 de Física e 8 das duas. Quantos <b>não gostam de nenhuma</b>?',r:3,tol:.01,u:'',x:'|M∪F| = 20 + 15 − 8 = 27. Fora = 30 − 27 = 3.'},
-{t:'num',e:'De 50 pessoas, 30 bebem café, 25 bebem chá e 10 bebem os dois. Quantas bebem <b>somente café</b>?',r:20,tol:.01,u:'',x:'Somente café = 30 − 10 = 20 (a interseção já está dentro dos 30).'},
-{t:'num',e:'Com |A|=20, |B|=15, |C|=12, |A∩B|=5, |A∩C|=4, |B∩C|=3 e |A∩B∩C|=2, quanto vale <b>|A∪B∪C|</b>?',r:37,tol:.01,u:'',x:'20 + 15 + 12 − 5 − 4 − 3 + 2 = 37. A interseção tripla é somada de volta.'},
-{t:'mc',e:'Segundo as Leis de De Morgan, <b>(A ∪ B)<sup>c</sup></b> é igual a:',a:['A<sup>c</sup> ∪ B<sup>c</sup>','A<sup>c</sup> ∩ B<sup>c</sup>','A ∩ B','A − B'],c:1,x:'O complementar da união é a interseção dos complementares: (A∪B)ᶜ = Aᶜ ∩ Bᶜ.'},
-{t:'mc',e:'No diagrama de Venn, a região “<b>somente A</b>” corresponde a:',a:['A ∩ B','A ∪ B','A − B','B − A'],c:2,x:'“Somente A” é o que pertence a A e não pertence a B: A − B = A ∩ Bᶜ.'}
+{t:'mc',ar:'V',e:'Qual alternativa contém <span class="hl">somente</span> grandezas vetoriais?',a:['Massa, tempo e temperatura','Força, velocidade e aceleração','Distância, volume e tempo','Energia, massa e aceleração'],c:1,x:'Vetoriais precisam de módulo, direção e sentido: força, velocidade e aceleração. As demais são escalares.'},
+{t:'num',ar:'V',e:'Dois vetores de mesma direção e sentido valem <b>6 N</b> e <b>3 N</b>. Qual o módulo do resultante?',r:9,tol:.01,u:'N',x:'Sentidos iguais: somamos os módulos (6 + 3). Direção e sentido se mantêm.'},
+{t:'num',ar:'V',e:'Mesma direção, sentidos <b>opostos</b>: vetores de <b>6 N</b> e <b>3 N</b>. Módulo do resultante?',r:3,tol:.01,u:'N',x:'Sentidos opostos: subtraímos os módulos (6 − 3); o sentido é o do vetor de maior módulo.'},
+{t:'num',ar:'V',e:'Vetores perpendiculares de <b>3 u</b> e <b>4 u</b>: módulo do resultante?',r:5,tol:.01,u:'u',x:'Pitágoras: R = √(3² + 4²) = √25 = 5 u.'},
+{t:'num',ar:'V',e:'Vetores perpendiculares de <b>6 N</b> e <b>8 N</b>: módulo do resultante?',r:10,tol:.01,u:'N',x:'R = √(6² + 8²) = √100 = 10 N.'},
+{t:'num',ar:'V',e:'Oblíquos com a = 5 u, b = 8 u e θ = 60°. Módulo de R? (2 casas)',r:11.36,tol:.06,u:'u',x:'R = √(25 + 64 + 2·5·8·cos 60°) = √(89 + 40) = √129 ≈ 11,36 u.'},
+{t:'mc',ar:'V',e:'Se A = 10 u e θ = 30°, a componente horizontal Ax vale:',a:['5√3 ≈ 8,66 u','5 u','10 u','20 u'],c:0,x:'Ax = A·cos θ = 10·(√3/2) = 5√3 ≈ 8,66 u.'},
+{t:'mc',ar:'V',e:'Multiplicando <span class="vet">a</span> por um número real <b>k &lt; 0</b>, o vetor resultante:',a:['mantém módulo, direção e sentido','tem sentido invertido e direção mantida','tem direção invertida e sentido mantido','é sempre o vetor nulo'],c:1,x:'k &lt; 0: módulo multiplicado por |k|, direção mantida, sentido invertido.'},
+{t:'num',ar:'V',e:'Se |<span class="vet">a</span>| = 5 u, qual o módulo do vetor <b>−3<span class="vet">a</span></b>?',r:15,tol:.01,u:'u',x:'|−3<span class="vet">a</span>| = |−3| · |<span class="vet">a</span>| = 3 · 5 = 15 u, em sentido oposto a <span class="vet">a</span>.'},
+{t:'num',ar:'V',e:'Quanto vale <b>sen 30°</b>? (decimal)',r:0.5,tol:.01,u:'',x:'Dos ângulos notáveis: sen 30° = 1/2 = 0,5.'},
+{t:'mc',ar:'V',e:'Quanto vale <b>cos 120°</b>?',a:['1/2','√3/2','−1/2','−√3/2'],c:2,x:'120° está no 2º quadrante: sen + e cos −. cos 120° = −cos 60° = −1/2.'},
+{t:'num',ar:'V',e:'A = 20 u e θ = 60°. Componente <b>vertical</b> Ay? (2 casas)',r:17.32,tol:.06,u:'u',x:'Ay = 20·sen 60° = 20·(√3/2) = 10√3 ≈ 17,32 u.'},
+{t:'mc',ar:'G',e:'Em um grafo, os <b>vértices</b> representam…',a:['as ligações entre os pontos','os pontos de conexão (as regiões)','as distâncias reais','os pesos das arestas'],c:1,x:'Vértice = ponto de conexão (era uma região de terra); aresta = ligação (era uma ponte).'},
+{t:'mc',ar:'G',e:'Grafo em linha A—B—C. Complete: V = {A,B,C} e E = {{A,B},{B,C}}. Portanto o grafo tem:',a:['3 vértices e 3 arestas','2 vértices e 3 arestas','3 vértices e 2 arestas','2 vértices e 2 arestas'],c:2,x:'V tem 3 elementos; E tem 2 arestas: A–B e B–C.'},
+{t:'clique',ar:'G',e:'Clique no vértice de <b>maior grau</b>.',svg:svgMaior,nome:'C',x:'C incide em 4 arestas (A, B, D e E) — grau 4. Os demais têm grau 2.'},
+{t:'mc',ar:'G',e:'Uma rua de <b>mão única</b> (só dá para ir de A para B) é modelada como:',a:['grafo não direcionado','grafo direcionado (dígrafo)','grafo bipartido','árvore geradora'],c:1,x:'Quando a ligação tem sentido, a aresta vira um arco do dígrafo: E = {(A, B)}.'},
+{t:'num',ar:'G',e:'Na cidade de Euler, a Ilha Kneiphof tinha <b>5 pontes</b>. Então o grau do vértice Kneiphof era…',r:5,tol:.01,u:'',x:'Grau = número de arestas que incidem no vértice = 5 (ímpar → já era um problema!).'},
+{t:'caminho',ar:'G',e:'Monte o <b>menor caminho</b> de A até D (clique nos vértices na ordem) e digite o custo total.',svg:svgCaminho,seq:['A','C','D'],custo:5,x:'A→C→D custa 4 + 1 = 5; A→B→D custa 2 + 5 = 7. Menor caminho não é o de menos arestas!'},
+{t:'mc',ar:'G',e:'Um <b>ciclo</b> em um grafo é um caminho que…',a:['só usa arestas com peso','só passa por vértices de grau par','começa e termina no mesmo vértice','liga vértices isolados'],c:2,x:'Ciclo: caminho que inicia e encerra no mesmo vértice, sem repetir arestas.'},
+{t:'bip',ar:'G',e:'Qual dos grafos abaixo é <b>bipartido</b>?',opcoes:[{t:svgQuad(),ok:true,d:'Grafo 1'},{t:svgTri(),ok:false,d:'Grafo 2'}],x:'O quadrado (ciclo de 4) particiona em {A, C} e {B, D}. O triângulo (ciclo ímpar) não é bipartido.'},
+{t:'mc',ar:'G',e:'Em um grafo de interseção, há aresta entre dois conjuntos quando…',a:['A ∩ B = ∅','A ∩ B ≠ ∅','A ⊂ B','A e B têm o mesmo tamanho'],c:1,x:'Liga-se A a B se a interseção não é vazia — eles têm algo em comum.'},
+{t:'num',ar:'G',e:'Um grafo tem vértices de graus (5, 2, 2, 2, 2, 1). Quantas <b>arestas</b> ele tem?',r:7,tol:.01,u:'',x:'Σ graus = 14 = 2|E| → |E| = 7 arestas.'},
+{t:'mc',ar:'G',e:'Existe um grafo com graus (3, 3, 3, 3, 5)?',a:['Sim, com 9 arestas','Sim, com 17 arestas','Não — a soma dos graus é ímpar','Não — todo vértice precisa ter grau par'],c:2,x:'Soma = 17 (ímpar). Como Σ graus = 2|E| é sempre par, esse grafo não existe.'},
+{t:'mc',ar:'G',e:'O passeio das 7 pontes de Königsberg é impossível porque:',a:['há pontes demais para cruzar','todas as 4 regiões têm grau ímpar','o rio não pode ser atravessado 2 vezes','as distâncias entre as ilhas são grandes'],c:1,x:'Com 4 vértices de grau ímpar não existe caminho euleriano — no máximo 2 vértices podem ter grau ímpar.'},
+{t:'mc',ar:'V',e:'1 rad vale aproximadamente…',a:['57,3°','60°','90°','180°'],c:0,x:'Da relação 180° = π rad: 1 rad ≈ 57,3°.'},
+{t:'mc',ar:'V',e:'Várias forças atuando sobre um corpo podem ser trocadas por…',a:['apenas um vetor: o resultante','sempre dois vetores','um número escalar','nada — é impossível simplificar'],c:0,x:'Esse é o conceito de vetor resultante (Aula 3): um vetor que equivale ao conjunto.'},
+{t:'num',ar:'V',e:'A = 20 u e θ = 30°. Quanto vale <b>Ax</b>? (2 casas)',r:17.32,tol:.06,u:'u',x:'Ax = 20·cos 30° = 20·(√3/2) = 10√3 ≈ 17,32 u.'},
+{t:'mc',ar:'V',e:'Se α + β = 180° (ângulos suplementares), então:',a:['sen α = sen β e cos α = −cos β','sen α = −sen β e cos α = cos β','sen α = cos β','tg α = tg β'],c:0,x:'Suplementares: os senos são iguais e os cossenos têm sinais opostos.'},
+{t:'num',ar:'G',e:'Um grafo tem vértices de graus (4, 3, 3, 2). Quantas <b>arestas</b> ele tem?',r:6,tol:.01,u:'',x:'Soma dos graus = 12 = 2|E| → |E| = 6 arestas.'},
+{t:'mc',ar:'G',e:'Um grafo bipartido pode conter um ciclo de comprimento 5?',a:['Não — em grafo bipartido todo ciclo tem comprimento par','Sim, desde que o grafo seja conexo','Sim, qualquer grafo admite ciclos ímpares','Não existe ciclo em grafo bipartido'],c:0,x:'Ciclo ímpar ⇒ não é bipartido. É o teste rápido da Aula 11.'},
+{t:'mc',ar:'G',e:'Quando existe um passeio que usa <b>todas</b> as arestas sem repetir nenhuma?',a:['Quando todos os vértices têm grau par','Com no máximo 2 vértices de grau ímpar','Quando o grafo é bipartido','Quando todas as arestas têm peso'],c:1,x:'0 vértices ímpares: fecha em ciclo euleriano; 2: começa em um e termina no outro. 4 ou mais (Königsberg!): impossível.'},
+{t:'num',ar:'G',e:'Königsberg tinha <b>7 pontes</b>. Quanto vale a <b>soma dos graus</b> do grafo da cidade?',r:14,tol:.01,u:'',x:'Σ graus = 2|E| = 2·7 = 14. Confere: 5 + 3 + 3 + 3 = 14 ✓'},
+{t:'mc',ar:'S',e:'Um sistema linear cujas retas são <b>paralelas distintas</b> é classificado como:',a:['SPD (uma solução)','SPI (infinitas soluções)','SI (nenhuma solução)','sistema homogêneo'],c:2,x:'Retas paralelas distintas nunca se encontram → nenhuma solução → sistema impossível (SI).'},
+{t:'num',ar:'S',e:'No sistema <b>x + y = 10</b> e <b>2x − y = 2</b>, qual é o valor de <b>y</b>?',r:6,tol:.01,u:'',x:'Isolando x = 10 − y: 2(10 − y) − y = 2 → 20 − 3y = 2 → y = 6 (e x = 4).'},
+{t:'mc',ar:'S',e:'A Regra de Cramer fornece solução única quando:',a:['D = 0','D ≠ 0','o sistema é homogêneo','todos os coeficientes são positivos'],c:1,x:'Cramer divide por D — logo só funciona com D ≠ 0 (SPD). Com D = 0, é preciso escalonar para decidir entre SPI e SI.'},
+{t:'mc',ar:'S',e:'Todo sistema linear homogêneo:',a:['é impossível','tem sempre a solução trivial (0, 0, …)','tem sempre infinitas soluções','não pode ser SPD'],c:1,x:'Substituindo todas as incógnitas por zero, as igualdades 0 = 0 valem. Ele nunca é SI; pode ser SPD (só a trivial) ou SPI.'},
+{t:'num',ar:'S',e:'Resolvendo por Cramer o sistema <b>2x + y = 7</b> e <b>x − y = 2</b>, quanto vale <b>x</b>?',r:3,tol:.01,u:'',x:'D = −3, Dₓ = −9 → x = (−9)/(−3) = 3. Depois y = 1.'},
+{t:'num',ar:'N',e:'Em uma turma de 30 alunos, 20 gostam de Matemática, 15 de Física e 8 das duas. Quantos <b>não gostam de nenhuma</b>?',r:3,tol:.01,u:'',x:'|M∪F| = 20 + 15 − 8 = 27. Fora = 30 − 27 = 3.'},
+{t:'num',ar:'N',e:'De 50 pessoas, 30 bebem café, 25 bebem chá e 10 bebem os dois. Quantas bebem <b>somente café</b>?',r:20,tol:.01,u:'',x:'Somente café = 30 − 10 = 20 (a interseção já está dentro dos 30).'},
+{t:'num',ar:'N',e:'Com |A|=20, |B|=15, |C|=12, |A∩B|=5, |A∩C|=4, |B∩C|=3 e |A∩B∩C|=2, quanto vale <b>|A∪B∪C|</b>?',r:37,tol:.01,u:'',x:'20 + 15 + 12 − 5 − 4 − 3 + 2 = 37. A interseção tripla é somada de volta.'},
+{t:'mc',ar:'N',e:'Segundo as Leis de De Morgan, <b>(A ∪ B)<sup>c</sup></b> é igual a:',a:['A<sup>c</sup> ∪ B<sup>c</sup>','A<sup>c</sup> ∩ B<sup>c</sup>','A ∩ B','A − B'],c:1,x:'O complementar da união é a interseção dos complementares: (A∪B)ᶜ = Aᶜ ∩ Bᶜ.'},
+{t:'mc',ar:'N',e:'No diagrama de Venn, a região “<b>somente A</b>” corresponde a:',a:['A ∩ B','A ∪ B','A − B','B − A'],c:2,x:'“Somente A” é o que pertence a A e não pertence a B: A − B = A ∩ Bᶜ.'},
+{t:'mc',ar:'S',e:'Qual das equações abaixo <b>não</b> é linear?',a:['2x + 3y = 7','x − y + 4z = 1','x² + y = 1','5x = 10'],c:2,x:'Em uma equação linear cada incógnita aparece na primeira potência. Em x² + y = 1 o expoente 2 quebra essa regra.'},
+{t:'num',ar:'S',e:'No sistema <b>3x + 2y = 16</b> e <b>4x − 2y = 12</b>, qual é o valor de <b>x</b>?',r:4,tol:.01,u:'',x:'Somando as equações, o 2y e o −2y se cancelam: 7x = 28 → x = 4. Depois, 3·4 + 2y = 16 → y = 2.'},
+{t:'num',ar:'S',e:'Resolvendo <b>2x + 3y = 13</b> e <b>3x − y = 3</b>, quanto vale <b>y</b>?',r:3,tol:.01,u:'',x:'Multiplicando a 2ª equação por 3: 9x − 3y = 9. Somando com a 1ª: 11x = 22 → x = 2. Depois, 3·2 − y = 3 → y = 3.'},
+{t:'mc',ar:'S',e:'Em um sistema 2×2, o determinante da matriz dos coeficientes é <b>D = 0</b>. O que podemos concluir?',a:['Que o sistema é sempre SPD','Que o sistema é sempre SPI','Que ele é SPI ou SI — é preciso analisar as equações','Que o sistema é sempre SI'],c:2,x:'D = 0 significa retas paralelas (SI) ou coincidentes (SPI). Só escalonando ou substituindo dá para separar os dois casos.'},
+{t:'num',ar:'S',e:'Qual é o determinante <b>D</b> do sistema <b>3x + 2y = 16</b> e <b>4x − 2y = 12</b>?',r:-14,tol:.01,u:'',x:'D = a₁b₂ − b₁a₂ = 3·(−2) − 2·4 = −6 − 8 = −14. Como D ≠ 0, o sistema é SPD.'},
+{t:'num',ar:'S',e:'Tenho <b>30 cédulas</b>, umas de R$ 5 e outras de R$ 10, somando <b>R$ 230</b>. Quantas cédulas de <b>R$ 10</b> eu tenho?',r:16,tol:.01,u:'',x:'x + y = 30 e 5x + 10y = 230. Dividindo a 2ª por 5: x + 2y = 46. Subtraindo a 1ª: y = 16 (e x = 14).'},
+{t:'num',ar:'S',e:'A idade do pai é o <b>triplo</b> da do filho. Em <b>10 anos</b>, a idade do pai será o <b>dobro</b> da do filho. Qual é a idade do filho hoje?',r:10,tol:.01,u:'anos',x:'p = 3f e p + 10 = 2(f + 10) → 3f + 10 = 2f + 20 → f = 10. O pai tem 30; em 10 anos: 40 = 2 × 20 ✓'},
+{t:'mc',ar:'S',e:'Como se classifica o sistema <b>x + y = 2</b> e <b>2x + 2y = 4</b>?',a:['SPD — uma solução','SPI — infinitas soluções','SI — nenhuma solução','Não é um sistema linear'],c:1,x:'A 2ª equação é o dobro da 1ª (mesma reta). Todo par com x + y = 2 resolve as duas → infinitas soluções (SPI).'},
+{t:'mc',ar:'S',e:'Como se classifica o sistema <b>x + y = 2</b> e <b>2x + 2y = 6</b>?',a:['SPD — uma solução','SPI — infinitas soluções','SI — nenhuma solução','Não é um sistema linear'],c:2,x:'A 2ª equivale a x + y = 3, paralela à 1ª (x + y = 2). Nunca há ponto comum → sistema impossível (SI).'},
+{t:'num',ar:'S',e:'No sistema <b>x + y + z = 6</b>, <b>2x − y + z = 3</b> e <b>x + 2y − z = 2</b>, qual é o valor de <b>z</b>?',r:3,tol:.01,u:'',x:'Escalonando chega-se a y = 2 e z = 3; depois x = 6 − 2 − 3 = 1. Solução (1, 2, 3) — confere nas três equações.'},
+{t:'mc',ar:'S',e:'As retas do sistema estão desenhadas abaixo. Elas se cruzam em um único ponto. Como o sistema se classifica?',svg:svgRetasCruzando,a:['SPD — uma solução','SPI — infinitas soluções','SI — nenhuma solução','Faltam dados para classificar'],c:0,x:'Retas concorrentes em um único ponto: é esse ponto que satisfaz as duas equações ao mesmo tempo. Logo, SPD.'},
+{t:'mc',ar:'N',e:'Com A = {1, 2, 3, 4} e B = {3, 4, 5}, qual é <b>A ∪ B</b>?',a:['{1, 2, 3, 4, 5}','{3, 4}','{1, 2}','{5}'],c:0,x:'A união reúne todos os elementos que estão em A ou em B, sem repetir: {1, 2, 3, 4, 5}.'},
+{t:'mc',ar:'N',e:'Com A = {1, 2, 3, 4} e B = {3, 4, 5}, qual é <b>A ∩ B</b>?',a:['{1, 2, 3, 4, 5}','{3, 4}','{1, 2, 5}','∅'],c:1,x:'A interseção contém somente o que aparece nos dois conjuntos ao mesmo tempo: {3, 4}.'},
+{t:'num',ar:'N',e:'Em um grupo de <b>100 estudantes</b>, 60 falam inglês, 45 falam espanhol e 20 falam os dois. Quantos <b>não falam nenhum</b> dos dois idiomas?',r:15,tol:.01,u:'',x:'Inglês ou espanhol = 60 + 45 − 20 = 85. Fora dos dois = 100 − 85 = 15.'},
+{t:'num',ar:'N',e:'Com |A| = 25, |B| = 20, |C| = 15, |A∩B| = 8, |A∩C| = 6, |B∩C| = 5 e |A∩B∩C| = 3, quanto vale <b>|A∪B∪C|</b>?',r:44,tol:.01,u:'',x:'25 + 20 + 15 − 8 − 6 − 5 + 3 = 44. A interseção tripla volta somada no final.'},
+{t:'mc',ar:'N',e:'A região “<b>nem A nem B</b>” corresponde a:',a:['A ∩ B','(A ∪ B)<sup>c</sup>','A − B','A ∪ B'],c:1,x:'Quem não está em A nem em B fica fora da união: (A ∪ B)ᶜ.'},
+{t:'num',ar:'N',e:'No diagrama abaixo, quantos elementos pertencem ao conjunto <b>A</b>?',svg:()=>svgVenn2({u:30,la:'Mat.',lb:'Fís.',a:12,ab:8,b:7,out:3}),r:20,tol:.01,u:'',x:'O conjunto A reúne as duas regiões dentro do círculo azul: 12 (só Matemática) + 8 (interseção) = 20.'},
+{t:'num',ar:'N',e:'No diagrama abaixo, quantos elementos pertencem <b>somente ao conjunto C</b>?',svg:()=>svgVenn3({u:40,onlyA:8,onlyB:5,onlyC:9,ab:5,ac:4,bc:2,abc:3,out:4}),r:9,tol:.01,u:'',x:'“Somente C” é a parte do círculo C que não se sobrepõe a A nem a B: no diagrama, o valor é 9.'},
+{t:'num',ar:'N',e:'Sabendo que |A| = 20, |A∩B| = 8, |A∩C| = 7 e |A∩B∩C| = 3, quantos elementos pertencem <b>somente a A</b>?',r:8,tol:.01,u:'',x:'Só A∩B = 8 − 3 = 5 e só A∩C = 7 − 3 = 4. Somente A = 20 − 5 − 4 − 3 = 8.'},
+{t:'mc',ar:'N',e:'Um diagrama de Venn de <b>três conjuntos</b> possui quantas regiões, contando a parte externa?',a:['6','7','8','9'],c:2,x:'São 8 regiões: as 7 combinações dentro dos círculos (incluindo a tripla) mais a parte de fora, que representa (A∪B∪C)ᶜ.'},
+{t:'num',ar:'N',e:'Se |A| = 18, |B| = 12 e |A∩B| = 5, quanto vale <b>|A − B|</b>?',r:13,tol:.01,u:'',x:'A − B é a parte de A que não está em B: |A| − |A∩B| = 18 − 5 = 13.'},
+{t:'mc',ar:'N',e:'Se <b>A ⊂ B</b> (A é subconjunto de B), então <b>A ∪ B</b> é igual a:',a:['A','B','∅','A ∩ B'],c:1,x:'Se todo elemento de A já está em B, a união não acrescenta nada: A ∪ B = B (e A ∩ B = A).'}
 ];
 /* ---------- renderização do simulado ---------- */
 const simQ=document.getElementById('simQuestoes');
+/* Tipos de simulado: geral (tudo) ou uma matéria específica */
+const SIM_MODOS={
+  geral:{nome:'Geral',curto:'Simulado'},
+  V:{nome:'Vetores',curto:'Vetores',ar:'V'},
+  G:{nome:'Grafos',curto:'Grafos',ar:'G'},
+  S:{nome:'Sistemas Lineares',curto:'Sistemas',ar:'S'},
+  N:{nome:'Diagrama de Venn',curto:'Venn',ar:'N'}
+};
+const AREA_LABEL={V:'Vetores',G:'Grafos',S:'Sistemas',N:'Venn'};
+let simModo='geral';
+const SIM_ESTADOS={geral:null,V:null,G:null,S:null,N:null};
 let acertos=0,feitas=0,estado={ordem:[],resp:{}};
+function simLista(modo){
+  const ar=SIM_MODOS[modo].ar;
+  return ar?BANCO.filter(q=>q.ar===ar):BANCO.slice();
+}
+function simOrdemValida(ordem,lista){
+  if(!Array.isArray(ordem)||ordem.length!==lista.length)return false;
+  const ids=new Set(lista.map(q=>q.id));
+  return new Set(ordem).size===ordem.length&&ordem.every(id=>ids.has(id));
+}
 function atualizaHUD(){
-  const TOTAL=BANCO.length;
+  const TOTAL=estado.ordem.length;
   document.getElementById('simAcertos').textContent=acertos;
-  document.getElementById('chipPlacar').textContent='Simulado: '+acertos+'/'+TOTAL;
-  document.getElementById('simBarra').style.width=(feitas/TOTAL*100)+'%';
+  document.getElementById('simTotal').textContent=TOTAL;
+  document.getElementById('chipPlacar').textContent=SIM_MODOS[simModo].curto+': '+acertos+'/'+TOTAL;
+  document.getElementById('simBarra').style.width=(TOTAL?feitas/TOTAL*100:0)+'%';
+  document.getElementById('simFim').innerHTML=TOTAL+' questões'+(simModo==='geral'?' de todos os módulos':' de <b>'+SIM_MODOS[simModo].nome+'</b>')+' em ordem aleatória · correção na hora';
   if(feitas===TOTAL){
     document.getElementById('simResumo').classList.add('mostra');
     const p=Math.round(acertos/TOTAL*100);
@@ -2228,7 +2356,25 @@ function pontua(box,ok,respTxt){
   box.querySelector('.expl').classList.add('mostra');
 }
 function escHtml(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
-function salvaSim(){try{localStorage.setItem('simSalvo',JSON.stringify({ordem:estado.ordem,resp:estado.resp}));}catch(e){}}
+function salvaSim(){
+  SIM_ESTADOS[simModo]=estado;
+  try{localStorage.setItem('simSalvo',JSON.stringify({modo:simModo,estados:SIM_ESTADOS}));}catch(e){}
+}
+function simCarrega(){
+  let d=null;
+  try{d=JSON.parse(localStorage.getItem('simSalvo')||'null');}catch(e){}
+  if(!d)return;
+  if(d.estados){
+    if(SIM_MODOS[d.modo])simModo=d.modo;
+    Object.keys(SIM_ESTADOS).forEach(k=>{
+      const s=d.estados[k];
+      if(s&&Array.isArray(s.ordem))SIM_ESTADOS[k]={ordem:s.ordem,resp:s.resp||{}};
+    });
+  }else if(Array.isArray(d.ordem)){
+    /* formato antigo: só existia o simulado geral */
+    SIM_ESTADOS.geral={ordem:d.ordem,resp:d.resp||{}};
+  }
+}
 function respostaCerta(q){
   if(q.t==='mc')return 'ABCD'[q.c]+') '+q.a[q.c];
   if(q.t==='num')return String(q.r).replace('.',',')+(q.u?' '+q.u:'');
@@ -2238,7 +2384,7 @@ function respostaCerta(q){
 }
 function renderMC(q,i){
   const box=document.createElement('div');box.className='questao';
-  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3><div class="alts">'+q.a.map((alt,j)=>'<div class="alt" data-j="'+j+'" role="button" tabindex="0"><span class="l">'+'ABCD'[j]+'.</span><span>'+alt+'</span></div>').join('')+'</div><div class="fb"></div><div class="expl">'+q.x+'</div>';
+  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3>'+(q.svg?'<div class="graf-box">'+q.svg()+'</div>':'')+'<div class="alts">'+q.a.map((alt,j)=>'<div class="alt" data-j="'+j+'" role="button" tabindex="0"><span class="l">'+'ABCD'[j]+'.</span><span>'+alt+'</span></div>').join('')+'</div><div class="fb"></div><div class="expl">'+q.x+'</div>';
   box.querySelectorAll('.alt').forEach(a=>a.addEventListener('click',()=>{
     if(box.classList.contains('travada'))return;
     const j=+a.dataset.j,ok=j===q.c;
@@ -2250,7 +2396,7 @@ function renderMC(q,i){
 }
 function renderNum(q,i){
   const box=document.createElement('div');box.className='questao';
-  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3><div class="resp-linha"><input class="resp-entrada" type="text" inputmode="decimal" placeholder="'+(q.u?'resposta em '+q.u:'sua resposta')+'"><button class="btn btn-fino btn-marca">Conferir</button></div><div class="fb"></div><div class="expl">'+q.x+'</div>';
+  box.innerHTML='<h3><span class="n">'+(i+1)+'</span><span>'+q.e+'</span></h3>'+(q.svg?'<div class="graf-box">'+q.svg()+'</div>':'')+'<div class="resp-linha"><input class="resp-entrada" type="text" inputmode="decimal" placeholder="'+(q.u?'resposta em '+q.u:'sua resposta')+'"><button class="btn btn-fino btn-marca">Conferir</button></div><div class="fb"></div><div class="expl">'+q.x+'</div>';
   const inp=box.querySelector('input');
   const go=()=>{
     if(box.classList.contains('travada'))return;
@@ -2342,26 +2488,42 @@ function montarSimulado(restaurar){
   acertos=0;feitas=0;simQ.innerHTML='';
   document.getElementById('simResumo').classList.remove('mostra');
   document.getElementById('simGabarito').classList.remove('mostra');
-  let lista=null,salvo=null;
-  if(restaurar){try{salvo=JSON.parse(localStorage.getItem('simSalvo')||'null');}catch(e){}}
-  if(salvo&&salvo.ordem&&salvo.ordem.length===BANCO.length){
-    estado={ordem:salvo.ordem,resp:salvo.resp||{}};
+  const base=simLista(simModo);
+  const salvo=restaurar?SIM_ESTADOS[simModo]:null;
+  let lista;
+  if(salvo&&simOrdemValida(salvo.ordem,base)){
     lista=salvo.ordem.map(id=>BANCO[id]);
+    estado={ordem:salvo.ordem.slice(),resp:Object.assign({},salvo.resp)};
   }else{
-    lista=embaralha(BANCO);
+    lista=embaralha(base);
     estado={ordem:lista.map(q=>q.id),resp:{}};
-    salvaSim();
   }
+  SIM_ESTADOS[simModo]=estado;
+  salvaSim();
   lista.forEach((q,i)=>{
     const box=RENDER[q.t](q,i);
     box._q=q;
+    if(simModo==='geral'){
+      const tag=document.createElement('span');
+      tag.className='q-area'+(q.ar==='V'?'':' '+q.ar.toLowerCase());
+      tag.textContent=AREA_LABEL[q.ar];
+      box.querySelector('h3').appendChild(tag);
+    }
     const s=estado.resp[q.id];
     if(s)aplicaSalvo(box,q,s);
     simQ.appendChild(box);
   });
   feitas=Object.keys(estado.resp).length;
   acertos=Object.keys(estado.resp).filter(k=>estado.resp[k].ok).length;
+  simAtualizaBotoes();
   atualizaHUD();
+}
+function simAtualizaBotoes(){
+  document.querySelectorAll('#simOpcoes [data-simmodo]').forEach(b=>{
+    const on=b.dataset.simmodo===simModo;
+    b.classList.toggle('on',on);
+    b.setAttribute('aria-pressed',on?'true':'false');
+  });
 }
 function montarGabarito(){
   const g=document.getElementById('simGabarito');
@@ -2375,10 +2537,31 @@ function montarGabarito(){
   g.classList.add('mostra');
   g.scrollIntoView({behavior:'smooth',block:'start'});
 }
-document.getElementById('btnResetSim').addEventListener('click',()=>{montarSimulado(false);toast('Simulado resetado!');});
-document.getElementById('btnResetSim2').addEventListener('click',()=>{montarSimulado(false);toast('Simulado resetado!');});
+function resetSimulado(){
+  SIM_ESTADOS[simModo]=null;
+  montarSimulado(false);
+  toast('Simulado de '+SIM_MODOS[simModo].nome+' resetado!');
+}
+document.getElementById('btnResetSim').addEventListener('click',resetSimulado);
+document.getElementById('btnResetSim2').addEventListener('click',resetSimulado);
 document.getElementById('btnEnviar').addEventListener('click',montarGabarito);
+document.querySelectorAll('#simOpcoes [data-simmodo]').forEach(b=>{
+  b.addEventListener('click',()=>{
+    const m=b.dataset.simmodo;
+    if(m===simModo)return;
+    simModo=m;
+    simAtualizaBotoes();
+    montarSimulado(true);
+    toast('Simulado de '+SIM_MODOS[m].nome+' selecionado!');
+  });
+});
 BANCO.forEach((q,i)=>q.id=i);
+document.getElementById('simQtdGeral').textContent=BANCO.length+' questões · 4 módulos';
+['V','G','S','N'].forEach(k=>{
+  const el=document.getElementById('simQtd'+k);
+  if(el)el.textContent=simLista(k).length+' questões';
+});
+simCarrega();
 montarSimulado(true);
 /* ---------- flashcards ---------- */
 const FLASH=[
