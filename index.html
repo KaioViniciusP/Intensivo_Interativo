@@ -4,6 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Intensivo Interativo — Vetores, Grafos, Sistemas Lineares &amp; Venn</title>
+<meta name="description" content="Caderno interativo de estudos: Vetores, Teoria dos Grafos, Sistemas Lineares e Diagrama de Venn com aulas, ferramentas, flashcards e simulados com correção na hora.">
+<meta name="theme-color" content="#111b4b">
+<link rel="canonical" href="https://kaioviniciusp.github.io/treino/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3E%3Ccircle cx='7' cy='21' r='4.5' fill='%232450c4'/%3E%3Ccircle cx='23' cy='7' r='4.5' fill='%23111b4b'/%3E%3Cline x1='10' y1='18' x2='20' y2='10' stroke='%23ffd60a' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Intensivo Interativo">
+<meta property="og:title" content="Intensivo Interativo — Vetores, Grafos, Sistemas Lineares &amp; Venn">
+<meta property="og:description" content="Teoria aula por aula, ferramentas interativas, flashcards e simulados de Vetores, Grafos, Sistemas Lineares e Venn. Projeto aberto e gratuito.">
+<meta property="og:url" content="https://kaioviniciusp.github.io/treino/">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Intensivo Interativo — caderno de estudos aberto">
+<meta name="twitter:description" content="Vetores, Grafos, Sistemas Lineares e Venn: aulas, ferramentas, flashcards e simulados com correção na hora.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
@@ -272,6 +285,13 @@ body.noturno .q-area.n{color:#c9b4ff}
 #toast{position:fixed;bottom:1.4rem;right:1.4rem;background:var(--ink);color:#fff;padding:.85rem 1.2rem;border-radius:12px;box-shadow:0 6px 20px rgba(17,27,75,.4);transform:translateY(130px);opacity:0;transition:all .3s;z-index:100;font-size:.9rem}
 #toast.ver{transform:none;opacity:1}
 footer{border-top:2px solid var(--ink);padding:1.3rem 1rem 2.2rem;text-align:center;font-size:.85rem;color:var(--ink2);background:var(--paper)}
+footer .footer-links{margin-top:.6rem;display:flex;justify-content:center;flex-wrap:wrap;gap:.35rem 1.1rem}
+footer a{color:var(--blue-deep);font-weight:600;text-decoration:none}
+footer a:hover{color:var(--blue);text-decoration:underline}
+.repo-cta{display:flex;align-items:center;justify-content:space-between;gap:1.2rem;flex-wrap:wrap;margin:1.6rem 0 .2rem;padding:1.1rem 1.25rem;background:var(--card);border:2px solid var(--ink);border-radius:var(--r);box-shadow:6px 6px 0 rgba(17,27,75,.85)}
+.repo-cta strong{font:800 1.05rem var(--display)}
+.repo-cta p{font-size:.9rem;color:var(--ink2);margin-top:.15rem;max-width:62ch}
+.repo-cta .btn{text-decoration:none;white-space:nowrap}
 
 @media(max-width:760px){
   .hero{grid-template-columns:1fr;padding:1.6rem 1.2rem}
@@ -333,6 +353,7 @@ body.noturno header.topo{background:rgba(18,20,38,.94)}
 body.noturno figure.fig{background:#181b30}
 body.noturno .fig .nd{fill:#232747}
 body.noturno .canvas-box{background:#15172b;box-shadow:6px 6px 0 rgba(0,0,0,.55)}
+body.noturno .repo-cta{box-shadow:6px 6px 0 rgba(0,0,0,.55)}
 body.noturno .opcao-int,body.noturno .bip-item,body.noturno .resp-entrada,body.noturno .btn{background:var(--card);color:var(--ink)}
 body.noturno .ferr-abas button{color:var(--ink)}
 body.noturno .ferr-abas button.on{background:var(--yellow);border-color:var(--yellow);color:#15172b}
@@ -406,7 +427,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
   <div class="hero">
     <div>
       <h1>Vetores, Grafos, Sistemas e Venn, <span class="hl">do jeito que cai na prova</span>.</h1>
-      <p class="sub">Todo o conteúdo dos seus slides e das fontes de referência virou um caderno vivo: teoria organizada aula por aula, ferramentas para desenhar e calcular, e um simulado que corrige na hora.</p>
+      <p class="sub">Todo o conteúdo das fontes de referência virou um caderno vivo: teoria organizada aula por aula, ferramentas para desenhar e calcular, e um simulado que corrige na hora.</p>
       <div class="hero-acoes">
         <button class="btn btn-tinta" data-aba="vetores">Começar por Vetores</button>
         <button class="btn btn-marca" data-aba="sistemas">Ver os módulos novos</button>
@@ -464,6 +485,14 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
       <p>Linguagem dos conjuntos · união, interseção e diferença · diagramas de 2 e 3 conjuntos · contagem de regiões · inclusão-exclusão · problemas de pesquisa · De Morgan.</p>
     </a>
   </div>
+
+  <div class="repo-cta">
+    <div>
+      <strong>Projeto aberto para todos</strong>
+      <p>Teoria, ferramentas e questões vivem no GitHub. Use para estudar, adapte para a sua turma ou envie novos módulos e correções.</p>
+    </div>
+    <a class="btn btn-tinta" href="https://github.com/KaioViniciusP/treino" target="_blank" rel="noopener">Ver repositório ↗</a>
+  </div>
 </section>
 <!-- ============ VETORES ============ -->
 <section id="vetores" class="tab">
@@ -504,7 +533,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
     <h3><span class="aula-tag">Aula 3</span> Vetor resultante</h3>
     <div class="nota">O <span class="hl">vetor resultante</span> é o resultado de operações vetoriais e equivale a um conjunto de vetores. É conveniente conhecê-lo porque um corpo pode estar sujeito a várias forças ao mesmo tempo — e o resultado pode ser representado por <strong>apenas um vetor</strong>.</div>
     <div class="exemplo">
-      <div class="ex-t">📌 Exemplo dos slides — análise do exemplo</div>
+      <div class="ex-t">📌 Exemplo comentado — análise do exemplo</div>
       <div class="ex-b">
         <div class="passo"><span class="pn">1</span><p>Os vetores <span class="vet">b</span> e <span class="vet">a</span> possuem <strong>mesma direção</strong> (vertical), mesmo módulo e <strong>sentidos opostos</strong> — portanto, <strong>se anulam</strong>.</p></div>
         <div class="passo"><span class="pn">2</span><p>Os vetores <span class="vet">c</span> e <span class="vet">d</span> possuem mesma direção (horizontal) e sentidos opostos. Como o vetor <span class="vet">c</span> é maior que <span class="vet">d</span>, ele "sobra": essa parte da força fica para a direita.</p></div>
@@ -545,7 +574,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
         <p class="expl mostra" style="display:block">O vetor <span class="vet">R</span> é a parte que sobra de <span class="vet">b</span> após retirar <span class="vet">a</span>. Subtrair um vetor equivale a somar com o seu oposto: <span class="formula"><span class="vet">a</span> − <span class="vet">b</span> = <span class="vet">a</span> + (−<span class="vet">b</span>)</span>.</p>
       </div>
     </div>
-    <div class="nota atencao"><strong>Observação importante dos slides:</strong> a soma e a subtração de vetores de mesma direção resultam em um vetor que mantém a <strong>mesma direção</strong>.</div>
+    <div class="nota atencao"><strong>Observação importante:</strong> a soma e a subtração de vetores de mesma direção resultam em um vetor que mantém a <strong>mesma direção</strong>.</div>
   </div>
 
   <div class="aula">
@@ -821,7 +850,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
 </section>
 <!-- ============ GRAFOS ============ -->
 <section id="grafos" class="tab">
-  <div class="divisor"><span class="num">02</span><h2>Teoria dos Grafos</h2><span class="fim" id="fimGraf">Slides + Portal OBMEP · 15 aulas</span></div>
+  <div class="divisor"><span class="num">02</span><h2>Teoria dos Grafos</h2><span class="fim" id="fimGraf">Material de apoio + Portal OBMEP · 15 aulas</span></div>
 
   <div class="aula">
     <h3><span class="aula-tag">Aula 1</span> O enigma que inventou uma ciência</h3>
@@ -885,7 +914,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
     <h3><span class="aula-tag">Aula 4</span> Definição formal: G = (V, E)</h3>
     <div class="nota">Um <span class="hl">grafo</span> é representado por <span class="formula">G = (V, E)</span>, onde <strong>G</strong> é o grafo, <strong>V</strong> é o conjunto de vértices (os elementos) e <strong>E</strong> é o conjunto de arestas (as ligações).</div>
     <div class="exemplo">
-      <div class="ex-t">📌 Exemplo dos slides</div>
+      <div class="ex-t">📌 Exemplo</div>
       <div class="ex-b">
         <div class="passo"><span class="pn">1</span><p>Considere o grafo em linha A—B—C:</p></div>
         <div class="passo"><span class="pn">2</span><p><span class="formula">V = {A, B, C}</span> — o grafo possui <strong>3 vértices</strong>.</p></div>
@@ -1012,7 +1041,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
     <h3><span class="aula-tag">Aula 9</span> Menor caminho (visão introdutória)</h3>
     <div class="nota">Em grafos ponderados, o <span class="hl">menor caminho</span> entre dois vértices é a sequência de arestas cuja <strong>soma dos pesos é mínima</strong>. O algoritmo clássico é o de <strong>Dijkstra</strong> — você pode testá-lo na aba <strong>Ferramentas</strong> deste site!</div>
     <div class="exemplo">
-      <div class="ex-t">📌 Exemplo dos slides</div>
+      <div class="ex-t">📌 Exemplo</div>
       <div class="ex-b">
         <div class="passo"><span class="pn">1</span><p>De A até D há dois percursos: A→B→D (2+5 = 7) e A→C→D (4+1 = 5).</p></div>
         <div class="passo"><span class="pn">2</span><p>O menor caminho é <strong>A→C→D, com custo 5</strong> — mesmo tendo a mesma quantidade de arestas que o outro.</p></div>
@@ -1036,7 +1065,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
     <h3><span class="aula-tag">Aula 10</span> Grafos de interseção</h3>
     <div class="nota">Em um <span class="hl">grafo de interseção</span>, dois vértices são ligados quando <strong>compartilham algo em comum</strong> (uma característica, um interesse, um elemento do conjunto). Exemplo clássico: ligar duas pessoas se <strong>A ∩ B ≠ ∅</strong> — se elas têm um amigo ou uma disciplina em comum.</div>
     <div class="exemplo">
-      <div class="ex-t">📌 Exemplo dos slides</div>
+      <div class="ex-t">📌 Exemplo</div>
       <div class="ex-b">
         <div class="passo"><span class="pn">1</span><p>Conjuntos: A = {1, 2, 3}, B = {3, 4}, C = {5}, D = {1, 5}.</p></div>
         <div class="passo"><span class="pn">2</span><p>A ∩ B = {3} ≠ ∅ → há aresta A–B · A ∩ D = {1} ≠ ∅ → aresta A–D · B ∩ D = ∅ → <strong>sem</strong> aresta.</p></div>
@@ -1068,7 +1097,7 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
 
   <div class="aula">
     <h3><span class="aula-tag">Aula 11</span> Grafos bipartidos</h3>
-    <div class="nota">Um grafo é <span class="hl">bipartido</span> quando seus vértices podem ser divididos em <strong>dois conjuntos independentes</strong>, de modo que <strong>toda aresta liga um vértice de um conjunto a um vértice do outro</strong> — nunca dois do mesmo conjunto. Exemplo dos slides: <strong>operários × máquinas</strong> (cada aresta indica quem sabe operar o quê).</div>
+    <div class="nota">Um grafo é <span class="hl">bipartido</span> quando seus vértices podem ser divididos em <strong>dois conjuntos independentes</strong>, de modo que <strong>toda aresta liga um vértice de um conjunto a um vértice do outro</strong> — nunca dois do mesmo conjunto. Exemplo clássico: <strong>operários × máquinas</strong> (cada aresta indica quem sabe operar o quê).</div>
     <div class="bip-linha">
       <div class="bip-item">
         <h4>Operários × Máquinas</h4>
@@ -1880,7 +1909,15 @@ body.noturno .fonte:hover{border-left-color:var(--blue)}
 </main>
 </div>
 
-<footer>Intensivo Interativo · montado a partir do VETORES.pdf, dos slides de Teoria dos Grafos (Aulas 1–8), dos módulos de Sistemas Lineares e Diagrama de Venn (Brasil Escola, Toda Matéria, UNIFAL-MG, Wikipédia e UNIVESP) e de temas extras inspirados no Portal OBMEP/IMPA · boa prova!</footer>
+<footer>
+  <p>Intensivo Interativo · montado a partir do VETORES.pdf, do material de Teoria dos Grafos (Aulas 1–8), dos módulos de Sistemas Lineares e Diagrama de Venn (Brasil Escola, Toda Matéria, UNIFAL-MG, Wikipédia e UNIVESP) e de temas extras inspirados no Portal OBMEP/IMPA · boa prova!</p>
+  <p class="footer-links">
+    <a href="https://github.com/KaioViniciusP/treino" target="_blank" rel="noopener">⭐ Repositório no GitHub</a>
+    <a href="https://github.com/KaioViniciusP/treino/blob/main/README.md" target="_blank" rel="noopener">📖 Documentação</a>
+    <a href="https://github.com/KaioViniciusP/treino/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">🤝 Como contribuir</a>
+    <a href="exercicios_vetores_grafos.html">✏️ Treino de Vetores &amp; Grafos</a>
+  </p>
+</footer>
 <div id="toast" role="status"></div>
 
 <script>
@@ -1918,7 +1955,7 @@ try{aplicaTema(localStorage.getItem('temaSite')||'dia');}catch(e){aplicaTema('di
 function leVistas(){try{return JSON.parse(localStorage.getItem('aulasVistas')||'[]');}catch(e){return[];}}
 function atualizaProgresso(){
   const salvo=leVistas();
-  [['vetores','fimVet','VETORES.pdf + extras'],['grafos','fimGraf','Slides + Portal OBMEP'],['sistemas','fimSL','Brasil Escola + Toda Matéria + UNIFAL + Wikipédia'],['venn','fimVenn','Toda Matéria + Wikipédia + UNIVESP']].forEach(p=>{
+  [['vetores','fimVet','VETORES.pdf + extras'],['grafos','fimGraf','Material + Portal OBMEP'],['sistemas','fimSL','Brasil Escola + Toda Matéria + UNIFAL + Wikipédia'],['venn','fimVenn','Toda Matéria + Wikipédia + UNIVESP']].forEach(p=>{
     const aulas=document.querySelectorAll('#'+p[0]+' .aula');
     let n=0;aulas.forEach((a,i)=>{if(salvo.includes(p[0]+'-'+i))n++;});
     const fim=document.getElementById(p[1]);

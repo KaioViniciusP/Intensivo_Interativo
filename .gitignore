@@ -3,5 +3,15 @@
 
 # Arquivos locais/temporários
 *.log
+*.tmp
+.env
 skills-lock.json
 .agents/
+node_modules/
+
+# Sistema operacional / editores
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/

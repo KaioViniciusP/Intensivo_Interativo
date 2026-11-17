@@ -85,6 +85,9 @@
   .actions{display:flex;justify-content:center;margin:10px 0 40px}
   .hidden{display:none}
   footer{text-align:center;font-size:.8rem;color:var(--muted);margin-bottom:20px}
+  footer p+p{margin-top:6px}
+  footer a{color:var(--blue);font-weight:700;text-decoration:none;margin:0 8px}
+  footer a:hover{text-decoration:underline}
 </style>
 </head>
 <body>
@@ -108,7 +111,7 @@
       <p>10 questões: marque a alternativa certa, digite o resultado ou interaja.</p>
     </div>
     <details class="rev">
-      <summary>📋 Revisão rápida (fórmulas dos slides)</summary>
+      <summary>📋 Revisão rápida (fórmulas essenciais)</summary>
       <ul>
         <li><b>Mesma direção:</b> sentidos iguais → soma (R = a + b); sentidos opostos → subtração (R = |a − b|, sentido do maior).</li>
         <li><b>Perpendiculares (Pitágoras):</b> R = √(a² + b²).</li>
@@ -126,7 +129,7 @@
       <p>10 questões: conceitos, cliques no grafo e montagem de caminhos.</p>
     </div>
     <details class="rev">
-      <summary>📋 Revisão rápida (fórmulas dos slides)</summary>
+      <summary>📋 Revisão rápida (fórmulas essenciais)</summary>
       <ul>
         <li><b>Grafo:</b> G = (V, E) — vértices (elementos) e arestas (ligações).</li>
         <li><b>Grau de um vértice:</b> nº de arestas incidentes; soma dos graus = 2 × nº de arestas.</li>
@@ -143,7 +146,13 @@
 
   <div class="actions"><button class="btn btn-ghost" id="resetBtn">🔄 Reiniciar exercícios</button></div>
 
-  <footer>Baseado nos slides de Vetores (VETORES.pdf) e Teoria dos Grafos.</footer>
+  <footer>
+    <p>Baseado no material de Vetores (VETORES.pdf) e de Teoria dos Grafos.</p>
+    <p>
+      <a href="index.html">← Voltar ao Intensivo Interativo</a>
+      <a href="https://github.com/KaioViniciusP/treino" target="_blank" rel="noopener">Repositório no GitHub</a>
+    </p>
+  </footer>
 </div>
 
 <script>
@@ -290,7 +299,7 @@ var LETTERS = ['A','B','C','D'];
 function praise(p){
   if(p>=90) return '🏆 Excelente! Você domina o conteúdo!';
   if(p>=70) return '👏 Muito bom! Só revise os pequenos erros.';
-  if(p>=50) return '👍 Bom começo — revise os slides marcados e repita.';
+  if(p>=50) return '👍 Bom começo — revise as questões marcadas e repita.';
   return '📚 Hora de revisar o material com calma e tentar de novo!';
 }
 function updateHUD(){
